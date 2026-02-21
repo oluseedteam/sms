@@ -4,11 +4,11 @@ import rectangular from "../../../assets/images/rectangular_school_collage.png"
 const Philosophy = () => {
   return (
      <section
-          className="relative min-h-screen flex items-center justify-center bg-cover bg-center"
+          className="relative min-h-screen  flex items-center justify-center bg-cover bg-center"
           style={{ backgroundImage: `url(${rectangular})` }}
         >
           {/* Overlay for readability */}
-          <div className="absolute inset-0 bg-[#0C236C4D]"></div>
+          <div className="absolute blur-2xl inset-0 bg-[#0C236C4D] scale-110"></div>
     
           {/* Content */}
           <div className="relative z-10 text-center text-white px-4 pt-15">
