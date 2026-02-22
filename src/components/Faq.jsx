@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { FaDotCircle } from 'react-icons/fa'
 import { FiChevronDown } from 'react-icons/fi';
+import { motion } from "motion/react";
 
 const faqs = [
   {
@@ -28,7 +29,12 @@ const Faq = () => {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 px-4 py-20 sm:py-28">
+    <motion.section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 px-4 py-20 sm:py-28"
+      initial={{ opacity: 0, x: -200 }}
+      transition={{ duration: 1 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: false }}
+    >
 
       {/* Background decorative blobs */}
       <div className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-blue-100 opacity-40 blur-3xl" />
@@ -81,11 +87,10 @@ const Faq = () => {
               return (
                 <div
                   key={index}
-                  className={`group rounded-2xl border bg-white/80 backdrop-blur-sm shadow-sm transition-all duration-300 ${
-                    isOpen
+                  className={`group rounded-2xl border bg-white/80 backdrop-blur-sm shadow-sm transition-all duration-300 ${isOpen
                       ? 'border-[#3657C3]/30 shadow-md shadow-[#3657C3]/10'
                       : 'border-slate-200/80 hover:border-[#3657C3]/20 hover:shadow-md'
-                  }`}
+                    }`}
                 >
                   <button
                     onClick={() => toggleFAQ(index)}
@@ -93,34 +98,30 @@ const Faq = () => {
                   >
                     {/* Index + question */}
                     <div className="flex items-center gap-4">
-                      <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-colors duration-300 ${
-                        isOpen
+                      <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-colors duration-300 ${isOpen
                           ? 'bg-[#3657C3] text-white'
                           : 'bg-slate-100 text-slate-500 group-hover:bg-[#3657C3]/10 group-hover:text-[#3657C3]'
-                      }`}>
+                        }`}>
                         {String(index + 1).padStart(2, '0')}
                       </span>
-                      <span className={`text-base font-semibold leading-snug transition-colors duration-200 ${
-                        isOpen ? 'text-[#3657C3]' : 'text-slate-800'
-                      }`}>
+                      <span className={`text-base font-semibold leading-snug transition-colors duration-200 ${isOpen ? 'text-[#3657C3]' : 'text-slate-800'
+                        }`}>
                         {faq.question}
                       </span>
                     </div>
 
                     {/* Chevron */}
-                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
-                      isOpen
+                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${isOpen
                         ? 'bg-[#3657C3]/10 text-[#3657C3] rotate-180'
                         : 'bg-slate-100 text-slate-400 group-hover:bg-[#3657C3]/10 group-hover:text-[#3657C3]'
-                    }`}>
+                      }`}>
                       <FiChevronDown className="text-base" />
                     </span>
                   </button>
 
                   {/* Answer with smooth transition */}
-                  <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    isOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
-                  }`}>
+                  <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
+                    }`}>
                     <div className="flex gap-4 border-t border-slate-100 px-6 py-5">
                       <div className="mt-0.5 h-full w-0.5 shrink-0 self-stretch rounded-full bg-[#3657C3]/20" />
                       <p className="text-sm leading-7 text-slate-500">{faq.answer}</p>
@@ -132,7 +133,7 @@ const Faq = () => {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   )
 }
 

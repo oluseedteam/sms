@@ -1,11 +1,16 @@
-import React from 'react'
-import rectangular from "../../../assets/images/rectangular_school_collage.png"
+import React from 'react';
+import rectangular from "../../../assets/images/rectangular_school_collage.png";
+import { motion } from "motion/react";
 
 const Philosophy = () => {
   return (
-     <section
+     <motion.section
           className="relative min-h-screen  flex items-center justify-center bg-cover bg-center"
           style={{ backgroundImage: `url(${rectangular})` }}
+          initial={{opacity: 0, y:100}}
+          transition={{duration: 1.5}}
+          whileInView={{opacity: 1, y:0}}
+          viewport={{once: false}}
         >
           {/* Overlay for readability */}
           <div className="absolute blur-2xl inset-0 bg-[#0C236C4D] scale-110"></div>
@@ -21,7 +26,7 @@ const Philosophy = () => {
             
             
             </div>
-        </section>
+        </motion.section>
   )
 }
 

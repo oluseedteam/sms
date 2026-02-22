@@ -1,28 +1,34 @@
 import React from 'react';
-import playground from "../../../assets/images/welcome_image_1.png"
-import classroom from "../../../assets/images/advantage_3.png"
-import outdor from "../../../assets/images/outdoor_play_and_writing.png"
+import playground from "../../../assets/images/welcome_image_1.png";
+import classroom from "../../../assets/images/advantage_3.png";
+import outdor from "../../../assets/images/outdoor_play_and_writing.png";
+import { motion } from "motion/react";
 
 
 
 
 const Vision = () => {
   return (
-    <div className="max-w-6xl mx-auto p-6 md:p-12 bg-white text-slate-800 font-sans">
-      
+    <motion.div className="max-w-6xl mx-auto p-6 md:p-12 bg-white text-slate-800 font-sans"
+      initial={{ opacity: 0, x: -200 }}
+      transition={{ duration: 1 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: false }}
+    >
+
       {/* Top Section: Vision & Mission */}
       <div className="grid md:grid-cols-2 gap-6 mb-16">
         {/* Vision Card */}
         <div className="relative overflow-hidden rounded-2xl h-80 flex items-center bg-blue-900">
-          <img 
+          <img
             src={playground}
-            alt="Playground" 
+            alt="Playground"
             className="absolute inset-0 w-full h-full object-cover opacity-40"
           />
           <div className="relative p-8 text-white bg-black/20 backdrop-blur-sm w-full h-full flex flex-col justify-center">
             <h2 className="text-3xl font-bold mb-4">Our Vision</h2>
             <p className="text-lg leading-relaxed">
-              To be a leading Primary and Secondary school recognized for academic excellence, 
+              To be a leading Primary and Secondary school recognized for academic excellence,
               strong values, and the consistent development of confident, capable future leaders.
             </p>
           </div>
@@ -30,9 +36,9 @@ const Vision = () => {
 
         {/* Mission Card */}
         <div className="relative overflow-hidden rounded-2xl h-80 flex items-center bg-blue-900">
-          <img 
+          <img
             src={playground}
-            alt="Students" 
+            alt="Students"
             className="absolute inset-0 w-full h-full object-cover opacity-40"
           />
           <div className="relative p-8 text-white bg-black/20 backdrop-blur-sm w-full h-full flex flex-col justify-center">
@@ -50,7 +56,7 @@ const Vision = () => {
 
       {/* Bottom Section: Core Values & Images */}
       <div className="grid md:grid-cols-2 gap-12 items-start">
-        
+
         {/* Left Column: Text Content */}
         <div className="space-y-12">
           {/* Core Values */}
@@ -87,23 +93,23 @@ const Vision = () => {
         {/* Right Column: Stacked Images */}
         <div className="flex flex-col gap-4">
           <div className="rounded-2xl overflow-hidden shadow-lg border-4 border-white">
-            <img 
+            <img
               src={classroom}
-              alt="Classroom activity" 
+              alt="Classroom activity"
               className="w-full h-auto object-cover"
             />
           </div>
           <div className="rounded-2xl overflow-hidden shadow-lg border-4 border-white">
-            <img 
-              src={outdor} 
-              alt="Outdoor play and writing" 
+            <img
+              src={outdor}
+              alt="Outdoor play and writing"
               className="w-full h-auto object-cover"
             />
           </div>
         </div>
 
       </div>
-    </div>
+    </motion.div>
   )
 }
 

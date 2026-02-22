@@ -1,7 +1,8 @@
-import React from 'react'
-import logo from '../assets/images/logo.png'
-import { BsTwitterX, BsFacebook, BsInstagram, BsYoutube } from 'react-icons/bs'
-import { FaLocationDot, FaEnvelope, FaPhone } from 'react-icons/fa6'
+import React from 'react';
+import logo from '../assets/images/logo.png';
+import { BsTwitterX, BsFacebook, BsInstagram, BsYoutube } from 'react-icons/bs';
+import { FaLocationDot, FaEnvelope, FaPhone } from 'react-icons/fa6';
+import { motion } from "motion/react";
 
 const socialLinks = [
   { icon: <BsTwitterX />, href: '#', label: 'Twitter/X' },
@@ -13,9 +14,15 @@ const socialLinks = [
 const quickLinks = ['Home', 'About Us', 'Contact Us', 'Media Room']
 const legalLinks = ['Terms of Use', 'Privacy Policy']
 
+
 const Footer = () => {
   return (
-    <footer className="bg-[#05060f] text-white font-Dm-sans mt-10 relative overflow-hidden">
+    <motion.footer className="bg-[#05060f] text-white font-Dm-sans mt-10 relative overflow-hidden"
+    initial={{ opacity: 0, y: 100 }}
+      transition={{ duration: 1.5 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false }}
+    >
 
       {/* Subtle top blue accent line */}
       <div className="h-[3px] w-full bg-gradient-to-r from-transparent via-[#1875F0] to-transparent" />
@@ -135,7 +142,7 @@ const Footer = () => {
         </div>
 
       </div>
-    </footer>
+    </motion.footer>
   )
 }
 

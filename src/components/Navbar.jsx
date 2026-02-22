@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import logo from "../assets/images/logo.png";
 import { FiMenu, FiX } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
+import { motion } from "motion/react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,7 +25,12 @@ const Navbar = () => {
       : "opacity-60 hover:opacity-100 transition-opacity duration-200 text-sm";
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 font-Dm-sans transition-colors duration-300">
+    <motion.header className="fixed top-0 left-0 w-full z-50 font-Dm-sans transition-colors duration-300"
+      initial={{ opacity: 0, y: 100 }}
+      transition={{ duration: 1.5 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false }}
+    >
       <nav
         className={`flex items-center justify-between px-6 py-3 rounded-full mx-5 my-5 md:mx-10 lg:mx-12 border transition-all duration-300
           ${scrolled
@@ -64,9 +70,8 @@ const Navbar = () => {
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
         <div
-          className={`md:hidden fixed inset-0 ${
-            scrolled ? "bg-gray-800/95" : "bg-black/90"
-          } backdrop-blur-sm flex flex-col justify-center items-center text-white z-50`}
+          className={`md:hidden fixed inset-0 ${scrolled ? "bg-gray-800/95" : "bg-black/90"
+            } backdrop-blur-sm flex flex-col justify-center items-center text-white z-50`}
         >
           {/* X button inside the overlay — always visible */}
           <button
@@ -91,7 +96,7 @@ const Navbar = () => {
           </button>
         </div>
       )}
-    </header>
+    </motion.header>
   );
 };
 

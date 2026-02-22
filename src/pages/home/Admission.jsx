@@ -1,10 +1,15 @@
-import React from 'react'
+import React from 'react';
+import { motion } from "motion/react";
 
 const Admission = () => {
   return (
-    <section
+    <motion.section
       className="relative overflow-hidden px-6 py-20 sm:py-28"
       style={{ background: 'linear-gradient(135deg, #1D2E5C 0%, #3D61C2 60%, #1D2E5C 100%)' }}
+    initial={{ opacity: 0, x: 100 }}
+      transition={{ duration: 1 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: false }}
     >
       {/* Decorative background circles */}
       <div className="pointer-events-none absolute -top-20 -left-20 h-72 w-72 rounded-full bg-white opacity-5" />
@@ -63,7 +68,7 @@ const Admission = () => {
           </button>
         </div>
       </div>
-    </section>
+    </motion.section>
   )
 }
 

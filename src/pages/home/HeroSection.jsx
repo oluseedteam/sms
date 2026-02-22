@@ -1,9 +1,14 @@
 import React from "react";
 import backgroundImage from "../../assets/images/image_1.jpg";
-
+import { motion } from "motion/react";
 const HeroSection = () => {
   return (
-    <section
+    <motion.section
+
+      initial={{ opacity: 0, y: 100 }}
+      transition={{ duration: 1.5 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false }}
       className="relative min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
@@ -20,15 +25,15 @@ const HeroSection = () => {
         </p>
         {/* Buttons */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5">
-            <button className="bg-white font-bold rounded-full px-8 sm:px-10 py-3 text-[#3657C3] cursor-pointer w-full sm:w-auto text-center">
-              Enroll Today
-            </button>
-            <button className="bg-[#DFE0E5]/40 font-bold rounded-full px-8 sm:px-10 py-3 cursor-pointer w-full sm:w-auto text-center">
-              Book a Tour
-            </button>
-          </div>
+          <button className="bg-white font-bold rounded-full px-8 sm:px-10 py-3 text-[#3657C3] cursor-pointer w-full sm:w-auto text-center">
+            Enroll Today
+          </button>
+          <button className="bg-[#DFE0E5]/40 font-bold rounded-full px-8 sm:px-10 py-3 cursor-pointer w-full sm:w-auto text-center">
+            Book a Tour
+          </button>
         </div>
-    </section>
+      </div>
+    </motion.section>
   );
 };
 

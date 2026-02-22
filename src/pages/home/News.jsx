@@ -1,9 +1,10 @@
-import React from 'react'
-import { FaDotCircle } from 'react-icons/fa'
-import { FiArrowUpRight } from 'react-icons/fi'
-import image_1 from '../../assets/images/advantage_1.png'
-import image_2 from '../../assets/images/advantage_2.png'
-import image_3 from '../../assets/images/advantage_3.png'
+import React from 'react';
+import { FaDotCircle } from 'react-icons/fa';
+import { FiArrowUpRight } from 'react-icons/fi';
+import image_1 from '../../assets/images/advantage_1.png';
+import image_2 from '../../assets/images/advantage_2.png';
+import image_3 from '../../assets/images/advantage_3.png';
+import { motion } from "motion/react";
 
 const data = [
   {
@@ -34,7 +35,7 @@ const data = [
 
 const NewsCard = ({ image, title, date, desc, href }) => (
   <div className="group flex flex-col overflow-hidden rounded-2xl border border-[#3657C3] bg-white shadow-sm transition-shadow duration-300 hover:shadow-xl">
-    
+
     {/* Image */}
     <div className="h-60 w-full overflow-hidden">
       <img
@@ -78,7 +79,12 @@ const NewsCard = ({ image, title, date, desc, href }) => (
 
 const News = () => {
   return (
-    <section className="px-6 ">
+    <motion.section className="px-6 "
+      initial={{ opacity: 0, x: -200 }}
+      transition={{ duration: 1 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: false }}
+    >
 
       {/* Badge */}
       <div className="mb-8 grid justify-center">
@@ -96,12 +102,12 @@ const News = () => {
           <NewsCard key={item.id} {...item} />
         ))}
       </div>
-      
+
       <div className='place-self-center mt-10'>
         <button className='bg-[#3657C3] text-white text-sm px-10 py-2 font-bold cursor-pointer hover:bg-blue-700 rounded-full'>Read More</button>
       </div>
-      
-    </section>
+
+    </motion.section>
   )
 }
 

@@ -1,10 +1,11 @@
-import React from 'react'
-import advantage_1 from '../../assets/images/advantage_1.png'
-import advantage_2 from '../../assets/images/advantage_2.png'
-import advantage_3 from '../../assets/images/welcome_image_2.png'
-import advantage_4 from '../../assets/images/welcome_image_3.png'
-import advantage_5 from '../../assets/images/advantage_3.png'
-import advantage_6 from '../../assets/images/advantage_4.png'
+import React from 'react';
+import advantage_1 from '../../assets/images/advantage_1.png';
+import advantage_2 from '../../assets/images/advantage_2.png';
+import advantage_3 from '../../assets/images/welcome_image_2.png';
+import advantage_4 from '../../assets/images/welcome_image_3.png';
+import advantage_5 from '../../assets/images/advantage_3.png';
+import advantage_6 from '../../assets/images/advantage_4.png';
+import { motion } from "motion/react";
 
 const data = [
   {
@@ -46,7 +47,12 @@ const Advantage = () => {
   }
 
   return (
-    <section className="px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+    <motion.section className="px-4 py-12 sm:px-6 sm:py-16 lg:px-8"
+    initial={{ opacity: 0, x: -200 }}
+      transition={{ duration: 1 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: false }}
+    >
       <div className="mx-auto max-w-6xl text-center">
         <h1 className="text-2xl font-medium text-gray-800 sm:text-3xl lg:text-4xl">Our School Advantage</h1>
         <p className="mt-2 text-sm text-gray-500 sm:text-base">What Makes Us Different</p>
@@ -79,7 +85,7 @@ const Advantage = () => {
           ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   )
 }
 
