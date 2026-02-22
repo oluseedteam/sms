@@ -14,6 +14,7 @@ const About = () => {
       transition={{ duration: 1 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: false }}
+      className='overflow-hidden'
     >
       <Philosophy />
       <OurSchool />

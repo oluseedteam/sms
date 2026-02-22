@@ -16,6 +16,7 @@ const Home = () => {
       transition={{ duration: 1 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: false }}
+      className='overflow-hidden'
     >
       <HeroSection />
       <Welcome />
