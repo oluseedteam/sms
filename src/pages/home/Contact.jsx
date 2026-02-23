@@ -10,7 +10,7 @@ import { motion } from "motion/react";
 
 const Contact = () => {
   return (
-    <div className="min-h-screen bg-white font-Dm-sans"
+    <div className="min-h-screen bg-white font-Dm-sans overflow-hidden"
     >
       {/* Hero Section with Image Grid */}
       <motion.div className="relative h-[500px] flex items-center justify-center overflow-hidden"
