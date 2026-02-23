@@ -1,17 +1,24 @@
 import React from 'react'
-import { FaLocationDot, FaEnvelope, FaPhone } from 'react-icons/fa6'
-import adv1 from '../../assets/images/advantage_1.png'
-import adv3 from '../../assets/images/advantage_3.png'
-import adv4 from '../../assets/images/advantage_4.png'
-import adv5 from '../../assets/images/advantage_5.jpg'
-import welcome3 from '../../assets/images/welcome_image_3.png'
-import img5 from '../../assets/images/image_5.png'
+import { FaLocationDot, FaEnvelope, FaPhone } from 'react-icons/fa6';
+import adv1 from '../../assets/images/advantage_1.png';
+import adv3 from '../../assets/images/advantage_3.png';
+import adv4 from '../../assets/images/advantage_4.png';
+import adv5 from '../../assets/images/advantage_5.jpg';
+import welcome3 from '../../assets/images/welcome_image_3.png';
+import img5 from '../../assets/images/image_5.png';
+import { motion } from "motion/react";
 
 const Contact = () => {
   return (
-    <div className="min-h-screen bg-white font-Dm-sans">
+    <div className="min-h-screen bg-white font-Dm-sans"
+    >
       {/* Hero Section with Image Grid */}
-      <div className="relative h-[500px] flex items-center justify-center overflow-hidden">
+      <motion.div className="relative h-[500px] flex items-center justify-center overflow-hidden"
+        initial={{ opacity: 0, y: 100 }}
+        transition={{ duration: 1.5 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false }}
+      >
         {/* Background Grid */}
         <div className="absolute inset-0 grid grid-cols-4 grid-rows-2 gap-0">
           <img src={adv3} className="w-full h-full object-cover" alt="" />
@@ -23,7 +30,7 @@ const Contact = () => {
           <img src={adv3} className="w-full h-full object-cover" alt="" />
           <img src={adv1} className="w-full h-full object-cover" alt="" />
         </div>
-        
+
         {/* Dark Blue Overlay */}
         <div className="absolute inset-0 bg-[#0B1034] opacity-70"></div>
 
@@ -36,11 +43,16 @@ const Contact = () => {
             channels below — we respond promptly.
           </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Main Contact Content - Overlapping White Box */}
       <div className="max-w-6xl mx-auto px-4 pb-20">
-                  <div className="relative z-20 bg-white rounded-xl mt-24 p-8 md:p-12 grid md:grid-cols-2 gap-12">          
+        <motion.div className="relative z-20 bg-white rounded-xl mt-24 p-8 md:p-12 grid md:grid-cols-2 gap-12"
+          initial={{ opacity: 0, x: 100 }}
+          transition={{ duration: 1 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: false }}
+        >
           {/* Left Column - Contact Information */}
           <div>
             <h2 className="text-4xl font-bold mb-6 text-[#0B1034]">Get in touch with us.</h2>
@@ -56,7 +68,7 @@ const Contact = () => {
                   <span className="text-gray-600">1234 Post Avenue Remington</span>
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="font-bold text-lg text-[#0B1034] mb-3">Reach out to us at</h3>
                 <div className="space-y-4">
@@ -80,7 +92,7 @@ const Contact = () => {
           {/* Right Column - Contact Form */}
           <div className="bg-[#F8F9FB] p-6 md:p-10 rounded-2xl">
             <h2 className="text-2xl font-bold mb-8 text-[#0B1034]">Contact Us Form</h2>
-            
+
             <form className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <input
@@ -133,7 +145,7 @@ const Contact = () => {
               </button>
             </form>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   )
