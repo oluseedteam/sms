@@ -4,6 +4,7 @@ import MainLayout from '../layouts/MainLayout';
 import Home from '../pages/home/Home';
 import About from '../pages/home/about/About';
 import Media from '../pages/media/Media';
+import Login from '../pages/login/Login';
 
 
 
@@ -16,6 +17,7 @@ const AppRoutes = () => {
         <Route path='/about' element={<About />} />
         <Route path='/media' element={<Media />}/>
       </Route>
+      <Route path='/login' element={<Login />}/>
     </Routes>
   )
 }
