@@ -3,8 +3,10 @@ import logo from "../assets/images/logo.png";
 import { FiMenu, FiX } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
 import { motion } from "motion/react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -15,6 +17,11 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // route to login
+  const handleLogin = () => {
+    navigate("/login");
+  };
 
   // Close menu on route change
   const handleNavClick = () => setIsMenuOpen(false);
@@ -62,7 +69,7 @@ const Navbar = () => {
         </ul>
 
         {/* Desktop Login */}
-        <button className="hidden md:block text-white bg-[#1875F0] text-sm px-6 md:px-12 py-3 rounded-full font-bold hover:bg-blue-700">
+        <button onClick={handleLogin} className="hidden md:block text-white bg-[#1875F0] text-sm px-6 md:px-12 py-3 rounded-full font-bold hover:bg-blue-700">
           Login
         </button>
       </nav>
@@ -91,7 +98,7 @@ const Navbar = () => {
           </ul>
 
           {/* Login */}
-          <button className="w-40 bg-[#1875F0] py-3 rounded-full font-bold hover:bg-blue-700 text-white">
+          <button onClick={handleLogin} className="w-40 bg-[#1875F0] py-3 rounded-full font-bold hover:bg-blue-700 text-white">
             Login
           </button>
         </div>
