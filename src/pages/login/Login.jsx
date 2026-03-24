@@ -4,43 +4,43 @@ import logo from "../../assets/images/logo.png";
 
 export default function Login() {
   return (
-    <div className="h-screen w-full flex items-center justify-center bg-gray-200">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gray-200 p-4">
       
       {/* Container */}
-      <div className="w-[90%] max-w-6xl h-[90vh] bg-white rounded-xl shadow-lg flex overflow-hidden">
+      <div className="w-full max-w-6xl md:h-[90vh] bg-white rounded-xl shadow-lg flex flex-col md:flex-row overflow-hidden">
         
         {/* LEFT SIDE */}
-        <div className="w-1/2 bg-blue-600 text-white p-10 flex flex-col justify-center relative">
+        <div className="w-full md:w-1/2 bg-blue-600 text-white p-8 md:p-10 flex flex-col justify-center relative text-center md:text-left">
           
           {/* Logo */}
-          <div className="mb-10">
-            <div className="w-20 h-20 bg-white rounded flex items-center justify-center text-blue-700 font-bold">
-              <img src={logo} alt="" className="w-full h-full object-cover" />
+          <div className="mb-6 md:mb-10 flex justify-center md:justify-start">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded flex items-center justify-center text-blue-700 font-bold overflow-hidden">
+              <img src={logo} alt="Logo" className="w-full h-full object-cover rounded" />
             </div>
           </div>
 
           {/* Text */}
-          <h1 className="text-4xl font-semibold leading-snug">
+          <h1 className="text-2xl md:text-4xl font-semibold leading-snug">
             Shaping Young Minds.
           </h1>
-          <h1 className="text-4xl font-bold text-yellow-400">
+          <h1 className="text-2xl md:text-4xl font-bold text-yellow-400">
             Building Future
           </h1>
-          <h1 className="text-4xl font-semibold">
+          <h1 className="text-2xl md:text-4xl font-semibold">
             Leaders.
           </h1>
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="w-1/2 flex items-center justify-center bg-gray-100">
+        <div className="w-full md:w-1/2 flex items-center justify-center bg-gray-100 py-10 md:py-0">
           
-          <div className="bg-white p-8 rounded-xl shadow-md w-[80%] max-w-md">
+          <div className="bg-white p-6 md:p-8 rounded-xl shadow-md w-full max-w-[90%] md:max-w-md mx-auto">
             
-            <h2 className="text-lg font-semibold mb-2 text-blue-700">
+            <h2 className="text-lg md:text-xl font-semibold mb-2 text-blue-700 text-center md:text-left">
               Sign in to your account
             </h2>
 
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-gray-500 mb-6 text-center md:text-left">
               Please make sure all details provided are correct
             </p>
 
@@ -66,7 +66,7 @@ export default function Login() {
 
             {/* Forgot Password */}
             <div className="text-right mb-4">
-              <a href="#" className="text-sm text-red-500">
+              <a href="#" className="text-sm text-red-500 hover:underline">
                 Forgot Password?
               </a>
             </div>
@@ -78,17 +78,17 @@ export default function Login() {
 
             {/* Divider */}
             <div className="flex items-center my-4">
-              <hr className="flex-1" />
+              <hr className="flex-1 border-gray-300" />
               <span className="mx-2 text-gray-400 text-sm">OR</span>
-              <hr className="flex-1" />
+              <hr className="flex-1 border-gray-300" />
             </div>
 
             {/* Social buttons */}
             <div className="flex justify-center gap-4 mb-4">
-              <button className="p-2 border rounded-lg hover:bg-gray-100">
+              <button className="w-12 h-12 flex items-center justify-center border rounded-lg hover:bg-gray-100 transition">
                 G
               </button>
-              <button className="p-2 border rounded-lg hover:bg-gray-100">
+              <button className="w-12 h-12 flex items-center justify-center border rounded-lg hover:bg-gray-100 transition">
                 
               </button>
             </div>
@@ -96,7 +96,7 @@ export default function Login() {
             {/* Sign up */}
             <p className="text-sm text-center">
               I don’t have an account?{" "}
-              <span className="text-blue-600 cursor-pointer">
+              <span className="text-blue-600 cursor-pointer hover:underline font-medium">
                 Sign Up
               </span>
             </p>
