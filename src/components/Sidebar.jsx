@@ -24,37 +24,37 @@ const Sidebar = ({ onClose }) => {
         {
             title: "My Classes",
             icon: BookOpen,
-            path: "/class"
+            path: "/dashboard/my-classes"
         },
         {
             title: "Homework",
             icon: ClipboardList,
-            path: "/homework"
+            path: "/dashboard/homework"
         },
         {
             title: "My Grades",
             icon: BarChart3,
-            path: "/grade"
+            path: "/dashboard/grade"
         },
         {
             title: "Attendance",
             icon: CalendarCheck,
-            path: "/attendance"
+            path: "/dashboard/attendance"
         },
         {
             title: "Messages",
             icon: Mail,
-            path: "/message"
+            path: "/dashboard/message"
         },
         {
             title: "Library",
             icon: Library,
-            path: "/library"
+            path: "/dashboard/library"
         },
         {
             title: "My Profile",
             icon: User,
-            path: "/profile"
+            path: "/dashboard/profile"
         }
     ]
   return (
@@ -78,18 +78,19 @@ const Sidebar = ({ onClose }) => {
                     <NavLink
                         key={index}
                         to={item.path}
+                        end={item.path === '/dashboard'}
                         onClick={() => { if(onClose) onClose() }}
                         className={({ isActive }) =>
-                            `block p-2 rounded-lg cursor-pointer transition-colors border-blue-600 ` +
+                            `block p-2 rounded-lg cursor-pointer transition-all duration-200 border-blue-600 ` +
                             (isActive
                                 ? 'bg-blue-100 border-l-4'
-                                : 'hover:bg-blue-100 hover:border-l-4')
+                                : 'hover:bg-blue-50/50 hover:border-l-4 border-l-transparent')
                         }
                     >
                         {({ isActive }) => (
-                            <div className="flex items-center gap-3 text-gray-700 px-2 lg:px-0">
-                                <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-blue-400'}`} />
-                                <span className={`font-medium ${isActive ? 'text-blue-600' : 'text-blue-400'}`}>
+                            <div className={`flex items-center gap-3 px-2 lg:px-0 transition-colors ${isActive ? 'text-blue-600' : 'text-gray-500'}`}>
+                                <Icon className={`w-5 h-5 transition-colors ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
+                                <span className={`font-medium transition-colors ${isActive ? 'text-blue-600' : 'text-gray-500'}`}>
                                     {item.title}
                                 </span>
                             </div>
