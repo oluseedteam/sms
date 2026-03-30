@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   MapPin, 
   Clock, 
@@ -10,7 +10,25 @@ import {
   Palette,
   Goal
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import MyClassRight from './MyClassRight';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: "spring", stiffness: 100 }
+  }
+};
 
 const MyClasses = () => {
   const [activeTab, setActiveTab] = useState('All Subjects');
@@ -124,10 +142,18 @@ const MyClasses = () => {
         </div>
 
         {/* Classes Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-6 pb-8">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-6 pb-8"
+        >
           {classes.map((cls) => (
-            <div 
+            <motion.div 
               key={cls.id} 
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               className={`bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 border-l-4 
                 ${cls.color === 'blue' ? 'border-l-blue-500' : 
                   cls.color === 'purple' ? 'border-l-purple-500' : 
@@ -220,9 +246,9 @@ const MyClasses = () => {
                   📝 <span className="hidden sm:inline">Homework</span>
                 </button>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
 
       {/* Right Sidebar Component */}

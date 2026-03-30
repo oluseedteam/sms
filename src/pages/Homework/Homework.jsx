@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   ClipboardList, 
   Calendar, 
@@ -14,9 +14,26 @@ import {
   Star,
   Info
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import HomeworkRight from './HomeworkRight';
-
 import { useNavigate } from 'react-router-dom';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: "spring", stiffness: 100 }
+  }
+};
 
 const Homework = () => {
   const navigate = useNavigate();
@@ -107,7 +124,12 @@ const Homework = () => {
   return (
     <div className="flex flex-col lg:flex-row gap-8 px-2 sm:px-4 lg:px-0 scroll-smooth">
       {/* Main Content Area */}
-      <div className="flex-1 space-y-6 sm:space-y-8 min-w-0">
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="flex-1 space-y-6 sm:space-y-8 min-w-0"
+      >
         {/* Tabs */}
         <div className="flex flex-wrap gap-2 sm:gap-4 overflow-x-auto pb-2 no-scrollbar ">
           {[
@@ -134,8 +156,10 @@ const Homework = () => {
         {/* Homework List */}
         <div className="space-y-6 pb-20">
           {homework.map((item) => (
-            <div 
+            <motion.div 
               key={item.id} 
+              variants={itemVariants}
+              whileHover={{ scale: 1.01 }}
               className={`bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 group relative overflow-hidden`}
             >
               {/* Status Badge */}
@@ -267,20 +291,28 @@ const Homework = () => {
                   </button>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
 
           {/* Bottom Tip Bar */}
-          <div className="bg-green-600 text-white p-4 rounded-2xl flex items-center gap-3 shadow-lg shadow-green-100 animate-pulse">
+          <motion.div 
+            variants={itemVariants} 
+            className="bg-green-600 text-white p-4 rounded-2xl flex items-center gap-3 shadow-lg shadow-green-100"
+          >
              <div className="bg-white/20 p-2 rounded-lg">
-               <Flame className="w-5 h-5 text-yellow-300" />
+               <motion.div
+                 animate={{ rotate: [0, 5, -5, 0] }}
+                 transition={{ repeat: Infinity, duration: 2 }}
+               >
+                 <Flame className="w-5 h-5 text-yellow-300" />
+               </motion.div>
              </div>
              <p className="text-xs sm:text-sm font-bold tracking-tight">
-               Tip: Do a little homework every day instead of waiting until it's due! You've got this! 💪
+                Tip: Do a little homework every day instead of waiting until it's due! You've got this! 💪
              </p>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Right Sidebar */}
       <div className="lg:w-80 w-full">

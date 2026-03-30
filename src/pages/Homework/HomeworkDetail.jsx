@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   ArrowLeft, 
   Clock, 
@@ -13,14 +13,37 @@ import {
   Users,
   Timer
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: "spring", stiffness: 100 }
+  }
+};
 
 const HomeworkDetail = () => {
   const navigate = useNavigate();
   const [timerActive, setTimerActive] = useState(false);
 
   return (
-    <div className="space-y-6 sm:space-y-8 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 px-2 sm:px-4 lg:px-0">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-6 sm:space-y-8 pb-12 px-2 sm:px-4 lg:px-0"
+    >
       {/* Breadcrumbs & Header Info */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <button 
@@ -66,10 +89,10 @@ const HomeworkDetail = () => {
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left Column CONTENT */}
-        <div className="flex-1 space-y-6 sm:space-y-8 min-w-0">
+        <motion.div variants={itemVariants} className="flex-1 space-y-6 sm:space-y-8 min-w-0">
           
           {/* What You Need to Do */}
-          <section className="bg-white rounded-2xl p-5 sm:p-8 shadow-sm border border-gray-100">
+          <motion.section variants={itemVariants} className="bg-white rounded-2xl p-5 sm:p-8 shadow-sm border border-gray-100">
              <div className="flex items-center gap-3 mb-4 sm:mb-6">
                 <span className="text-xl sm:text-2xl">📝</span>
                 <h2 className="text-base sm:text-xl font-black text-gray-800 uppercase tracking-tight">What You Need to Do:</h2>
@@ -77,10 +100,10 @@ const HomeworkDetail = () => {
              <p className="text-xs sm:text-base text-gray-500 leading-relaxed font-bold">
                 Complete pages 24 and 25 in your Math workbook. Remember to show all your work! Use a pencil so you can erase mistakes. Check your answers when you're done.
              </p>
-          </section>
+          </motion.section>
 
           {/* What You'll Learn */}
-          <section className="bg-white/60 rounded-2xl p-5 sm:p-8 shadow-sm border border-gray-50 backdrop-blur-sm">
+          <motion.section variants={itemVariants} className="bg-white/60 rounded-2xl p-5 sm:p-8 shadow-sm border border-gray-50 backdrop-blur-sm">
              <div className="flex items-center gap-3 mb-4 sm:mb-6">
                 <span className="text-xl sm:text-2xl">🎯</span>
                 <h2 className="text-base sm:text-xl font-black text-gray-800 uppercase tracking-tight">What You'll Learn:</h2>
@@ -97,10 +120,10 @@ const HomeworkDetail = () => {
                  </li>
                ))}
              </ul>
-          </section>
+          </motion.section>
 
           {/* Materials You Need */}
-          <section className="space-y-3 sm:space-y-4">
+          <motion.section variants={itemVariants} className="space-y-3 sm:space-y-4">
              <div className="flex items-center gap-3">
                 <span className="text-xl sm:text-2xl">📦</span>
                 <h2 className="text-base sm:text-xl font-black text-gray-800 uppercase tracking-tight">Materials You Need:</h2>
@@ -117,10 +140,10 @@ const HomeworkDetail = () => {
                  </div>
                ))}
              </div>
-          </section>
+          </motion.section>
 
           {/* Helpful Files */}
-          <section className="space-y-3 sm:space-y-4">
+          <motion.section variants={itemVariants} className="space-y-3 sm:space-y-4">
              <div className="flex items-center gap-3">
                 <span className="text-xl sm:text-2xl">📥</span>
                 <h2 className="text-base sm:text-xl font-black text-gray-800 uppercase tracking-tight">Helpful Files:</h2>
@@ -152,10 +175,10 @@ const HomeworkDetail = () => {
                   </div>
                 </div>
              </div>
-          </section>
+          </motion.section>
 
           {/* Submit Your Work */}
-          <section className="bg-blue-50/40 rounded-[32px] p-5 sm:p-10 border-2 border-dashed border-blue-200 space-y-6 sm:space-y-8">
+          <motion.section variants={itemVariants} className="bg-blue-50/40 rounded-[32px] p-5 sm:p-10 border-2 border-dashed border-blue-200 space-y-6 sm:space-y-8">
              <div className="flex items-center gap-3">
                 <span className="text-xl sm:text-2xl">📤</span>
                 <h2 className="text-base sm:text-xl font-black text-blue-800 uppercase tracking-tight">Submit Your Work:</h2>
@@ -213,9 +236,9 @@ const HomeworkDetail = () => {
              <button className="w-full py-4 bg-green-500 text-white rounded-2xl font-black text-[11px] sm:text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-green-600 transition-all shadow-lg shadow-green-100 active:scale-[0.98]">
                ❓ I Need Help
              </button>
-          </section>
+          </motion.section>
 
-        </div>
+        </motion.div>
 
         {/* Right Sidebar */}
         <div className="lg:w-80 w-full space-y-6">
@@ -294,7 +317,7 @@ const HomeworkDetail = () => {
 
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

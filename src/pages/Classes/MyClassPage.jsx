@@ -1,11 +1,16 @@
-import React from 'react';
+import { motion } from 'motion/react';
 import MyClasses from './MyClasses';
 
 const MyClassPage = () => {
   return (
-    <div className="animate-in fade-in duration-500">
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="w-full"
+    >
       <MyClasses />
-    </div>
+    </motion.div>
   );
 };
 

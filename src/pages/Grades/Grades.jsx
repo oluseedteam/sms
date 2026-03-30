@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   Trophy, 
   Users, 
@@ -15,7 +14,25 @@ import {
   User,
   Check
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import GradesRight from './GradesRight';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: "spring", stiffness: 100 }
+  }
+};
 
 const Grades = () => {
   const subjects = [
@@ -116,10 +133,15 @@ const Grades = () => {
   return (
     <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 px-1 sm:px-4 lg:px-0 scroll-smooth pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Main Content */}
-      <div className="flex-1 space-y-6 sm:space-y-8 min-w-0">
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="flex-1 space-y-6 sm:space-y-8 min-w-0"
+      >
         
         {/* Overall Performance */}
-        <section className="bg-yellow-400 rounded-[32px] p-5 sm:p-10 text-white shadow-xl relative overflow-hidden group">
+        <motion.section variants={itemVariants} className="bg-yellow-400 rounded-[32px] p-5 sm:p-10 text-white shadow-xl relative overflow-hidden group">
            <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
            <div className="absolute -right-20 -top-20 w-80 h-80 bg-white/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000"></div>
            
@@ -148,7 +170,7 @@ const Grades = () => {
                  <p className="mt-2 not-italic opacity-80 text-[9px] sm:text-xs">— Miss Roberts, Class Teacher</p>
               </div>
            </div>
-        </section>
+        </motion.section>
 
         {/* Subjects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -217,7 +239,7 @@ const Grades = () => {
         </div>
 
         {/* Parent Signature */}
-        <section className="bg-white rounded-[32px] p-5 sm:p-10 shadow-sm border border-gray-100 space-y-6 sm:space-y-8">
+        <motion.section variants={itemVariants} className="bg-white rounded-[32px] p-5 sm:p-10 shadow-sm border border-gray-100 space-y-6 sm:space-y-8">
            <div className="flex items-center gap-3">
               <span className="text-xl sm:text-2xl">👩‍👦</span>
               <h2 className="text-base sm:text-xl font-black text-gray-800 uppercase tracking-tight">Parent/Guardian Signature:</h2>
@@ -242,15 +264,15 @@ const Grades = () => {
            <button className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-blue-100 active:scale-[0.98]">
               Submit Signature
            </button>
-        </section>
+        </motion.section>
 
         {/* Footer */}
-        <div className="text-center pt-8 px-4">
+        <motion.div variants={itemVariants} className="text-center pt-8 px-4">
            <p className="text-xs sm:text-lg font-black text-green-600 tracking-tight leading-loose">
               Great job this term, Emma! Keep up the wonderful work! ✨🙌
            </p>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Right Sidebar */}
       <div className="lg:w-80 w-full">
