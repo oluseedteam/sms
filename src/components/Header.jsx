@@ -1,11 +1,26 @@
 import { Mail, Star, Menu } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 export default function Header({ onMenuClick }) {
+  const location = useLocation();
+  
+  const getHeaderTitle = () => {
+    const path = location.pathname;
+    if (path.includes('my-classes')) return "My Classes 📚";
+    if (path.includes('homework')) return "Homework 📝";
+    if (path.includes('grade')) return "My Report Card 📊";
+    if (path.includes('attendance')) return "Attendance 📅";
+    if (path.includes('message')) return "Messages ✉️";
+    if (path.includes('library')) return "Library 📚";
+    if (path.includes('profile')) return "My Profile 👤";
+    return "Good Morning, Emma ☀️";
+  };
+
   return (
     <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
       <div className="flex justify-between items-center w-full md:w-auto">
         <h2 className="text-xl md:text-2xl font-bold text-blue-600">
-          Good Morning, Emma ☀️
+          {getHeaderTitle()}
         </h2>
         {onMenuClick && (
           <button 
