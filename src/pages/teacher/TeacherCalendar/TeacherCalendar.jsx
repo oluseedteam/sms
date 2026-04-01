@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 import {
   ChevronLeft, ChevronRight, PlusCircle, Printer,
   Download, RefreshCw, Calendar, Clock, CheckCircle2
@@ -49,14 +50,18 @@ const viewTabs = ['Month', 'Week', 'Day', 'Agenda'];
 const filterTabs = ['All Events', 'Classes', 'Assignments', 'School Events', 'Personal'];
 
 const TeacherCalendar = () => {
+  const navigate = useNavigate();
   const [activeView, setActiveView] = useState('Month');
   const [activeFilter, setActiveFilter] = useState('All Events');
-  const [eventDate, setEventDate]   = useState('2023-10-25');
-  const [eventStart, setEventStart] = useState('09:00');
-  const [eventEnd, setEventEnd]     = useState('10:00');
-  const [eventTitle, setEventTitle] = useState('');
+  
+  const handleViewChange = (v) => {
+    if (v === 'Week') {
+      navigate('/teacher/calendar-second');
+    } else {
+      setActiveView(v);
+    }
+  };
 
-  // Bottom summary stats
   const summary = [
     { value: '23 classes',       sub: 'This month' },
     { value: '12 assignments',   sub: 'Due dates' },
@@ -66,11 +71,9 @@ const TeacherCalendar = () => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 px-2 sm:px-4 lg:px-0">
-      {/* ── Main calendar column ─────────────────────────── */}
       <div className="flex-1 space-y-6 min-w-0">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Academic Calendar &amp; Schedule</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Academic Calendar & Schedule</h1>
           <div className="flex gap-2">
             <button className="px-4 py-2.5 bg-blue-50 text-blue-600 font-bold rounded-2xl text-xs hover:bg-blue-100 transition-all border border-blue-100">
               📅 Today
@@ -81,11 +84,10 @@ const TeacherCalendar = () => {
           </div>
         </div>
 
-        {/* View + filter tabs */}
         <div className="flex flex-wrap gap-3 items-center">
           <div className="flex bg-white rounded-2xl border border-gray-100 shadow-sm p-1">
             {viewTabs.map(v => (
-              <button key={v} onClick={() => setActiveView(v)}
+              <button key={v} onClick={() => handleViewChange(v)}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${activeView === v ? 'bg-blue-600 text-white shadow' : 'text-gray-500 hover:text-gray-700'}`}>
                 {v}
               </button>
@@ -101,7 +103,6 @@ const TeacherCalendar = () => {
           </div>
         </div>
 
-        {/* Month calendar */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
           <div className="flex justify-between items-center mb-5">
             <button className="p-2 rounded-xl border border-gray-200 hover:border-blue-200 text-gray-500">
@@ -146,7 +147,6 @@ const TeacherCalendar = () => {
             })}
           </div>
 
-          {/* Calendar toolbar */}
           <div className="flex flex-wrap gap-2 mt-5 pt-4 border-t border-gray-100">
             {[
               { label: 'Print Month',    icon: Printer },
@@ -162,7 +162,6 @@ const TeacherCalendar = () => {
           </div>
         </div>
 
-        {/* Summary strip */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {summary.map((s, i) => (
             <div key={i} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-center">
@@ -173,7 +172,6 @@ const TeacherCalendar = () => {
         </div>
       </div>
 
-      {/* ── Right sidebar ─────────────────────────────────── */}
       <div className="lg:w-72 w-full">
         <TeacherCalendarRight />
       </div>

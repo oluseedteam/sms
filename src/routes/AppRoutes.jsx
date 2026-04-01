@@ -4,6 +4,7 @@ import MainLayout from '../layouts/MainLayout';
 
 //auth
 import Login from '../pages/auth/Login'
+import Signup from '../pages/auth/Signup'
 
 // Homepage 
 import Home from '../pages/public/home/Home';
@@ -34,6 +35,12 @@ import TeacherAttendancePage   from '../pages/teacher/TeacherAttendance/TeacherA
 import TeacherMessagesPage     from '../pages/teacher/TeacherMessages/TeacherMessagesPage';
 import TeacherCalendarPage     from '../pages/teacher/TeacherCalendar/TeacherCalendarPage';
 import TeacherResourcesPage    from '../pages/teacher/TeacherResources/TeacherResourcesPage';
+import TeacherAttendacesecondPage from '../pages/teacher/TeacherAttendacesecond/TeacherAttendacesecondPage';
+import TeacherCalendarsecondPage from '../pages/teacher/TeacherCalendarsecond/TeacherCalendarsecondPage';
+
+// ── Admin Dashboard ────────────────────────────────────────
+import AdminLayout from '../layouts/AdminLayout';
+import AdminDashboardPage from '../pages/admin/dashboard/AdminDashboardPage';
 
 const AppRoutes = () => {
   return (
@@ -48,6 +55,7 @@ const AppRoutes = () => {
 
       {/* Auth */}
       <Route path='/login' element={<Login />} />
+      <Route path='/signup' element={<Signup />} />
 
       {/* Student dashboard */}
       <Route path='/student' element={<DashboardLayout />}>
@@ -71,9 +79,28 @@ const AppRoutes = () => {
         <Route path='assignments'  element={<TeacherAssignmentsPage />} />
         <Route path='gradebook'    element={<TeacherGradebookPage />} />
         <Route path='attendance'   element={<TeacherAttendancePage />} />
+        <Route path='attendance-second' element={<TeacherAttendacesecondPage />} />
         <Route path='messages'     element={<TeacherMessagesPage />} />
         <Route path='calendar'     element={<TeacherCalendarPage />} />
+        <Route path='calendar-second' element={<TeacherCalendarsecondPage />} />
         <Route path='resources'    element={<TeacherResourcesPage />} />
+      </Route>
+      
+      {/* Admin Dashboard */}
+      <Route path='/admin' element={<AdminLayout />}>
+        <Route index element={<AdminDashboardPage />} />
+        {/* Placeholder for future admin routes */}
+        {/* <Route path='student' element={<AdminDashboardPage />} />
+        <Route path='worker' element={<AdminDashboardPage />} />
+        <Route path='financial' element={<AdminDashboardPage />} />
+        <Route path='notifications' element={<AdminDashboardPage />} />
+        <Route path='settings' element={<AdminDashboardPage />} />
+        <Route path='dispute' element={<AdminDashboardPage />} /> */}
+      </Route>
+
+      {/* Support for /teacher-dashboard */}
+      <Route path='/teacher-dashboard' element={<TeacherLayout />}>
+        <Route index element={<TeacherDashboardPage />} />
       </Route>
     </Routes>
   )

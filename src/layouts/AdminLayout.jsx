@@ -1,0 +1,38 @@
+import React, { useState } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
+import AdminSidebar from '../components/AdminSidebar';
+import AdminHeader from '../components/AdminHeader';
+
+const AdminLayout = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const location = useLocation();
+
+  // Helper to get title from path (can be expanded)
+  const getPageTitle = () => {
+    const path = location.pathname;
+    if (path.includes('/admin/student')) return "Students 🧑‍🎓";
+    if (path.includes('/admin/worker')) return "Staff & Workers 👷";
+    if (path.includes('/admin/financial')) return "Financial Reports 📈";
+    if (path.includes('/admin/notifications')) return "Notifications 🔔";
+    if (path.includes('/admin/settings')) return "Global Settings ⚙️";
+    if (path.includes('/admin/dispute')) return "Feedback & Disputes 💬";
+    return "Dashboard OVERVIEW 📊";
+  };
+
+  return (
+    <div className="flex h-screen bg-[#F7F9FB] overflow-hidden">
+      {/* Sidebar */}
+      <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <AdminHeader title={getPageTitle()} />
+        <main className="flex-1 overflow-y-auto p-10 font-Dm-sans">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default AdminLayout;
