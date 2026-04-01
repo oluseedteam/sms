@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
   CheckCircle2, AlertTriangle, Clock, Trophy,
@@ -36,6 +37,7 @@ const calDays = [
 const calPct = { 2:'96%',3:'96%',4:'96%',5:'88%',6:'96%',9:'96%',10:'96%',11:'96%',12:'96%',13:'96%',16:'96%',17:'96%',18:'100%',19:'96%',20:'96%',23:'96%',24:'96%',25:'96%' };
 
 const TeacherAttendance = () => {
+  const navigate = useNavigate();
   const [students, setStudents] = useState(allStudents);
   const [view, setView] = useState('grid');
 
@@ -67,7 +69,10 @@ const TeacherAttendance = () => {
             <button className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all">
               <CheckCircle2 className="w-4 h-4" /> Take Attendance
             </button>
-            <button className="flex items-center gap-1.5 px-3 py-2.5 rounded-2xl border border-gray-200 text-xs font-bold text-gray-600 hover:border-blue-200 hover:text-blue-600 transition-all bg-white">
+            <button 
+              onClick={() => navigate('/teacher/attendance-second')}
+              className="flex items-center gap-1.5 px-3 py-2.5 rounded-2xl border border-gray-200 text-xs font-bold text-gray-600 hover:border-blue-200 hover:text-blue-600 transition-all bg-white"
+            >
               View Reports
             </button>
             <button className="flex items-center gap-1.5 px-3 py-2.5 rounded-2xl border border-gray-200 text-xs font-bold text-gray-600 hover:border-blue-200 hover:text-blue-600 transition-all bg-white">

@@ -9,6 +9,7 @@ import {
   CalendarCheck,
   Mail,
   Library,
+  Users,
   User,
   X
 } from "lucide-react";
@@ -19,42 +20,47 @@ const Sidebar = ({ onClose }) => {
         {
             title: "Dashboard",
             icon: LayoutDashboard,
-            path: "/dashboard"
+            path: "/student"
         },
         {
             title: "My Classes",
             icon: BookOpen,
-            path: "/dashboard/my-classes"
+            path: "/student/my-classes"
         },
         {
             title: "Homework",
             icon: ClipboardList,
-            path: "/dashboard/homework"
+            path: "/student/homework"
+        },
+        {
+            title: "All Students",
+            icon: Users,
+            path: "/student/students"
         },
         {
             title: "My Grades",
             icon: BarChart3,
-            path: "/dashboard/grade"
+            path: "/student/grade"
         },
         {
             title: "Attendance",
             icon: CalendarCheck,
-            path: "/dashboard/attendance"
+            path: "/student/attendance"
         },
         {
             title: "Messages",
             icon: Mail,
-            path: "/dashboard/message"
+            path: "/student/message"
         },
         {
             title: "Library",
             icon: Library,
-            path: "/dashboard/library"
+            path: "/student/library"
         },
         {
             title: "My Profile",
             icon: User,
-            path: "/dashboard/profile"
+            path: "/student/profile"
         }
     ]
   return (
