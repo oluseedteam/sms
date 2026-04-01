@@ -1,6 +1,8 @@
 import React from "react";
 import backgroundImage from "../../../assets/images/image_1.jpg";
 import { motion } from "motion/react";
+import { Link } from "react-router-dom";
+
 const HeroSection = () => {
   return (
     <motion.section
@@ -25,12 +27,18 @@ const HeroSection = () => {
         </p>
         {/* Buttons */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5">
-          <button className="bg-white font-bold rounded-full px-8 sm:px-10 py-3 text-[#3657C3] cursor-pointer w-full sm:w-auto text-center">
-            Enroll Today
-          </button>
-          <button className="bg-[#DFE0E5]/40 font-bold rounded-full px-8 sm:px-10 py-3 cursor-pointer w-full sm:w-auto text-center">
-            Book a Tour
-          </button>
+          <Link to={'/contact'}>
+            <button className="bg-white font-bold rounded-full px-8 sm:px-10 py-3 text-[#3657C3] cursor-pointer w-full sm:w-auto text-center">
+              Enroll Today
+            </button>
+          </Link>
+          
+          <Link to={'/contact'}>
+            <button className="bg-[#DFE0E5]/40 font-bold rounded-full px-8 sm:px-10 py-3 cursor-pointer w-full sm:w-auto text-center">
+              Book a Tour
+            </button>
+          </Link>
+          
         </div>
       </div>
     </motion.section>
