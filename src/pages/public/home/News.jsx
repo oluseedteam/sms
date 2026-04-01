@@ -1,9 +1,9 @@
 import React from 'react';
 import { FaDotCircle } from 'react-icons/fa';
 import { FiArrowUpRight } from 'react-icons/fi';
-import image_1 from '../../assets/images/advantage_1.png';
-import image_2 from '../../assets/images/advantage_2.png';
-import image_3 from '../../assets/images/advantage_3.png';
+import image_1 from '../../../assets/images/advantage_1.png';
+import image_2 from '../../../assets/images/advantage_2.png';
+import image_3 from '../../../assets/images/advantage_3.png';
 import { motion } from "motion/react";
 
 const data = [

@@ -1,5 +1,5 @@
 import React from "react";
-import backgroundImage from "../../assets/images/image_1.jpg";
+import backgroundImage from "../../../assets/images/image_1.jpg";
 import { motion } from "motion/react";
 const HeroSection = () => {
   return (

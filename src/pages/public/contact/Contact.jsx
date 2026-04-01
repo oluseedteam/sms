@@ -1,8 +1,8 @@
 import React from 'react'
 import { FaLocationDot, FaEnvelope, FaPhone } from 'react-icons/fa6';
-import rectangular from "../../assets/images/rectangular_school_collage.png";
-import welcome3 from '../../assets/images/welcome_image_3.png';
-import img5 from '../../assets/images/image_5.png';
+import rectangular from "../../../assets/images/rectangular_school_collage.png";
+import welcome3 from '../../../assets/images/welcome_image_3.png';
+import img5 from '../../../assets/images/image_5.png';
 import { motion } from "motion/react";
 
 const Contact = () => {

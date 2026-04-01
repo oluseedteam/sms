@@ -1,5 +1,5 @@
 import React from 'react';
-import rectangular from "../../assets/images/rectangular_school_collage.png";
+import rectangular from "../../../assets/images/rectangular_school_collage.png";
 import { motion } from "motion/react";
 
 const MediaRoom = () => {

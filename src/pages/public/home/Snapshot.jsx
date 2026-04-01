@@ -1,12 +1,12 @@
 import React from 'react';
-import image_1 from '../../assets/images/advantage_1.png';
-import image_2 from '../../assets/images/advantage_2.png';
-import image_3 from '../../assets/images/advantage_3.png';
-import image_4 from '../../assets/images/advantage_4.png';
-import image_5 from '../../assets/images/welcome_image_1.png';
-import image_6 from '../../assets/images/welcome_image_2.png';
-import image_7 from '../../assets/images/welcome_image_3.png';
-import image_8 from '../../assets/images/image_5.png';
+import image_1 from '../../../assets/images/advantage_1.png';
+import image_2 from '../../../assets/images/advantage_2.png';
+import image_3 from '../../../assets/images/advantage_3.png';
+import image_4 from '../../../assets/images/advantage_4.png';
+import image_5 from '../../../assets/images/welcome_image_1.png';
+import image_6 from '../../../assets/images/welcome_image_2.png';
+import image_7 from '../../../assets/images/welcome_image_3.png';
+import image_8 from '../../../assets/images/image_5.png';
 import { motion } from "motion/react";
 
 const images = [

@@ -4,7 +4,7 @@ import OurSchool from './OurSchool';
 import Vision from './Vision';
 import Commitment from './Commitment';
 import Faq from '../../../components/Faq';
-import Snapshot from '../Snapshot';
+import Snapshot from '../home/Snapshot';
 import { motion } from "motion/react";
 
 const About = () => {

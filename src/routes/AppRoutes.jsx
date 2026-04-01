@@ -1,34 +1,39 @@
 import React from 'react'
 import { Routes, Route } from "react-router-dom";
 import MainLayout from '../layouts/MainLayout';
-import Home from '../pages/home/Home';
-import About from '../pages/home/about/About';
-import Media from '../pages/media/Media';
-import Login from '../pages/login/Login';
+
+//auth
+import Login from '../pages/auth/Login'
+
+// Homepage 
+import Home from '../pages/public/home/Home';
+import About from '../pages/public/about/About';
+import Media from '../pages/public/media/Media'
+import Contact from '../pages/public/contact/Contact'
 
 // ── Student Dashboard ────────────────────────────────────────
 import DashboardLayout from '../layouts/DashboardLayout';
-import Dashboard from '../pages/dashboard/Dashboard';
-import MyClassPage from '../pages/Classes/MyClassPage';
-import HomeworkPage from '../pages/Homework/HomeworkPage';
-import GradesPage from '../pages/Grades/GradesPage';
-import HomeworkDetail from '../pages/Homework/HomeworkDetail';
-import Homework from '../pages/Homework/Homework';
-import AttendancePage from '../pages/Attendance/AttendancePage';
-import MessagesPage from '../pages/Messages/MessagesPage';
-import ProfilePage from '../pages/Profile/ProfilePage';
+import Dashboard from '../pages/student/dashboard/Dashboard';
+import MyClassPage from '../pages/student/Classes/MyClassPage';
+import HomeworkPage from '../pages/student/Homework/HomeworkPage';
+import GradesPage from '../pages/student/Grades/GradesPage';
+import HomeworkDetail from '../pages/student/Homework/HomeworkDetail';
+import Homework from '../pages/student/Homework/Homework';
+import AttendancePage from '../pages/student/Attendance/AttendancePage';
+import MessagesPage from '../pages/student/Messages/MessagesPage';
+import ProfilePage from '../pages/student/Profile/ProfilePage';
 
 // ── Teacher Dashboard ────────────────────────────────────────
 import TeacherLayout from '../layouts/TeacherLayout';
-import TeacherDashboardPage    from '../pages/TeacherDashboard/TeacherDashboardPage';
-import TeacherMyClassesPage    from '../pages/TeacherMyClasses/TeacherMyClassesPage';
-import TeacherStudentsPage     from '../pages/TeacherStudents/TeacherStudentsPage';
-import TeacherAssignmentsPage  from '../pages/TeacherAssignments/TeacherAssignmentsPage';
-import TeacherGradebookPage    from '../pages/TeacherGradebook/TeacherGradebookPage';
-import TeacherAttendancePage   from '../pages/TeacherAttendance/TeacherAttendancePage';
-import TeacherMessagesPage     from '../pages/TeacherMessages/TeacherMessagesPage';
-import TeacherCalendarPage     from '../pages/TeacherCalendar/TeacherCalendarPage';
-import TeacherResourcesPage    from '../pages/TeacherResources/TeacherResourcesPage';
+import TeacherDashboardPage    from '../pages/teacher/TeacherDashboard/TeacherDashboardPage';
+import TeacherMyClassesPage    from '../pages/teacher/TeacherMyClasses/TeacherMyClassesPage';
+import TeacherStudentsPage     from '../pages/teacher/TeacherStudents/TeacherStudentsPage';
+import TeacherAssignmentsPage  from '../pages/teacher/TeacherAssignments/TeacherAssignmentsPage';
+import TeacherGradebookPage    from '../pages/teacher/TeacherGradebook/TeacherGradebookPage';
+import TeacherAttendancePage   from '../pages/teacher/TeacherAttendance/TeacherAttendancePage';
+import TeacherMessagesPage     from '../pages/teacher/TeacherMessages/TeacherMessagesPage';
+import TeacherCalendarPage     from '../pages/teacher/TeacherCalendar/TeacherCalendarPage';
+import TeacherResourcesPage    from '../pages/teacher/TeacherResources/TeacherResourcesPage';
 
 const AppRoutes = () => {
   return (
@@ -37,6 +42,7 @@ const AppRoutes = () => {
       <Route element={<MainLayout />}>
         <Route path='/' element={<Home />} />
         <Route path='/about' element={<About />} />
+        <Route path="/contact" element={<Contact/>} />
         <Route path='/media' element={<Media />} />
       </Route>
 
@@ -44,7 +50,7 @@ const AppRoutes = () => {
       <Route path='/login' element={<Login />} />
 
       {/* Student dashboard */}
-      <Route path='/dashboard' element={<DashboardLayout />}>
+      <Route path='/student' element={<DashboardLayout />}>
         <Route index element={<Dashboard />} />
         <Route path='my-classes' element={<MyClassPage />} />
         <Route path='grade' element={<GradesPage />} />
@@ -58,7 +64,7 @@ const AppRoutes = () => {
       </Route>
 
       {/* Teacher dashboard */}
-      <Route path='/teacher-dashboard' element={<TeacherLayout />}>
+      <Route path='/teacher' element={<TeacherLayout />}>
         <Route index element={<TeacherDashboardPage />} />
         <Route path='my-classes'   element={<TeacherMyClassesPage />} />
         <Route path='students'     element={<TeacherStudentsPage />} />

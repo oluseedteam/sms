@@ -17,16 +17,16 @@ import {
 
 const TeacherSidebar = ({ onClose }) => {
   const navItems = [
-    { title: "Dashboard",   icon: LayoutDashboard, path: "/teacher-dashboard" },
-    { title: "My Classes",  icon: BookOpen,        path: "/teacher-dashboard/my-classes" },
-    { title: "Students",    icon: Users,           path: "/teacher-dashboard/students" },
-    { title: "Assignments", icon: ClipboardList,   path: "/teacher-dashboard/assignments" },
-    { title: "Gradebook",   icon: BookMarked,      path: "/teacher-dashboard/gradebook" },
-    { title: "Attendance",  icon: CalendarCheck,   path: "/teacher-dashboard/attendance" },
-    { title: "Messages",    icon: Mail,            path: "/teacher-dashboard/messages" },
-    { title: "Calendar",    icon: Calendar,        path: "/teacher-dashboard/calendar" },
-    { title: "Resources",   icon: Library,         path: "/teacher-dashboard/resources" },
-    { title: "Profile",     icon: User,            path: "/teacher-dashboard/profile" },
+    { title: "Dashboard",   icon: LayoutDashboard, path: "/teacher" },
+    { title: "My Classes",  icon: BookOpen,        path: "/teacher/my-classes" },
+    { title: "Students",    icon: Users,           path: "/teacher/students" },
+    { title: "Assignments", icon: ClipboardList,   path: "/teacher/assignments" },
+    { title: "Gradebook",   icon: BookMarked,      path: "/teacher/gradebook" },
+    { title: "Attendance",  icon: CalendarCheck,   path: "/teacher/attendance" },
+    { title: "Messages",    icon: Mail,            path: "/teacher/messages" },
+    { title: "Calendar",    icon: Calendar,        path: "/teacher/calendar" },
+    { title: "Resources",   icon: Library,         path: "/teacher/resources" },
+    { title: "Profile",     icon: User,            path: "/teacher/profile" },
   ];
 
   return (
@@ -54,7 +54,7 @@ const TeacherSidebar = ({ onClose }) => {
             <NavLink
               key={index}
               to={item.path}
-              end={item.path === '/teacher-dashboard'}
+              end={item.path === '/teacher'}
               onClick={() => { if (onClose) onClose(); }}
               className={({ isActive }) =>
                 `block p-2 rounded-lg cursor-pointer transition-all duration-200 border-blue-600 ` +
