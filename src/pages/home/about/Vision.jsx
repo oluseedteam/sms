@@ -9,7 +9,7 @@ import { motion } from "motion/react";
 
 const Vision = () => {
   return (
-    <motion.div className="max-w-6xl mx-auto p-6 md:p-12 bg-white text-slate-800 font-sans"
+    <motion.div className="max-w-6xl mx-auto p-6 md:p-12 bg-white text-slate-800 font-Dm-sans"
       initial={{ opacity: 0, x: -200 }}
       transition={{ duration: 1 }}
       whileInView={{ opacity: 1, x: 0 }}
@@ -27,7 +27,7 @@ const Vision = () => {
           />
           <div className="relative p-8 text-white bg-black/20 backdrop-blur-sm w-full h-full flex flex-col justify-center">
             <h2 className="text-3xl font-bold mb-4">Our Vision</h2>
-            <p className="text-lg leading-relaxed">
+            <p className="text-sm leading-relaxed">
               To be a leading Primary and Secondary school recognized for academic excellence,
               strong values, and the consistent development of confident, capable future leaders.
             </p>
@@ -43,7 +43,7 @@ const Vision = () => {
           />
           <div className="relative p-8 text-white bg-black/20 backdrop-blur-sm w-full h-full flex flex-col justify-center">
             <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
-            <ul className="space-y-2 list-disc list-inside opacity-95">
+            <ul className="space-y-2 list-disc list-inside text-sm opacity-95">
               <li>To deliver high-quality, well-structured education</li>
               <li>To build disciplined and responsible learners</li>
               <li>To develop critical thinking and problem-solving skills</li>

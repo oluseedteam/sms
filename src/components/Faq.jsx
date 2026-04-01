@@ -30,7 +30,7 @@ const Faq = () => {
 
   return (
     <motion.section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 px-4 py-20 sm:py-28"
-      initial={{ opacity: 0, x: -200 }}
+      initial={{ opacity: 0, x: -100 }}
       transition={{ duration: 1 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: false }}

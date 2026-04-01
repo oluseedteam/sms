@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 
 const Commitment = () => {
   return (
-    <motion.section className="max-w-[1400px] mx-auto px-6 py-12 lg:py-20"
+    <motion.section className="max-w-[1400px] mx-auto px-6 py-12 lg:py-20 font-Dm-sans"
       initial={{ opacity: 0, x: 100 }}
       transition={{ duration: 1 }}
       whileInView={{ opacity: 1, x: 0 }}
@@ -52,7 +52,7 @@ const Commitment = () => {
             <h2 className="text-4xl lg:text-5xl font-semibold text-slate-800 tracking-tight">
               Our Commitment to Parents
             </h2>
-            <p className="text-xl text-slate-500 leading-relaxed max-w-2xl">
+            <p className="text-[17px] text-slate-500 leading-relaxed max-w-2xl">
               We believe education works best as a partnership between school and home.
               We keep parents informed through continuous progress reports, open
               communication channels, and scheduled engagement meetings.
@@ -65,7 +65,7 @@ const Commitment = () => {
             <h2 className="text-4xl lg:text-5xl font-semibold text-slate-800 tracking-tight">
               Our Commitment to Students
             </h2>
-            <p className="text-xl text-slate-500">
+            <p className="text-[17px] text-slate-500">
               We provide a safe and supportive environment where students can:
             </p>
 
@@ -78,7 +78,7 @@ const Commitment = () => {
                 "Learn responsibility",
                 "Achieve their best"
               ].map((item, index) => (
-                <li key={index} className="flex items-center text-lg text-slate-600">
+                <li key={index} className="flex items-center text-[16px] text-slate-600">
                   <span className="w-2 h-2 bg-slate-400 rounded-full mr-4 flex-shrink-0"></span>
                   {item}
                 </li>

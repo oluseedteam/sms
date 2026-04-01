@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 
 const OurSchool = () => {
   return (
-    <motion.section className="bg-slate-50 py-16 px-4 md:px-8 lg:px-16 font-sans"
+    <motion.section className="bg-slate-50 py-16 px-4 md:px-8 lg:px-16 font-Dm-sans"
       initial={{ opacity: 0, x: 100 }}
       transition={{ duration: 1 }}
       whileInView={{ opacity: 1, x: 0 }}
