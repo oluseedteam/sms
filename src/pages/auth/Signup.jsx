@@ -88,15 +88,15 @@ export default function Signup() {
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg overflow-hidden p-1.5">
               <img src={logo} alt="School Logo" className="w-full h-full object-contain" />
             </div>
-            <span className="font-bold text-white/95 text-sm tracking-widest uppercase">Sunshine Elementary</span>
+            <span className="font-bold text-white/95 text-sm tracking-widest ">GHRA School</span>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
             className="relative z-10 my-8 md:my-0">
             <p className="text-blue-200 text-[10px] font-black tracking-[0.3em] uppercase mb-4 opacity-80 italic">Join our community</p>
             <h1 className="text-4xl md:text-[3.5rem] font-black leading-[1] mb-2 font-serif italic tracking-tighter">
-              Start Your<br />
-              <span className="text-yellow-400">Journey</span> With Us.
+              Shaping Young Minds.<br />
+              <span className="text-yellow-400">Building Future Leaders.</span>
             </h1>
             <p className="mt-6 text-blue-100/70 text-sm leading-relaxed max-w-[300px] font-medium">
               Create your account to access your personalized educational portal and connect with teachers and peers.
