@@ -41,6 +41,7 @@ import TeacherCalendarsecondPage from '../pages/teacher/TeacherCalendarsecond/Te
 // ── Admin Dashboard ────────────────────────────────────────
 import AdminLayout from '../layouts/AdminLayout';
 import AdminDashboardPage from '../pages/admin/dashboard/AdminDashboardPage';
+import ForgotPassword from '../pages/auth/ForgotPassword';
 
 const AppRoutes = () => {
   return (
@@ -56,6 +57,7 @@ const AppRoutes = () => {
       {/* Auth */}
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<Signup />} />
+      <Route path='/forgot-password' element={<ForgotPassword/>} />
 
       {/* Student dashboard */}
       <Route path='/student' element={<DashboardLayout />}>
