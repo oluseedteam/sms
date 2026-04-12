@@ -84,7 +84,7 @@ const Sidebar = ({ onClose }) => {
                     <NavLink
                         key={index}
                         to={item.path}
-                        end={item.path === '/dashboard'}
+                        end={item.path === '/student'}
                         onClick={() => { if(onClose) onClose() }}
                         className={({ isActive }) =>
                             `block p-2 rounded-lg cursor-pointer transition-all duration-200 border-blue-600 ` +

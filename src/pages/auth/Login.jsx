@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
-import { loginUser, saveSession } from "../../services/authService";
+import { useAuth } from "../../hooks/useAuth";
+import { loginUser } from "../../services/authService";
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 const EyeIcon = ({ open }) =>
@@ -37,6 +38,7 @@ const Shapes = () => (
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function Login() {
+  const { login: loginUserToContext } = useAuth();
   const navigate = useNavigate();
   const [role, setRole]                 = useState("student");
   const [login, setLogin]               = useState(""); // email or student_id / employee_id
@@ -68,9 +70,10 @@ export default function Login() {
       const data = await loginUser({ login, password, role });
 
       // Persist token + user info
-      saveSession(data);
+      loginUserToContext(data);
 
       // Use the role from the server response as the source of truth
+      // console.log("login data", data);
       navigate(data.user.role === "teacher" ? "/teacher" : "/student");
 
     } catch (err) {

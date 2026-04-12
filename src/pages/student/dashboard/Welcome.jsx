@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+import { useAuth } from "../../../hooks/useAuth";
 
 const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -23,6 +24,8 @@ const itemVariants = {
 };
 
 const Welcome = () => {
+  const { user } = useAuth();
+
     const info = [
         { label: 'Gold Stars This Week', value: '12', icon: '⭐' }, 
         { label: 'Books Read', value: '3', icon: '📚' },
@@ -40,7 +43,9 @@ const Welcome = () => {
         <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000"></div>
         
         <motion.div variants={itemVariants} className="relative">
-            <h2 className='text-2xl sm:text-3xl font-black mb-2 uppercase tracking-tight'>Welcome back, Emma! 👋</h2>
+            <h2 className='text-2xl sm:text-3xl font-black mb-2 uppercase tracking-tight'>
+              Welcome back, {user?.full_name || "Student"}! 👋
+            </h2>
             <p className='text-xs sm:text-[15px] mb-8 opacity-90 flex items-center gap-2 font-bold'>
                 📚 You have 3 homework assignments due this week
             </p>
