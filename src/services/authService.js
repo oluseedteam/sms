@@ -1,33 +1,4 @@
-// src/services/authService.js
-
-const BASE_URL = "https://api.ghra.org.ng/api";
-
-async function apiFetch(endpoint, options = {}) {
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      ...options.headers,
-    },
-    ...options,
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    const message =
-      data?.message ||
-      (data?.errors
-        ? Object.values(data.errors).flat().join(" ")
-        : "Something went wrong. Please try again.");
-    throw Object.assign(new Error(message), {
-      status: res.status,
-      errors: data?.errors ?? {},
-    });
-  }
-
-  return data;
-}
+import apiFetch from "./api";
 
 export async function registerUser({ role, fullName, studentId, employeeId, email, password, password_confirmation }) {
   return apiFetch("/auth/register", {
