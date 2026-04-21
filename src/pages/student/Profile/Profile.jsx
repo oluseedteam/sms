@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import ProfileRight from './ProfileRight';
+import { useAuth } from '../../../hooks/useAuth';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -117,6 +118,7 @@ const SectionCard = ({ title, icon, children, color = 'bg-white border-gray-100'
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState('About Me');
+  const { user } = useAuth();
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 px-1 sm:px-4 lg:px-0 scroll-smooth pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -162,7 +164,14 @@ const Profile = () => {
 
           {/* Info */}
           <div className="text-center sm:text-left flex-1">
-            <h2 className="text-xl sm:text-2xl font-black text-gray-800 uppercase tracking-tight">{student.name}</h2>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+              <h2 className="text-xl sm:text-2xl font-black text-gray-800 uppercase tracking-tight">{user?.full_name || student.name}</h2>
+              {user?.is_prefect && (
+                <span className="px-3 py-0.5 bg-yellow-100 text-yellow-800 text-[10px] font-black rounded-full uppercase tracking-widest border border-yellow-200 shadow-sm">
+                  ⭐ {user.prefect_title || 'Prefect'}
+                </span>
+              )}
+            </div>
             <span className="inline-block mt-1 px-3 py-0.5 bg-orange-100 text-orange-600 text-[10px] font-black rounded-full uppercase tracking-widest">
               {student.grade}
             </span>

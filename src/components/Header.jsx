@@ -78,15 +78,19 @@ export default function Header({ onMenuClick }) {
 
           <div className="hidden sm:block leading-tight">
             <p className="text-sm font-semibold">
-              {user?.full_ame || "Student"}
+              {user?.full_name || "Student"}
             </p>
-            {/* <p className="text-xs text-gray-500">
+            <p className="text-xs text-blue-500 font-bold">
               {user?.role === "teacher"
-                ? "Teacher"
-                : user?.studentId
-                ? `ID: ${user.studentId}`
+                ? (user?.institutional_role || "Teacher")
+                : user?.role === "worker"
+                ? (user?.institutional_role || "Worker")
+                : user?.is_prefect
+                ? (user?.prefect_title || "Prefect")
+                : user?.student_id
+                ? `ID: ${user.student_id}`
                 : "Student"}
-            </p> */}
+            </p>
           </div>
         </div>
 

@@ -8,10 +8,11 @@ import {
   Search, 
   Filter, 
   MoreVertical,
-  ArrowUpRight,
   ArrowDownRight,
   Loader2,
-  BookOpen
+  BookOpen,
+  Award,
+  Briefcase
 } from 'lucide-react';
 import { getDashboardSummary } from '../../../services/dashboardService';
 
@@ -36,6 +37,8 @@ const AdminDashboard = () => {
   const stats = [
     { title: "Total Students", value: data?.total_students || "0", change: "+0%", up: true, icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
     { title: "Total Teachers", value: data?.total_teachers || "0", change: "+0%", up: true, icon: HardHat, color: "text-green-600", bg: "bg-green-50" },
+    { title: "Total Workers", value: data?.total_workers || "0", change: "+0%", up: true, icon: Briefcase, color: "text-teal-600", bg: "bg-teal-50" },
+    { title: "Total Prefects", value: data?.total_prefects || "0", change: "+0%", up: true, icon: Award, color: "text-yellow-600", bg: "bg-yellow-50" },
     { title: "Total Classes", value: data?.total_classes || "0", change: "+0%", up: true, icon: UserSquare2, color: "text-orange-600", bg: "bg-orange-50" },
     { title: "Total Subjects", value: data?.total_subjects || "0", change: "+0%", up: true, icon: BookOpen, color: "text-purple-600", bg: "bg-purple-50" },
   ];

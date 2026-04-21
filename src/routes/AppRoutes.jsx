@@ -4,7 +4,6 @@ import MainLayout from '../layouts/MainLayout';
 
 //auth
 import Login from '../pages/auth/Login'
-import Signup from '../pages/auth/Signup'
 
 // Homepage 
 import Home from '../pages/public/home/Home';
@@ -41,6 +40,7 @@ import TeacherCalendarsecondPage from '../pages/teacher/TeacherCalendarsecond/Te
 // ── Admin Dashboard ────────────────────────────────────────
 import AdminLayout from '../layouts/AdminLayout';
 import AdminDashboardPage from '../pages/admin/dashboard/AdminDashboardPage';
+import UserManagementPage from '../pages/admin/dashboard/UserManagementPage';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 
 const AppRoutes = () => {
@@ -56,7 +56,6 @@ const AppRoutes = () => {
 
       {/* Auth */}
       <Route path='/login' element={<Login />} />
-      <Route path='/signup' element={<Signup />} />
       <Route path='/forgot-password' element={<ForgotPassword/>} />
 
       {/* Student dashboard */}
@@ -92,6 +91,7 @@ const AppRoutes = () => {
       {/* Admin Dashboard */}
       <Route path='/admin' element={<AdminLayout />}>
         <Route index element={<AdminDashboardPage />} />
+        <Route path='users' element={<UserManagementPage />} />
         {/* Placeholder for future admin routes */}
         {/* <Route path='student' element={<AdminDashboardPage />} />
         <Route path='worker' element={<AdminDashboardPage />} />

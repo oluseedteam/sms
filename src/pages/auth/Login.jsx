@@ -277,8 +277,8 @@ export default function Login() {
             </div>
 
             <p className="text-center text-sm text-slate-500 mt-7">
-              Don't have an account?{" "}
-              <Link to="/signup" className="text-blue-600 font-bold hover:underline">Create one</Link>
+              Registration is restricted to administrators.<br/>
+              Please contact the front desk for account creation.
             </p>
           </motion.div>
         </div>

@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import AdminSidebar from '../components/AdminSidebar';
 import AdminHeader from '../components/AdminHeader';
+import AdminLogin from '../pages/auth/AdminLogin';
+import { useAuth } from '../hooks/useAuth';
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const location = useLocation();
+  const { user } = useAuth();
 
   // Helper to get title from path (can be expanded)
   const getPageTitle = () => {
@@ -18,6 +21,10 @@ const AdminLayout = () => {
     if (path.includes('/admin/dispute')) return "Feedback & Disputes 💬";
     return "Dashboard OVERVIEW 📊";
   };
+
+  if (!user || user.role !== 'admin') {
+    return <AdminLogin />;
+  }
 
   return (
     <div className="flex h-screen bg-[#F7F9FB] overflow-hidden">
