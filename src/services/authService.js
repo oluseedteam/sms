@@ -59,3 +59,10 @@ export function clearSession() {
   localStorage.removeItem("isAuthenticated");
   localStorage.removeItem("user");
 }
+
+export async function updateProfile(data) {
+  return apiFetch("/profile", {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}

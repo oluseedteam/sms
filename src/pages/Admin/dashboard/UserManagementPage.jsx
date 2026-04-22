@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getUsers, createUser, updateUser, deleteUser } from '../../../services/userService';
-import { Users, UserPlus, Pencil, Trash2, X, Loader2 } from 'lucide-react';
+import { getClasses } from '../../../services/classService';
+import { getSubjects } from '../../../services/subjectService';
+import { Users, UserPlus, Pencil, Trash2, X, Loader2, Eye } from 'lucide-react';
 
 export default function UserManagementPage() {
   const [role, setRole] = useState('student');
@@ -8,6 +10,9 @@ export default function UserManagementPage() {
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
+  const [viewingUser, setViewingUser] = useState(null);
+  const [classesData, setClassesData] = useState([]);
+  const [subjectsData, setSubjectsData] = useState([]);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -18,10 +23,20 @@ export default function UserManagementPage() {
     employee_id: '',
     is_prefect: false,
     prefect_title: '',
-    institutional_role: ''
+    institutional_role: '',
+    gender: '',
+    class_id: '',
+    subject_ids: []
   });
   const [formError, setFormError] = useState('');
   const [formLoading, setFormLoading] = useState(false);
+
+  useEffect(() => {
+    Promise.all([getClasses(), getSubjects()]).then(([clsData, subData]) => {
+      setClassesData(clsData?.data || []);
+      setSubjectsData(subData?.data || []);
+    }).catch(err => console.error(err));
+  }, []);
 
   const fetchUsers = React.useCallback(async () => {
     setLoading(true);
@@ -50,10 +65,13 @@ export default function UserManagementPage() {
         employee_id: user.employee_id || '',
         is_prefect: user.is_prefect || false,
         prefect_title: user.prefect_title || '',
-        institutional_role: user.institutional_role || ''
+        institutional_role: user.institutional_role || '',
+        gender: user.gender || '',
+        class_id: user.school_classes?.[0]?.id || '',
+        subject_ids: user.subjects?.map(s => s.id) || []
       });
     } else {
-      setFormData({ full_name: '', email: '', password: '', student_id: '', employee_id: '', is_prefect: false, prefect_title: '', institutional_role: '' });
+      setFormData({ full_name: '', email: '', password: '', student_id: '', employee_id: '', is_prefect: false, prefect_title: '', institutional_role: '', gender: '', class_id: '', subject_ids: [] });
     }
     setFormError('');
     setIsModalOpen(true);
@@ -72,16 +90,22 @@ export default function UserManagementPage() {
     try {
       const payload = { ...formData, role };
       if (!payload.password) delete payload.password;
+      if (!payload.gender) delete payload.gender;
       if (role !== 'student') {
         delete payload.student_id;
         delete payload.is_prefect;
         delete payload.prefect_title;
+        delete payload.class_id;
       } else {
         if (!payload.is_prefect) delete payload.prefect_title; // ignore title if not prefect
+        if (!payload.class_id) delete payload.class_id;
       }
       if (role !== 'teacher' && role !== 'worker') {
         delete payload.employee_id;
         delete payload.institutional_role;
+      }
+      if (role !== 'teacher') {
+        delete payload.subject_ids;
       }
       if (!payload.student_id) delete payload.student_id;
       if (!payload.employee_id) delete payload.employee_id;
@@ -166,6 +190,9 @@ export default function UserManagementPage() {
                     {role === 'student' && <td className="py-4 px-4 text-gray-600">{u.is_prefect ? (u.prefect_title || 'Yes') : 'No'}</td>}
                     {(role === 'teacher' || role === 'worker') && <td className="py-4 px-4 text-gray-600">{u.institutional_role || '-'}</td>}
                     <td className="py-4 px-4 flex justify-end gap-2">
+                      <button onClick={() => setViewingUser(u)} className="p-2 text-green-500 hover:bg-green-50 rounded-lg transition-colors">
+                        <Eye className="w-4 h-4" />
+                      </button>
                       <button onClick={() => handleOpenModal(u)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
                         <Pencil className="w-4 h-4" />
                       </button>
@@ -204,6 +231,15 @@ export default function UserManagementPage() {
                 <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Email</label>
                 <input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500" />
               </div>
+              
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Gender</label>
+                <select value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500">
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
 
               {role === 'student' && (
                 <div className="grid grid-cols-2 gap-4">
@@ -212,6 +248,13 @@ export default function UserManagementPage() {
                     <input required={!editingUser} value={formData.student_id} onChange={e => setFormData({...formData, student_id: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500" />
                   </div>
                   <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Class</label>
+                    <select value={formData.class_id} onChange={e => setFormData({...formData, class_id: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500">
+                      <option value="">Select Class</option>
+                      {classesData.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </select>
+                  </div>
+                  <div className="col-span-2">
                     <label className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase mt-8 cursor-pointer w-max">
                       <input type="checkbox" checked={formData.is_prefect} onChange={e => setFormData({...formData, is_prefect: e.target.checked})} className="w-4 h-4 rounded" />
                       Is Prefect
@@ -236,6 +279,14 @@ export default function UserManagementPage() {
                     <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Job Title / Post</label>
                     <input value={formData.institutional_role} onChange={e => setFormData({...formData, institutional_role: e.target.value})} placeholder={role === 'teacher' ? 'e.g. Principal' : 'e.g. Janitor'} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500" />
                   </div>
+                  {role === 'teacher' && (
+                    <div className="col-span-2">
+                      <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Subjects (Hold Ctrl/Cmd to select multiple)</label>
+                      <select multiple value={formData.subject_ids} onChange={e => setFormData({...formData, subject_ids: Array.from(e.target.selectedOptions, option => option.value)})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500 max-h-32">
+                        {subjectsData.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                      </select>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -251,6 +302,64 @@ export default function UserManagementPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {viewingUser && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in-95">
+            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                User Details
+              </h2>
+              <button onClick={() => setViewingUser(null)} className="text-gray-400 hover:bg-gray-100 p-2 rounded-xl transition-colors"><X className="w-5 h-5" /></button>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <div className="flex justify-center mb-6">
+                {viewingUser.profile_picture ? (
+                  <img src={viewingUser.profile_picture} alt="Profile" className="w-24 h-24 rounded-full object-cover border-4 border-blue-50 shadow-md" />
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center border-4 border-blue-50 shadow-md">
+                    <Users className="w-10 h-10 text-blue-500" />
+                  </div>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-4 text-sm mt-4">
+                <div className="font-bold text-gray-500 uppercase">Name:</div><div className="text-gray-900 font-semibold">{viewingUser.full_name}</div>
+                <div className="font-bold text-gray-500 uppercase">Email:</div><div className="text-gray-900 font-semibold">{viewingUser.email}</div>
+                <div className="font-bold text-gray-500 uppercase">Role:</div><div className="text-gray-900 font-semibold capitalize">{viewingUser.role || role}</div>
+                <div className="font-bold text-gray-500 uppercase">Gender:</div><div className="text-gray-900 font-semibold capitalize">{viewingUser.gender || 'Not specified'}</div>
+                
+                {role === 'student' && (
+                  <>
+                    <div className="font-bold text-gray-500 uppercase">Student ID:</div><div className="text-gray-900 font-semibold">{viewingUser.student_id || '-'}</div>
+                    <div className="font-bold text-gray-500 uppercase">Class:</div><div className="text-gray-900 font-semibold">{viewingUser.school_classes?.map(c => c.name).join(', ') || '-'}</div>
+                    <div className="font-bold text-gray-500 uppercase">Prefect:</div><div className="text-gray-900 font-semibold">{viewingUser.is_prefect ? viewingUser.prefect_title || 'Yes' : 'No'}</div>
+                  </>
+                )}
+                
+                {(role === 'teacher' || role === 'worker') && (
+                  <>
+                    <div className="font-bold text-gray-500 uppercase">Employee ID:</div><div className="text-gray-900 font-semibold">{viewingUser.employee_id || '-'}</div>
+                    <div className="font-bold text-gray-500 uppercase">Post:</div><div className="text-gray-900 font-semibold">{viewingUser.institutional_role || '-'}</div>
+                  </>
+                )}
+
+                {role === 'teacher' && (
+                  <>
+                    <div className="font-bold text-gray-500 uppercase">Subjects:</div>
+                    <div className="text-gray-900 font-semibold">{viewingUser.subjects?.map(s => s.name).join(', ') || '-'}</div>
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="p-6 border-t border-gray-50 bg-gray-50/50">
+              <button onClick={() => setViewingUser(null)} className="w-full bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-sm">
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
