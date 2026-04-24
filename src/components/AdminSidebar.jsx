@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 import logo from '../assets/images/logo.png';
 
+import { clearSession } from '../services/authService';
+
 const AdminSidebar = () => {
   const navigate = useNavigate();
   const navItems = [
@@ -26,8 +28,7 @@ const AdminSidebar = () => {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("role");
-    localStorage.removeItem("isAuthenticated");
+    clearSession();
     navigate('/login');
   };
 

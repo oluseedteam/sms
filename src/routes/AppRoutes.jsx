@@ -39,9 +39,10 @@ import TeacherCalendarsecondPage from '../pages/teacher/TeacherCalendarsecond/Te
 
 // ── Admin Dashboard ────────────────────────────────────────
 import AdminLayout from '../layouts/AdminLayout';
-import AdminDashboardPage from '../pages/admin/dashboard/AdminDashboardPage';
-import UserManagementPage from '../pages/admin/dashboard/UserManagementPage';
+import AdminDashboardPage from '../pages/Admin/dashboard/AdminDashboardPage';
+import UserManagementPage from '../pages/Admin/dashboard/UserManagementPage';
 import ForgotPassword from '../pages/auth/ForgotPassword';
+import NotFound from '../pages/public/NotFound';
 
 const AppRoutes = () => {
   return (
@@ -71,6 +72,7 @@ const AppRoutes = () => {
         <Route path='attendance' element={<AttendancePage />} />
         <Route path='message' element={<MessagesPage />} />
         <Route path='profile' element={<ProfilePage />} />
+        <Route path='library' element={<AdminDashboardPage />} />
       </Route>
 
       {/* Teacher dashboard */}
@@ -86,6 +88,7 @@ const AppRoutes = () => {
         <Route path='calendar'     element={<TeacherCalendarPage />} />
         <Route path='calendar-second' element={<TeacherCalendarsecondPage />} />
         <Route path='resources'    element={<TeacherResourcesPage />} />
+        <Route path='profile'      element={<ProfilePage />} />
       </Route>
       
       {/* Admin Dashboard */}
@@ -104,6 +107,9 @@ const AppRoutes = () => {
       <Route path='/teacher-dashboard' element={<TeacherLayout />}>
         <Route index element={<TeacherDashboardPage />} />
       </Route>
+
+      {/* Catch all */}
+      <Route path='*' element={<NotFound />} />
     </Routes>
   )
 }
