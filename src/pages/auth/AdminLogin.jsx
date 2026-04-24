@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 import { useAuth } from "../../hooks/useAuth";
 import { loginUser } from "../../services/authService";
@@ -43,9 +43,9 @@ export default function AdminLogin() {
         className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8"
       >
         <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-4">
+          <Link to="/" className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-4 transition-transform hover:scale-105">
             <img src={logo} alt="Logo" className="w-10 h-10 object-contain" />
-          </div>
+          </Link>
           <h1 className="text-2xl font-black text-slate-800 tracking-tight">Admin Portal</h1>
           <p className="text-sm text-slate-500 mt-2">Sign in to manage the school system</p>
         </div>

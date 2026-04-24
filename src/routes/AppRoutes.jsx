@@ -92,13 +92,12 @@ const AppRoutes = () => {
       <Route path='/admin' element={<AdminLayout />}>
         <Route index element={<AdminDashboardPage />} />
         <Route path='users' element={<UserManagementPage />} />
-        {/* Placeholder for future admin routes */}
-        {/* <Route path='student' element={<AdminDashboardPage />} />
+        <Route path='student' element={<AdminDashboardPage />} />
         <Route path='worker' element={<AdminDashboardPage />} />
         <Route path='financial' element={<AdminDashboardPage />} />
         <Route path='notifications' element={<AdminDashboardPage />} />
         <Route path='settings' element={<AdminDashboardPage />} />
-        <Route path='dispute' element={<AdminDashboardPage />} /> */}
+        <Route path='dispute' element={<AdminDashboardPage />} />
       </Route>
 
       {/* Support for /teacher-dashboard */}

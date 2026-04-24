@@ -107,12 +107,13 @@ export default function Login() {
           <Shapes />
 
           {/* Logo */}
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
-            className="relative z-10 flex items-center gap-3">
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
-              <img src={logo} alt="GHRA Logo" className="w-full h-full object-cover" />
-            </div>
-            <span className="font-semibold text-white/90 text-sm tracking-wide">GHRA School</span>
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+            <Link to="/" className="relative z-10 flex items-center gap-3">
+              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
+                <img src={logo} alt="GHRA Logo" className="w-full h-full object-cover" />
+              </div>
+              <span className="font-semibold text-white/90 text-sm tracking-wide">GHRA School</span>
+            </Link>
           </motion.div>
 
           {/* Hero copy */}
