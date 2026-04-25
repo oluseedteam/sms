@@ -1,18 +1,14 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-  
-  # Serve existing files/directories directly
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteRule ^ - [L]
-
-  # Fallback to index.html for all other requests
-  RewriteRule ^ index.html [L]
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
 </IfModule>
 
-# Robust fallback for environments where mod_rewrite might be limited
-ErrorDocument 404 /index.html
+<IfModule !mod_rewrite.c>
+  ErrorDocument 404 /index.html
+</IfModule>
 
-# Prevent directory listing for security
 Options -Indexes
