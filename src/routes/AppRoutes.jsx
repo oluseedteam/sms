@@ -41,6 +41,7 @@ import TeacherCalendarsecondPage from '../pages/teacher/TeacherCalendarsecond/Te
 import AdminLayout from '../layouts/AdminLayout';
 import AdminDashboardPage from '../pages/Admin/dashboard/AdminDashboardPage';
 import UserManagementPage from '../pages/Admin/dashboard/UserManagementPage';
+import AdminLogsPage from '../pages/Admin/dashboard/AdminLogsPage';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import NotFound from '../pages/public/NotFound';
 
@@ -95,6 +96,7 @@ const AppRoutes = () => {
       <Route path='/admin' element={<AdminLayout />}>
         <Route index element={<AdminDashboardPage />} />
         <Route path='users' element={<UserManagementPage />} />
+        <Route path='logs' element={<AdminLogsPage />} />
         <Route path='student' element={<AdminDashboardPage />} />
         <Route path='worker' element={<AdminDashboardPage />} />
         <Route path='financial' element={<AdminDashboardPage />} />

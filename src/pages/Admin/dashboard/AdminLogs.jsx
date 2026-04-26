@@ -1,0 +1,138 @@
+import React, { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
+import { Activity, Trash2, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
+import apiFetch from '../../../services/api';
+
+const AdminLogs = () => {
+  const [logs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [clearing, setClearing] = useState(false);
+
+  const fetchLogs = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await apiFetch('/admin/logs');
+      // Update logic: apiFetch returns the JSON directly if it succeeds
+      setLogs(res.logs || []);
+    } catch (err) {
+      console.error('Failed to fetch logs:', err);
+      // Determine error structure
+      const errMsg = err.message || 'Failed to fetch the system logs. Check server configuration.';
+      setError(errMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClearLogs = async () => {
+    if (!window.confirm('Are you sure you want to clear all system logs? This cannot be undone.')) return;
+    
+    setClearing(true);
+    try {
+      await apiFetch('/admin/logs', { method: 'DELETE' });
+      setLogs([]);
+    } catch (err) {
+      console.error('Failed to clear logs:', err);
+      alert(err.message || 'Failed to clear the logs.');
+    } finally {
+      setClearing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLogs();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-black text-blue-900 tracking-tight flex items-center gap-3">
+          <Activity className="w-8 h-8 text-blue-500" /> System Logs
+        </h1>
+        <div className="flex gap-3">
+          <button 
+            onClick={fetchLogs} 
+            className="bg-white hover:bg-gray-50 text-blue-900 px-4 py-2 rounded-xl font-bold border border-gray-100 flex items-center gap-2 shadow-sm transition-all"
+          >
+            <RefreshCw className="w-4 h-4" /> Refresh
+          </button>
+          <button 
+            onClick={handleClearLogs} 
+            disabled={clearing || logs.length === 0}
+            className="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-xl font-bold border border-red-100 flex items-center gap-2 shadow-sm transition-all disabled:opacity-50"
+          >
+            {clearing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+            Clear Logs
+          </button>
+        </div>
+      </div>
+
+      {error ? (
+        <div className="bg-red-50 p-6 rounded-3xl border border-red-100 flex items-center gap-4">
+          <AlertCircle className="w-8 h-8 text-red-500 shrink-0" />
+          <div>
+            <h3 className="text-red-900 font-bold mb-1">Log Access Error</h3>
+            <p className="text-red-600 text-sm whitespace-pre-wrap">{error}</p>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100 min-h-[60vh] relative overflow-hidden">
+          {logs.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-64 text-gray-400">
+              <Activity className="w-16 h-16 mb-4 opacity-20" />
+              <p className="font-bold">No system logs available.</p>
+              <p className="text-sm">Everything is running smoothly.</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {logs.map((log, index) => (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.02 }}
+                  key={index}
+                  className={`p-4 rounded-2xl border flex gap-4 ${
+                    log.level === 'ERROR' || log.level === 'CRITICAL'
+                      ? 'bg-red-50 border-red-100'
+                      : log.level === 'WARNING'
+                      ? 'bg-orange-50 border-orange-100'
+                      : 'bg-gray-50 border-gray-100 hover:bg-white transition-colors'
+                  }`}
+                >
+                  <div className="whitespace-nowrap flex flex-col items-center justify-center">
+                    <span className="text-[10px] font-black tracking-widest uppercase text-gray-500 block">Date & Time</span>
+                    <span className="text-xs font-semibold text-gray-800">{log.timestamp}</span>
+                  </div>
+                  
+                  <div className={`px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider flex items-center justify-center min-w-[90px] ${
+                    log.level === 'ERROR' || log.level === 'CRITICAL' ? 'bg-red-100 text-red-600' : 
+                    log.level === 'WARNING' ? 'bg-orange-100 text-orange-600' : 
+                    'bg-gray-200 text-gray-600'
+                  }`}>
+                    {log.level}
+                  </div>
+                  
+                  <div className="flex-1 font-mono text-xs text-gray-700 whitespace-pre-wrap wrap-break-word opacity-90 leading-relaxed self-center">
+                    {log.message}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AdminLogs;

@@ -18,6 +18,7 @@ const AdminSidebar = () => {
   const navigate = useNavigate();
   const navItems = [
     { title: "Dashboard", icon: LayoutDashboard, path: "/admin" },
+    { title: "System Logs", icon: FileText, path: "/admin/logs" },
     { title: "User Management", icon: Users, path: "/admin/users" },
     { title: "Student", icon: Users, path: "/admin/student" },
     { title: "Worker", icon: HardHat, path: "/admin/worker" },

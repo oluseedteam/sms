@@ -8,7 +8,7 @@ import { loginUser } from "../../services/authService";
 export default function AdminLogin() {
   const { login: loginUserToContext } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,7 +16,7 @@ export default function AdminLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!email.trim() || !password) {
+    if (!login.trim() || !password) {
       setError("Please fill in all fields.");
       return;
     }
@@ -25,7 +25,7 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const data = await loginUser({ login: email, password, role: "admin" });
+      const data = await loginUser({ login: login, password, role: "admin" });
       loginUserToContext(data);
       navigate("/admin");
     } catch {
@@ -52,13 +52,13 @@ export default function AdminLogin() {
 
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Email</label>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Username / Email</label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
               className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              placeholder="admin@gmail.com"
+              placeholder="admin"
             />
           </div>
 
