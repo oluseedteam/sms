@@ -8,18 +8,20 @@ import {
   Bell, 
   Settings, 
   MessageSquare,
-  LogOut 
+  LogOut,
+  BookOpen
 } from 'lucide-react';
 import logo from '../assets/images/logo.png';
-
-import { clearSession } from '../services/authService';
+import { useAuth } from '../hooks/useAuth';
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const navItems = [
     { title: "Dashboard", icon: LayoutDashboard, path: "/admin" },
     { title: "System Logs", icon: FileText, path: "/admin/logs" },
     { title: "User Management", icon: Users, path: "/admin/users" },
+    { title: "Academics", icon: BookOpen, path: "/admin/academics" },
     { title: "Student", icon: Users, path: "/admin/student" },
     { title: "Worker", icon: HardHat, path: "/admin/worker" },
     { title: "Financial Report", icon: FileText, path: "/admin/financial" },
@@ -29,7 +31,7 @@ const AdminSidebar = () => {
   ];
 
   const handleLogout = () => {
-    clearSession();
+    logout();
     navigate('/login');
   };
 

@@ -28,8 +28,8 @@ export default function AdminLogin() {
       const data = await loginUser({ login: login, password, role: "admin" });
       loginUserToContext(data);
       navigate("/admin");
-    } catch {
-      setError("Invalid admin credentials.");
+    } catch (err) {
+      setError(err.message || "Invalid admin credentials.");
     } finally {
       setLoading(false);
     }

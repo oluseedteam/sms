@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   Filter, Search, ChevronDown, Send, Eye, BookOpen,
-  Clock, CheckCircle2, AlertCircle, PlusCircle, Download, Bell, Loader2
+  Clock, CheckCircle2, AlertCircle, PlusCircle, Download, Bell, Loader2, Trash2, Pencil, X
 } from 'lucide-react';
 import TeacherAssignmentsRight from './TeacherAssignmentsRight';
-import { getAssignments } from '../../../services/assignmentService';
+import { getAssignments, createAssignment, updateAssignment, deleteAssignment } from '../../../services/assignmentService';
 import { getClasses } from '../../../services/classService';
+import { getSubjects } from '../../../services/subjectService';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -22,28 +23,98 @@ const filterTabs = ['All Assignments', 'Active', 'Grading Needed', 'Upcoming', '
 const TeacherAssignments = () => {
   const [activeTab, setActiveTab] = useState(filterTabs[0]);
   const [assignments, setAssignments] = useState([]);
+  const [classesList, setClassesList] = useState([]);
+  const [subjectsList, setSubjectsList] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Modal states
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState({
+    title: '', description: '', school_class_id: '', subject_id: '',
+    assigned_date: '', due_date: '', max_score: '100', status: 'active'
+  });
+  const [submitting, setSubmitting] = useState(false);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [assignmentsData, classesData, subjectsData] = await Promise.all([
+        getAssignments(),
+        getClasses(),
+        getSubjects()
+      ]);
+      setAssignments(assignmentsData.data || assignmentsData);
+      setClassesList(Array.isArray(classesData) ? classesData : (classesData?.data || []));
+      setSubjectsList(Array.isArray(subjectsData) ? subjectsData : (subjectsData?.data || []));
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [assignmentsData] = await Promise.all([
-          getAssignments(),
-        ]);
-        setAssignments(assignmentsData.data || assignmentsData);
-      } catch (error) {
-        console.error("Failed to fetch assignments:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
+
+  const handleOpenModal = (assignment = null) => {
+    if (assignment) {
+      setEditingId(assignment.id);
+      setFormData({
+        title: assignment.title || '',
+        description: assignment.description || '',
+        school_class_id: assignment.school_class_id || '',
+        subject_id: assignment.subject_id || '',
+        assigned_date: assignment.assigned_date ? new Date(assignment.assigned_date).toISOString().split('T')[0] : '',
+        due_date: assignment.due_date ? new Date(assignment.due_date).toISOString().split('T')[0] : '',
+        max_score: assignment.max_score || '100',
+        status: assignment.status || 'active'
+      });
+    } else {
+      setEditingId(null);
+      setFormData({
+        title: '', description: '', school_class_id: '', subject_id: '',
+        assigned_date: new Date().toISOString().split('T')[0], 
+        due_date: new Date(Date.now() + 86400000).toISOString().split('T')[0], 
+        max_score: '100', status: 'active'
+      });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      if (editingId) {
+        await updateAssignment(editingId, formData);
+      } else {
+        await createAssignment(formData);
+      }
+      setIsModalOpen(false);
+      fetchData();
+    } catch (err) {
+      alert(err.message || 'Failed to save assignment');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this assignment?")) {
+      try {
+        await deleteAssignment(id);
+        fetchData();
+      } catch (err) {
+        alert(err.message || 'Failed to delete assignment');
+      }
+    }
+  };
 
   const filteredAssignments = assignments.filter(a => {
     if (activeTab === 'All Assignments') return true;
     if (activeTab === 'Active') return a.status === 'active';
-    // Add more filter logic as needed based on actual API response fields
     return true;
   });
 
@@ -61,7 +132,7 @@ const TeacherAssignments = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Assignment Management</h1>
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all text-sm">
+          <button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all text-sm">
             <PlusCircle className="w-4 h-4" /> New Assignment
           </button>
         </div>
@@ -94,11 +165,19 @@ const TeacherAssignments = () => {
             <motion.div
               key={a.id}
               variants={itemVariants}
-              className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+              className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow relative"
             >
-              <div className="flex items-center justify-between mb-3">
+              <div className="absolute top-6 right-6 flex items-center gap-2">
+                 <button onClick={() => handleOpenModal(a)} className="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition-colors"><Pencil className="w-4 h-4" /></button>
+                 <button onClick={() => handleDelete(a.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
+              </div>
+
+              <div className="flex items-center gap-3 mb-3">
                 <span className={`text-[10px] font-bold px-3 py-1 rounded-full bg-blue-100 text-blue-700`}>
                   {a.subject?.name || 'General'}
+                </span>
+                <span className={`text-[10px] font-bold px-3 py-1 rounded-full bg-purple-100 text-purple-700`}>
+                  Class: {a.school_class?.name || 'Unknown'}
                 </span>
                 {new Date(a.due_date) < new Date(Date.now() + 86400000) && (
                   <span className="text-[10px] font-bold text-red-600 bg-red-50 px-2 py-1 rounded-lg flex items-center gap-1">
@@ -109,8 +188,8 @@ const TeacherAssignments = () => {
 
               <h3 className="text-lg font-bold text-gray-800 mb-1">{a.title}</h3>
               <p className="text-xs text-gray-500 mb-4">
-                Assigned: {new Date(a.assigned_date).toLocaleDateString()} &nbsp;•&nbsp; 
-                <span className="text-gray-500">Due: {new Date(a.due_date).toLocaleDateString()}</span>
+                Assigned: {a.assigned_date} &nbsp;•&nbsp; 
+                <span className="text-gray-500">Due: {a.due_date}</span>
               </p>
 
               <div className="flex flex-wrap gap-2">
@@ -134,6 +213,67 @@ const TeacherAssignments = () => {
       <div className="lg:w-80 w-full">
         <TeacherAssignmentsRight />
       </div>
+
+      {/* Modal */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden"
+            >
+              <div className="flex items-center justify-between p-6 border-b border-gray-100">
+                <h2 className="text-xl font-bold">{editingId ? 'Edit Assignment' : 'New Assignment'}</h2>
+                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full"><X className="w-5 h-5" /></button>
+              </div>
+              <form onSubmit={handleSave} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Assignment Title</label>
+                  <input required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" placeholder="e.g. Math Worksheet 1" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Subject</label>
+                    <select required value={formData.subject_id} onChange={e => setFormData({...formData, subject_id: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white">
+                      <option value="">Select Subject</option>
+                      {subjectsList.map(s => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Target Class</label>
+                    <select required value={formData.school_class_id} onChange={e => setFormData({...formData, school_class_id: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white">
+                      <option value="">Select Class</option>
+                      {classesList.map(c => (
+                        <option key={c.id} value={c.id}>{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Assigned Date</label>
+                    <input required type="date" value={formData.assigned_date} onChange={e => setFormData({...formData, assigned_date: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Due Date</label>
+                    <input required type="date" value={formData.due_date} onChange={e => setFormData({...formData, due_date: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm" />
+                  </div>
+                </div>
+                <div className="pt-4 flex gap-3">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-3 text-sm font-bold text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-xl transition-all">Cancel</button>
+                  <button disabled={submitting} type="submit" className="flex-1 py-3 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-md flex justify-center items-center">
+                    {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Save Assignment'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

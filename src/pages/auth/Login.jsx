@@ -73,8 +73,9 @@ export default function Login() {
       loginUserToContext(data);
 
       // Use the role from the server response as the source of truth
+      // Use the role from the server response as the source of truth
       // console.log("login data", data);
-      navigate(data.user.role === "teacher" ? "/teacher" : "/student");
+      navigate(data.user.role === "admin" ? "/admin" : data.user.role === "worker" ? "/worker" : data.user.role === "teacher" ? "/teacher" : "/student");
 
     } catch (err) {
       if (err.status === 401 || err.status === 403) {
@@ -138,8 +139,9 @@ export default function Login() {
             className="relative z-10 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4">
             <p className="text-xs font-semibold text-yellow-300 mb-2">💡 Login options</p>
             <div className="space-y-1 text-xs text-blue-100/90">
-              <p><span className="text-white font-semibold">Students —</span> use your email or Student ID</p>
-              <p><span className="text-white font-semibold">Teachers —</span> use your email or Employee ID</p>
+              <p><span className="text-white font-semibold">Students —</span> email or Student ID</p>
+              <p><span className="text-white font-semibold">Teachers —</span> email or Employee ID</p>
+              <p><span className="text-white font-semibold">Workers —</span> email or Employee ID</p>
             </div>
           </motion.div>
         </div>
@@ -153,15 +155,21 @@ export default function Login() {
             className="w-full max-w-[400px]"
           >
             {/* Role toggle */}
-            <div className="relative flex bg-slate-200 rounded-2xl p-1 mb-8">
+            <div className="relative flex bg-slate-200 rounded-2xl p-1 mb-8 overflow-x-auto hide-scrollbar">
               <motion.div
-                className="absolute top-1 bottom-1 w-[calc(50%-2px)] bg-white rounded-xl shadow-sm"
-                animate={{ left: role === "student" ? "4px" : "calc(50%)" }}
+                className="absolute top-1 bottom-1 bg-white rounded-xl shadow-sm"
+                style={{ width: "calc(25% - 2px)" }}
+                animate={{ 
+                  left: role === "student" ? "4px" : 
+                        role === "teacher" ? "calc(25% + 2px)" : 
+                        role === "worker" ? "calc(50%)" : 
+                        "calc(75% - 2px)" 
+                }}
                 transition={{ type: "spring", stiffness: 420, damping: 38 }}
               />
-              {["student", "teacher"].map((r) => (
+              {["student", "teacher", "worker", "admin"].map((r) => (
                 <button key={r} type="button" onClick={() => handleRoleSwitch(r)}
-                  className={`relative z-10 flex-1 py-2.5 text-sm font-semibold capitalize rounded-xl transition-colors
+                  className={`relative z-10 flex-1 py-2.5 px-2 text-[13px] font-semibold capitalize rounded-xl transition-colors whitespace-nowrap
                     ${role === r ? "text-blue-700" : "text-slate-500 hover:text-slate-700"}`}>
                   {r}
                 </button>
@@ -173,9 +181,9 @@ export default function Login() {
               <motion.div key={role}
                 initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.18 }}>
-                <h2 className="text-2xl font-extrabold text-slate-800 mb-1"
+                <h2 className="text-2xl font-extrabold text-slate-800 mb-1 capitalize"
                   style={{ fontFamily: "'Playfair Display', serif" }}>
-                  {role === "teacher" ? "Teacher Sign In" : "Student Sign In"}
+                  {role} Sign In
                 </h2>
                 <p className="text-sm text-slate-400 mb-7">
                   Enter your credentials to access your {role} portal
@@ -188,13 +196,13 @@ export default function Login() {
               {/* Login — email or role-specific ID */}
               <div>
                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-2">
-                  {role === "student" ? "Email / Student ID" : "Email / Employee ID"}
+                  {role === "student" ? "Email / Student ID" : role === "admin" ? "Email" : "Email / Employee ID"}
                 </label>
                 <input
                   type="text"
                   value={login}
                   onChange={(e) => { setLogin(e.target.value); setError(""); }}
-                  placeholder={role === "student" ? "email or SCH-4092" : "email or TCH-1023"}
+                  placeholder={role === "student" ? "email or SCH-4092" : role === "admin" ? "admin@ghra.org.ng" : "email or EMP-1023"}
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm text-slate-800 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all"
                 />
               </div>
@@ -243,7 +251,7 @@ export default function Login() {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-2xl font-semibold text-sm transition-all shadow-lg shadow-blue-200 disabled:opacity-60 flex items-center justify-center gap-2 mt-1"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-2xl font-semibold text-sm transition-all shadow-lg shadow-blue-200 disabled:opacity-60 flex items-center justify-center gap-2 mt-1 capitalize"
               >
                 {loading ? (
                   <>
@@ -253,7 +261,7 @@ export default function Login() {
                     </svg>
                     Signing in…
                   </>
-                ) : `Continue as ${role === "teacher" ? "Teacher" : "Student"}`}
+                ) : `Continue as ${role}`}
               </motion.button>
             </form>
 

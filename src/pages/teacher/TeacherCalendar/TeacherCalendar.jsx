@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import {
   ChevronLeft, ChevronRight, PlusCircle, Printer,
-  Download, RefreshCw, Calendar, Clock, CheckCircle2, Loader2
+  Download, RefreshCw, Calendar, Clock, CheckCircle2, Loader2, X, Trash2
 } from 'lucide-react';
 import TeacherCalendarRight from './TeacherCalendarRight';
-import { getCalendarEvents } from '../../../services/calendarService';
+import { getCalendarEvents, createCalendarEvent, deleteCalendarEvent } from '../../../services/calendarService';
+import { getClasses } from '../../../services/classService';
 
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
@@ -15,24 +16,57 @@ const TeacherCalendar = () => {
   const [activeView, setActiveView] = useState('Month');
   const [activeFilter, setActiveFilter] = useState('All Events');
   const [events, setEvents] = useState([]);
+  const [classList, setClassList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentDate, setCurrentDate] = useState(new Date(2023, 9, 1)); // October 2023 for demo
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '', start_time: '', end_time: '', type: 'class', school_class_id: ''
+  });
+
+  const fetchEvents = async () => {
+    try {
+      const [res, clsRes] = await Promise.all([getCalendarEvents(), getClasses()]);
+      setEvents(res.data || res);
+      setClassList(Array.isArray(clsRes) ? clsRes : (clsRes?.data || []));
+    } catch (error) {
+      console.error("Failed to fetch calendar data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const res = await getCalendarEvents();
-        setEvents(res.data || res);
-      } catch (error) {
-        console.error("Failed to fetch calendar events:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchEvents();
   }, []);
 
-  // Helper to generate calendar days
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      await createCalendarEvent({
+        ...formData,
+        start_time: new Date(formData.start_time).toISOString(),
+        end_time: new Date(formData.end_time).toISOString(),
+      });
+      setIsModalOpen(false);
+      fetchEvents();
+    } catch(err) {
+      alert(err.message || "Failed to create event");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Delete this event?")) {
+      try { await deleteCalendarEvent(id); fetchEvents(); }
+      catch(err) { alert(err.message || 'Error deleting'); }
+    }
+  };
+
   const generateCalDays = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -65,24 +99,24 @@ const TeacherCalendar = () => {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 px-2 sm:px-4 lg:px-0">
+    <div className="flex flex-col lg:flex-row gap-8 px-2 sm:px-4 lg:px-0 relative">
       <div className="flex-1 space-y-6 min-w-0">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Academic Calendar & Schedule</h1>
-          <button className="flex items-center gap-1.5 px-4 py-2.5 bg-blue-600 text-white rounded-2xl font-bold text-xs hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all">
-            <PlusCircle className="w-4 h-4" /> + Add Event
+          <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-1.5 px-4 py-2.5 bg-blue-600 text-white rounded-2xl font-bold text-xs hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all">
+            <PlusCircle className="w-4 h-4" /> + Add Class / Event
           </button>
         </div>
 
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
           <div className="flex justify-between items-center mb-5">
-            <button className="p-2 rounded-xl border border-gray-200 hover:border-blue-200 text-gray-500">
+            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))} className="p-2 rounded-xl border border-gray-200 hover:border-blue-200 text-gray-500">
               <ChevronLeft className="w-4 h-4" />
             </button>
             <h2 className="text-lg font-bold text-gray-800">
               {currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}
             </h2>
-            <button className="p-2 rounded-xl border border-gray-200 hover:border-blue-200 text-gray-500">
+            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))} className="p-2 rounded-xl border border-gray-200 hover:border-blue-200 text-gray-500">
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -94,7 +128,7 @@ const TeacherCalendar = () => {
             {calDays.map((day, i) => {
               if (day === null) return <div key={`empty-${i}`} className="min-h-[80px]" />;
               const dayEvents = getEventsForDay(day);
-              const isToday = day === 25 && currentDate.getMonth() === 9; // Demo today
+              const isToday = day === new Date().getDate() && currentDate.getMonth() === new Date().getMonth();
               return (
                 <motion.div
                   key={day}
@@ -106,8 +140,8 @@ const TeacherCalendar = () => {
                   <p className={`text-[11px] font-bold mb-1 ${isToday ? 'text-blue-600' : 'text-gray-700'}`}>{day}</p>
                   <div className="space-y-0.5">
                     {dayEvents.slice(0, 3).map((ev, ei) => (
-                      <div key={ei} className="text-[8px] font-bold px-1 py-0.5 rounded bg-blue-100 text-blue-700 truncate">
-                        {new Date(ev.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} {ev.title}
+                      <div key={ei} onClick={(e) => { e.stopPropagation(); handleDelete(ev.id); }} className="text-[8px] font-bold px-1 py-0.5 rounded bg-blue-100 text-blue-700 truncate hover:bg-red-100 hover:text-red-600 transition-colors cursor-pointer group flex justify-between items-center" title="Click to delete">
+                        <span>{new Date(ev.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} {ev.title}</span>
                       </div>
                     ))}
                     {dayEvents.length > 3 && (
@@ -124,6 +158,50 @@ const TeacherCalendar = () => {
       <div className="lg:w-72 w-full">
         <TeacherCalendarRight />
       </div>
+
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden"
+            >
+              <div className="flex items-center justify-between p-5 border-b border-gray-100">
+                <h2 className="text-lg font-bold">Schedule Class</h2>
+                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full"><X className="w-4 h-4" /></button>
+              </div>
+              <form onSubmit={handleSave} className="p-5 space-y-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Class Title (e.g. Mathematics)</label>
+                  <input required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Target Audience (School Class)</label>
+                  <select required value={formData.school_class_id} onChange={e => setFormData({...formData, school_class_id: e.target.value})} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white">
+                    <option value="">Select a Class</option>
+                    {classList.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Start Time</label>
+                    <input required type="datetime-local" value={formData.start_time} onChange={e => setFormData({...formData, start_time: e.target.value})} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">End Time</label>
+                    <input required type="datetime-local" value={formData.end_time} onChange={e => setFormData({...formData, end_time: e.target.value})} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
+                  </div>
+                </div>
+                <button disabled={submitting} type="submit" className="w-full py-3 mt-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-md">
+                  {submitting ? 'Saving...' : 'Add Class'}
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

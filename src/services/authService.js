@@ -47,7 +47,7 @@ export async function resetPassword({ token, email, password, password_confirmat
 }
 
 export function saveSession({ token, token_type, user }) {
-  localStorage.setItem("token", `${token_type} ${token}`);
+  localStorage.setItem("token", token);
   localStorage.setItem("role", user.role);
   localStorage.setItem("isAuthenticated", "true");
   localStorage.setItem("user", JSON.stringify(user));
@@ -61,7 +61,7 @@ export function clearSession() {
 }
 
 export async function updateProfile(data) {
-  return apiFetch("/profile", {
+  return apiFetch("/auth/profile", {
     method: "PATCH",
     body: JSON.stringify(data),
   });

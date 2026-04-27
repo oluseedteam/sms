@@ -1,6 +1,17 @@
 import { motion } from 'motion/react';
+import React, { useState, useEffect } from 'react';
+import apiFetch from '../../../services/api';
 
 const StarStudent = () => {
+    const [star, setStar] = useState({ full_name: 'Michael Chen', profile_picture: 'https://i.pravatar.cc/150?img=11' });
+
+    useEffect(() => {
+        apiFetch('/users/student/1').then(res => {
+            if (res.user) setStar(res.user);
+            else if (res.full_name) setStar(res); // depends on payload
+        }).catch(err => console.log('Star student not found', err));
+    }, []);
+
     return (
         <motion.div 
             whileHover={{ scale: 1.05 }}
@@ -23,7 +34,7 @@ const StarStudent = () => {
                   className="bg-white/20 p-2 rounded-2xl backdrop-blur-sm shadow-xl border border-white/30"
                 >
                     <img
-                        src="https://i.pravatar.cc/150?img=11"
+                        src={star.profile_picture || "https://i.pravatar.cc/150?img=11"}
                         alt="Star Student"
                         className="w-[84px] h-[84px] object-cover rounded-xl shadow-inner"
                     />
@@ -50,7 +61,7 @@ const StarStudent = () => {
               animate={{ y: 0, opacity: 1 }}
               className="font-black text-xl drop-shadow-lg uppercase tracking-tight"
             >
-              Michael Chen
+              {star.full_name}
             </motion.h4>
             <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest mt-1 italic">Week 8 Winner</p>
         </motion.div>

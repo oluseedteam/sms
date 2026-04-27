@@ -13,7 +13,7 @@ const AdminLogs = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await apiFetch('/admin/logs');
+      const res = await apiFetch('/logs');
       // Update logic: apiFetch returns the JSON directly if it succeeds
       setLogs(res.logs || []);
     } catch (err) {
@@ -31,7 +31,7 @@ const AdminLogs = () => {
     
     setClearing(true);
     try {
-      await apiFetch('/admin/logs', { method: 'DELETE' });
+      await apiFetch('/logs', { method: 'DELETE' });
       setLogs([]);
     } catch (err) {
       console.error('Failed to clear logs:', err);

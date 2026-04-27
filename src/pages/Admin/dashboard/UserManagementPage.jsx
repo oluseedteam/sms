@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { getUsers, createUser, updateUser, deleteUser } from '../../../services/userService';
 import { getClasses } from '../../../services/classService';
-import { getSubjects } from '../../../services/subjectService';
+import { getSubjects, createSubject } from '../../../services/subjectService';
 import { Users, UserPlus, Pencil, Trash2, X, Loader2, Eye } from 'lucide-react';
 
-export default function UserManagementPage() {
-  const [role, setRole] = useState('student');
+export default function UserManagementPage({ defaultRole = 'student' }) {
+  const [role, setRole] = useState(defaultRole);
+
+  useEffect(() => {
+    setRole(defaultRole);
+  }, [defaultRole]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,15 +30,15 @@ export default function UserManagementPage() {
     institutional_role: '',
     gender: '',
     class_id: '',
-    subject_ids: []
+    subjects_text: ''
   });
   const [formError, setFormError] = useState('');
   const [formLoading, setFormLoading] = useState(false);
 
   useEffect(() => {
     Promise.all([getClasses(), getSubjects()]).then(([clsData, subData]) => {
-      setClassesData(clsData?.data || []);
-      setSubjectsData(subData?.data || []);
+      setClassesData(Array.isArray(clsData) ? clsData : (clsData?.data || []));
+      setSubjectsData(Array.isArray(subData) ? subData : (subData?.data || []));
     }).catch(err => console.error(err));
   }, []);
 
@@ -68,10 +72,10 @@ export default function UserManagementPage() {
         institutional_role: user.institutional_role || '',
         gender: user.gender || '',
         class_id: user.school_classes?.[0]?.id || '',
-        subject_ids: user.subjects?.map(s => s.id) || []
+        subjects_text: user.subjects?.map(s => s.name).join(', ') || ''
       });
     } else {
-      setFormData({ full_name: '', email: '', password: '', student_id: '', employee_id: '', is_prefect: false, prefect_title: '', institutional_role: '', gender: '', class_id: '', subject_ids: [] });
+      setFormData({ full_name: '', email: '', password: '', student_id: '', employee_id: '', is_prefect: false, prefect_title: '', institutional_role: '', gender: '', class_id: '', subjects_text: '' });
     }
     setFormError('');
     setIsModalOpen(true);
@@ -104,9 +108,26 @@ export default function UserManagementPage() {
         delete payload.employee_id;
         delete payload.institutional_role;
       }
-      if (role !== 'teacher') {
-        delete payload.subject_ids;
+      
+      // Process custom subjects text for teachers
+      if (role === 'teacher') {
+        payload.subject_ids = [];
+        if (payload.subjects_text?.trim()) {
+           const subjectNames = payload.subjects_text.split(',').map(s => s.trim()).filter(Boolean);
+           for (const sName of subjectNames) {
+              const existing = subjectsData.find(s => s.name.toLowerCase() === sName.toLowerCase());
+              if (existing) {
+                 payload.subject_ids.push(existing.id);
+              } else {
+                 // Create new subject automatically
+                 const res = await createSubject({ name: sName, code: sName.substring(0, 4).toUpperCase() + Math.floor(Math.random()*1000) });
+                 payload.subject_ids.push(res.id);
+              }
+           }
+        }
       }
+      delete payload.subjects_text;
+      
       if (!payload.student_id) delete payload.student_id;
       if (!payload.employee_id) delete payload.employee_id;
 
@@ -229,7 +250,7 @@ export default function UserManagementPage() {
               
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Email</label>
-                <input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500" />
+                <input type="email" required autoComplete="off" placeholder="Enter email address" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500" />
               </div>
               
               <div>
@@ -281,10 +302,14 @@ export default function UserManagementPage() {
                   </div>
                   {role === 'teacher' && (
                     <div className="col-span-2">
-                      <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Subjects (Hold Ctrl/Cmd to select multiple)</label>
-                      <select multiple value={formData.subject_ids} onChange={e => setFormData({...formData, subject_ids: Array.from(e.target.selectedOptions, option => option.value)})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500 max-h-32">
-                        {subjectsData.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                      </select>
+                      <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Subjects (comma-separated)</label>
+                      <input 
+                         value={formData.subjects_text} 
+                         onChange={e => setFormData({...formData, subjects_text: e.target.value})} 
+                         placeholder="e.g. Mathematics, Physics, English" 
+                         className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500" 
+                      />
+                      <p className="text-[10px] text-gray-400 mt-1 italic">Type subjects separated by commas. New subjects will be created automatically.</p>
                     </div>
                   )}
                 </div>
@@ -292,7 +317,7 @@ export default function UserManagementPage() {
 
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Password {editingUser && '(Leave blank to retain)'}</label>
-                <input type="password" required={!editingUser} value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500" />
+                <input type="password" required={!editingUser} autoComplete="new-password" placeholder="Enter password" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500" />
               </div>
 
               <div className="pt-4 border-t border-gray-50 flex justify-end gap-3">

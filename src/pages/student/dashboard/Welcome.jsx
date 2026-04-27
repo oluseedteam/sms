@@ -1,37 +1,43 @@
 import { motion } from 'motion/react';
+import { useState, useEffect } from 'react';
 import { useAuth } from "../../../hooks/useAuth";
+import apiFetch from "../../../services/api";
 
 const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            staggerChildren: 0.1,
-            duration: 0.6,
-            ease: "easeOut"
-        }
+        opacity: 1, y: 0,
+        transition: { staggerChildren: 0.1, duration: 0.6, ease: "easeOut" }
     }
 };
 
 const itemVariants = {
     hidden: { opacity: 0, scale: 0.9 },
-    visible: {
-        opacity: 1,
-        scale: 1,
-        transition: { type: "spring", stiffness: 100 }
-    }
+    visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 100 } }
 };
 
 const Welcome = () => {
   const { user } = useAuth();
+  const [summary, setSummary] = useState(null);
 
-    const info = [
-        { label: 'Gold Stars This Week', value: '12', icon: '⭐' }, 
-        { label: 'Books Read', value: '3', icon: '📚' },
-        { label: 'Attendance', value: '95%', icon: '✅' }, 
-        { label: 'Homework Done', value: '8 of 10', icon: '✏️' }
-    ]
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const res = await apiFetch('/dashboard/summary');
+        setSummary(res.summary);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchSummary();
+  }, []);
+
+  const info = [
+      { label: 'Average Score', value: summary ? `${summary.average_score_percent}%` : '...', icon: '⭐' }, 
+      { label: 'Tracked Subjects', value: summary ? summary.subjects_tracked : '...', icon: '📚' },
+      { label: 'Attendance', value: summary ? `${summary.attendance_rate}%` : '...', icon: '✅' }, 
+      { label: 'Enrolled Classes', value: summary ? summary.my_classes : '...', icon: '🏫' }
+  ];
 
   return (
     <motion.div 
@@ -47,7 +53,7 @@ const Welcome = () => {
               Welcome back, {user?.full_name || "Student"}! 👋
             </h2>
             <p className='text-xs sm:text-[15px] mb-8 opacity-90 flex items-center gap-2 font-bold'>
-                📚 You have 3 homework assignments due this week
+                📚 You have new homework assignments due this week
             </p>
         </motion.div>
 
