@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useState } from "react";
 import { saveSession, clearSession, updateProfile } from "../services/authService";
-import { Loader2, Camera } from "lucide-react";
+import { Loader2, Camera, X } from "lucide-react";
 
 export const AuthContext = createContext();
 
@@ -69,7 +69,15 @@ const FirstLoginModal = ({ onComplete }) => {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl p-8 text-center animate-in zoom-in-95">
+      <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl p-8 text-center animate-in zoom-in-95 relative">
+        {/* Close Button */}
+        <button 
+          onClick={() => onComplete({ is_first_login: false })}
+          className="absolute right-6 top-6 text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-xl"
+        >
+          <X className="w-6 h-6" />
+        </button>
+
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome!</h2>
         <p className="text-gray-500 mb-6 font-medium">Please upload a profile picture to complete your setup.</p>
         
@@ -85,10 +93,31 @@ const FirstLoginModal = ({ onComplete }) => {
           
           {error && <div className="text-red-500 text-sm font-bold bg-red-50 p-3 rounded-xl">{error}</div>}
           
-          <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition-all flex justify-center items-center gap-2 shadow-lg shadow-blue-500/30">
-            {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-            {loading ? "Uploading..." : "Save and Continue"}
-          </button>
+          <div className="flex flex-col gap-3">
+            <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition-all flex justify-center items-center gap-2 shadow-lg shadow-blue-500/30">
+              {loading && <Loader2 className="w-5 h-5 animate-spin" />}
+              {loading ? "Uploading..." : "Save and Continue"}
+            </button>
+            
+            <button 
+              type="button"
+              disabled={loading}
+              onClick={async () => {
+                setLoading(true);
+                try {
+                  const res = await updateProfile({ is_skipped: true });
+                  onComplete(res.user || { is_first_login: false });
+                } catch (err) {
+                  setError(err.message || "Failed to skip.");
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-600 py-3 rounded-xl font-bold transition-all"
+            >
+              Skip for now
+            </button>
+          </div>
         </form>
       </div>
     </div>
