@@ -91,20 +91,20 @@ const AdminDashboard = () => {
       </div>
 
       {/* Chart Section */}
-      <div className="bg-white rounded-[40px] p-8 shadow-sm border border-gray-100 relative overflow-hidden">
-        <div className="flex items-center justify-between mb-12">
-          <h2 className="text-xl font-black text-blue-900 italic tracking-tight underline decoration-blue-100 decoration-4 underline-offset-8">General Student Attendance</h2>
-          <div className="text-[11px] font-black text-gray-600 bg-gray-50 rounded-xl px-5 py-3 uppercase tracking-wider">
+      <div className="bg-white rounded-[32px] md:rounded-[40px] p-4 md:p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 md:mb-12 text-center md:text-left">
+          <h2 className="text-lg md:text-xl font-black text-blue-900 italic tracking-tight underline decoration-blue-100 decoration-4 underline-offset-8">General Student Attendance</h2>
+          <div className="text-[10px] md:text-[11px] font-black text-gray-600 bg-gray-50 rounded-xl px-4 md:px-5 py-2 md:py-3 uppercase tracking-wider">
             Last 7 Days
           </div>
         </div>
 
-        <div className="relative h-[320px] flex items-end justify-between px-16 border-b border-gray-50 pb-4">
+        <div className="relative h-[250px] md:h-[320px] flex items-end justify-between px-2 md:px-16 border-b border-gray-50 pb-4 overflow-x-auto gap-4">
            {/* Grid lines (simulated) */}
-           <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pr-16 bg-gradient-to-t from-gray-50/20 to-transparent">
+           <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pr-2 md:pr-16 bg-gradient-to-t from-gray-50/20 to-transparent">
               {[100, 80, 60, 40, 20, 0].map(val => (
-                <div key={val} className="flex items-center gap-6 text-[10px] font-black text-gray-300">
-                   <span className="w-8 text-right leading-none translate-y-[-1px] tabular-nums">{val}%</span>
+                <div key={val} className="flex items-center gap-2 md:gap-6 text-[10px] font-black text-gray-300">
+                   <span className="w-6 md:w-8 text-right leading-none translate-y-[-1px] tabular-nums">{val}%</span>
                    <div className="flex-1 h-px bg-gray-100/30" />
                 </div>
               ))}
@@ -112,20 +112,20 @@ const AdminDashboard = () => {
 
            {/* Bars */}
            {attendanceData.map((d, i) => (
-             <div key={i} className="flex flex-col items-center justify-end h-full gap-4 group relative z-10 w-24">
+             <div key={i} className="flex flex-col items-center justify-end h-full gap-2 md:gap-4 group relative z-10 flex-1 min-w-[40px] md:min-w-[60px] max-w-[80px]">
                 <motion.div 
                   initial={{ height: 0 }}
                   animate={{ height: `${(d.val / maxVal) * 85 || 0}%` }}
                   transition={{ duration: 1.5, delay: 0.4 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full max-w-[48px] bg-blue-900 rounded-t-2xl shadow-2xl shadow-blue-900/40 hover:bg-blue-800 transition-all cursor-pointer relative"
+                  className="w-full bg-blue-900 rounded-t-xl md:rounded-t-2xl shadow-2xl shadow-blue-900/40 hover:bg-blue-800 transition-all cursor-pointer relative"
                 >
                    <AnimatePresence>
-                      <motion.div initial={{ opacity: 0, y: 10 }} whileHover={{ opacity: 1, y: 0 }} className="absolute -top-12 left-1/2 -translate-x-1/2 bg-blue-900 text-white text-[10px] font-black px-3 py-1.5 rounded-xl shadow-2xl pointer-events-none italic whitespace-nowrap hidden group-hover:block transition-all z-20">
+                      <motion.div initial={{ opacity: 0, y: 10 }} whileHover={{ opacity: 1, y: 0 }} className="absolute -top-12 left-1/2 -translate-x-1/2 bg-blue-900 text-white text-[10px] font-black px-3 py-1.5 rounded-xl shadow-2xl pointer-events-none italic whitespace-nowrap hidden md:group-hover:block transition-all z-20">
                          {d.val} Records
                       </motion.div>
                    </AnimatePresence>
                 </motion.div>
-                <p className="text-[10px] font-black text-gray-400 group-hover:text-blue-900 transition-all uppercase tracking-widest italic">{d.day.slice(0,3)}</p>
+                <p className="text-[9px] md:text-[10px] font-black text-gray-400 group-hover:text-blue-900 transition-all uppercase tracking-widest italic">{d.day.slice(0,3)}</p>
              </div>
            ))}
         </div>

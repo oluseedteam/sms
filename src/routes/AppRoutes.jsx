@@ -43,6 +43,7 @@ import AdminDashboardPage from '../pages/Admin/dashboard/AdminDashboardPage';
 import UserManagementPage from '../pages/Admin/dashboard/UserManagementPage';
 import AdminLogsPage from '../pages/Admin/dashboard/AdminLogsPage';
 import AcademicManagementPage from '../pages/Admin/dashboard/AcademicManagementPage';
+import AdminProfilePage from '../pages/Admin/dashboard/AdminProfilePage';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import NotFound from '../pages/public/NotFound';
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -102,6 +103,7 @@ const AppRoutes = () => {
       <Route element={<ProtectedRoute blockedRoles={['student', 'teacher']} />}>
         <Route path='/admin' element={<AdminLayout />}>
         <Route index element={<AdminDashboardPage />} />
+        <Route path='profile' element={<AdminProfilePage />} />
         <Route path='users' element={<UserManagementPage />} />
         <Route path='logs' element={<AdminLogsPage />} />
         <Route path='student' element={<UserManagementPage defaultRole="student" />} />

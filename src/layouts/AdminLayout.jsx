@@ -6,7 +6,7 @@ import AdminLogin from '../pages/auth/AdminLogin';
 import { useAuth } from '../hooks/useAuth';
 
 const AdminLayout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Default to closed on mobile
   const location = useLocation();
   const { user } = useAuth();
 
@@ -19,6 +19,7 @@ const AdminLayout = () => {
     if (path.includes('/admin/notifications')) return "Notifications 🔔";
     if (path.includes('/admin/settings')) return "Global Settings ⚙️";
     if (path.includes('/admin/dispute')) return "Feedback & Disputes 💬";
+    if (path.includes('/admin/profile')) return "My Profile 👤";
     return "Dashboard OVERVIEW 📊";
   };
 
@@ -33,8 +34,11 @@ const AdminLayout = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
-        <AdminHeader title={getPageTitle()} />
-        <main className="flex-1 overflow-y-auto p-10 font-Dm-sans">
+        <AdminHeader 
+          title={getPageTitle()} 
+          onMenuClick={() => setIsSidebarOpen(true)} 
+        />
+        <main className="flex-1 overflow-y-auto p-4 md:p-10 font-Dm-sans">
           <Outlet />
         </main>
       </div>
