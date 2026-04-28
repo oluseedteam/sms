@@ -1,6 +1,6 @@
 import apiFetch from "./api";
 
-export async function registerUser({ role, fullName, studentId, employeeId, email, password, password_confirmation }) {
+export async function registerUser({ role, fullName, studentId, employeeId, email, password, password_confirmation, department }) {
   return apiFetch("/auth/register", {
     method: "POST",
     body: JSON.stringify({
@@ -10,7 +10,7 @@ export async function registerUser({ role, fullName, studentId, employeeId, emai
       password_confirmation,
       role,
       ...(role === "student"
-        ? { studentId: studentId.trim() }
+        ? { studentId: studentId.trim(), department: department || undefined }
         : { employeeId: employeeId.trim() }),
     }),
   });
@@ -46,7 +46,7 @@ export async function resetPassword({ token, email, password, password_confirmat
   });
 }
 
-export function saveSession({ token, token_type, user }) {
+export function saveSession({ token, user }) {
   localStorage.setItem("token", token);
   localStorage.setItem("role", user.role);
   localStorage.setItem("isAuthenticated", "true");

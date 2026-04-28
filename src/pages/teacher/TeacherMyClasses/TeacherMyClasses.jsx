@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import TeacherMyClassesRight from './TeacherMyClassesRight';
 import { getTeacherClasses, createTeacherClass, deleteTeacherClass } from '../../../services/teacherClassService';
+import PopupModal from '../../../components/PopupModal';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -43,6 +44,8 @@ const TeacherMyClasses = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({ title: '', grade: '', time: '', location: '' });
+  const [popup, setPopup] = useState({ isOpen: false, type: 'info', title: '', message: '' });
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const fetchClasses = async () => {
     try {
@@ -92,22 +95,31 @@ const TeacherMyClasses = () => {
       setIsModalOpen(false);
       setFormData({ title: '', grade: '', time: '', location: '' });
       fetchClasses();
-    } catch(err) {
-      alert("Error adding class");
+      setPopup({ isOpen: true, type: 'success', title: 'Added!', message: 'Class has been added successfully.' });
+    } catch {
+      setPopup({ isOpen: true, type: 'error', title: 'Error', message: 'Failed to add class.' });
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleDelete = async (e, id) => {
+  const handleDeleteRequest = (e, id) => {
     e.stopPropagation();
-    if(window.confirm("Delete this scheduled class?")) {
+    setDeleteTarget(id);
+    setPopup({ isOpen: true, type: 'confirm', title: 'Delete Class?', message: 'Are you sure you want to delete this class?' });
+  };
+
+  const handleDeleteConfirm = async () => {
+    setPopup({ ...popup, isOpen: false });
+    if (deleteTarget) {
       try {
-        await deleteTeacherClass(id);
+        await deleteTeacherClass(deleteTarget);
         fetchClasses();
-      } catch (err) {
-        alert("Delete failed");
+        setPopup({ isOpen: true, type: 'success', title: 'Deleted!', message: 'Class has been deleted.' });
+      } catch {
+        setPopup({ isOpen: true, type: 'error', title: 'Error', message: 'Failed to delete class.' });
       }
+      setDeleteTarget(null);
     }
   };
 
@@ -163,7 +175,7 @@ const TeacherMyClasses = () => {
                   <div className={`w-12 h-12 rounded-2xl ${cls.iconBg} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                     {cls.icon}
                   </div>
-                  <button onClick={(e) => handleDelete(e, cls.id)} className="text-gray-300 hover:text-red-500 transition-colors" title="Delete Class">
+                  <button onClick={(e) => handleDeleteRequest(e, cls.id)} className="text-gray-300 hover:text-red-500 transition-colors" title="Delete Class">
                     <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
@@ -276,6 +288,15 @@ const TeacherMyClasses = () => {
           </div>
         )}
       </AnimatePresence>
+
+      <PopupModal
+        isOpen={popup.isOpen}
+        type={popup.type}
+        title={popup.title}
+        message={popup.message}
+        onClose={() => setPopup({ ...popup, isOpen: false })}
+        onConfirm={popup.type === 'confirm' ? handleDeleteConfirm : undefined}
+      />
     </div>
   );
 };

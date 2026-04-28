@@ -3,6 +3,7 @@ import { getUsers, createUser, updateUser, deleteUser } from '../../../services/
 import { getClasses } from '../../../services/classService';
 import { getSubjects, createSubject } from '../../../services/subjectService';
 import { Users, UserPlus, Pencil, Trash2, X, Loader2, Eye } from 'lucide-react';
+import PopupModal from '../../../components/PopupModal';
 
 export default function UserManagementPage({ defaultRole = 'student' }) {
   const [role, setRole] = useState(defaultRole);
@@ -34,6 +35,8 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
   });
   const [formError, setFormError] = useState('');
   const [formLoading, setFormLoading] = useState(false);
+  const [popup, setPopup] = useState({ isOpen: false, type: 'info', title: '', message: '' });
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     Promise.all([getClasses(), getSubjects()]).then(([clsData, subData]) => {
@@ -145,14 +148,22 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+  const handleDeleteRequest = (id) => {
+    setDeleteTarget(id);
+    setPopup({ isOpen: true, type: 'confirm', title: 'Delete User?', message: 'Are you sure you want to delete this user? This cannot be undone.' });
+  };
+
+  const handleDeleteConfirm = async () => {
+    setPopup({ ...popup, isOpen: false });
+    if (deleteTarget) {
       try {
-        await deleteUser(role, id);
+        await deleteUser(role, deleteTarget);
         fetchUsers();
+        setPopup({ isOpen: true, type: 'success', title: 'Deleted!', message: 'User deleted successfully.' });
       } catch (err) {
-        alert(err.message || 'Failed to delete user');
+        setPopup({ isOpen: true, type: 'error', title: 'Error', message: err.message || 'Failed to delete user' });
       }
+      setDeleteTarget(null);
     }
   };
 
@@ -217,7 +228,7 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
                       <button onClick={() => handleOpenModal(u)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
                         <Pencil className="w-4 h-4" />
                       </button>
-                      <button onClick={() => handleDelete(u.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                      <button onClick={() => handleDeleteRequest(u.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </td>
@@ -388,6 +399,15 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
           </div>
         </div>
       )}
+
+      <PopupModal
+        isOpen={popup.isOpen}
+        type={popup.type}
+        title={popup.title}
+        message={popup.message}
+        onClose={() => setPopup({ ...popup, isOpen: false })}
+        onConfirm={popup.type === 'confirm' ? handleDeleteConfirm : undefined}
+      />
     </div>
   );
 }

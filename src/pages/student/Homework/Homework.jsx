@@ -17,7 +17,6 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import HomeworkRight from './HomeworkRight';
-import { useNavigate } from 'react-router-dom';
 import { getAssignments } from '../../../services/assignmentService';
 
 const containerVariants = {
@@ -38,8 +37,6 @@ const itemVariants = {
 };
 
 const Homework = () => {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('All Homework');
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -144,7 +141,7 @@ const Homework = () => {
       </motion.div>
 
       <div className="lg:w-80 w-full">
-        <HomeworkRight />
+        <HomeworkRight assignments={assignments} />
       </div>
     </div>
   );

@@ -8,7 +8,8 @@ import {
 import TeacherAttendanceRight from './TeacherAttendanceRight';
 import { getClasses, getClass } from '../../../services/classService';
 import { saveBulkAttendance } from '../../../services/attendanceService';
-import { useAuth } from '../../../hooks/useAuth';
+
+import PopupModal from '../../../components/PopupModal';
 
 const statusConfig = {
   present: { label: 'Present', icon: CheckCircle2, ring: 'ring-green-400', bg: 'bg-green-50',  text: 'text-green-600',  dot: 'bg-green-400' },
@@ -24,6 +25,7 @@ const TeacherAttendance = () => {
   const [view, setView] = useState('grid');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [popup, setPopup] = useState({ isOpen: false, type: 'info', title: '', message: '' });
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -87,9 +89,9 @@ const TeacherAttendance = () => {
         }))
       };
       await saveBulkAttendance(payload);
-      alert("Attendance saved successfully!");
+      setPopup({ isOpen: true, type: 'success', title: 'Saved!', message: 'Attendance has been saved successfully.' });
     } catch (error) {
-      alert("Failed to save attendance: " + error.message);
+      setPopup({ isOpen: true, type: 'error', title: 'Error', message: 'Failed to save attendance: ' + error.message });
     } finally {
       setSaving(false);
     }
@@ -258,6 +260,14 @@ const TeacherAttendance = () => {
       <div className="lg:w-72 w-full">
         <TeacherAttendanceRight />
       </div>
+
+      <PopupModal
+        isOpen={popup.isOpen}
+        type={popup.type}
+        title={popup.title}
+        message={popup.message}
+        onClose={() => setPopup({ ...popup, isOpen: false })}
+      />
     </div>
   );
 };

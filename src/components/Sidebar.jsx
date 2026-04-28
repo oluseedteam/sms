@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
 import {
@@ -13,9 +13,26 @@ import {
   User,
   X
 } from "lucide-react";
+import apiFetch from '../services/api';
 
 
 const Sidebar = ({ onClose }) => {
+    const [achievementPoints, setAchievementPoints] = useState(0);
+
+    useEffect(() => {
+      const fetchPoints = async () => {
+        try {
+          const res = await apiFetch('/dashboard/summary');
+          if (res.summary?.achievement_points !== undefined) {
+            setAchievementPoints(res.summary.achievement_points);
+          }
+        } catch {
+          console.log('Could not fetch achievement points');
+        }
+      };
+      fetchPoints();
+    }, []);
+
     const dashboardOptions = [
         {
             title: "Dashboard",
@@ -107,7 +124,7 @@ const Sidebar = ({ onClose }) => {
         </nav>
         <div className="mt-8 bg-yellow-400 text-white p-4 rounded-xl text-center shrink-0">
             <p className="text-sm">Achievement Points</p>
-            <h2 className="text-2xl font-bold">245</h2>
+            <h2 className="text-2xl font-bold">{achievementPoints}</h2>
         </div>
     </div>
   )

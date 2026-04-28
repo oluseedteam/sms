@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Activity, Trash2, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import apiFetch from '../../../services/api';
+import PopupModal from '../../../components/PopupModal';
 
 const AdminLogs = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [clearing, setClearing] = useState(false);
+  const [popup, setPopup] = useState({ isOpen: false, type: 'info', title: '', message: '' });
+  const [confirmClear, setConfirmClear] = useState(false);
 
   const fetchLogs = async () => {
     setLoading(true);
@@ -26,16 +29,22 @@ const AdminLogs = () => {
     }
   };
 
-  const handleClearLogs = async () => {
-    if (!window.confirm('Are you sure you want to clear all system logs? This cannot be undone.')) return;
-    
+  const handleClearRequest = () => {
+    setPopup({ isOpen: true, type: 'confirm', title: 'Clear All Logs?', message: 'Are you sure you want to clear all system logs? This cannot be undone.' });
+    setConfirmClear(true);
+  };
+
+  const handleClearConfirm = async () => {
+    setPopup({ ...popup, isOpen: false });
+    setConfirmClear(false);
     setClearing(true);
     try {
       await apiFetch('/logs', { method: 'DELETE' });
       setLogs([]);
+      setPopup({ isOpen: true, type: 'success', title: 'Cleared!', message: 'System logs have been cleared.' });
     } catch (err) {
       console.error('Failed to clear logs:', err);
-      alert(err.message || 'Failed to clear the logs.');
+      setPopup({ isOpen: true, type: 'error', title: 'Error', message: err.message || 'Failed to clear the logs.' });
     } finally {
       setClearing(false);
     }
@@ -54,6 +63,7 @@ const AdminLogs = () => {
   }
 
   return (
+    <>
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-black text-blue-900 tracking-tight flex items-center gap-3">
@@ -67,7 +77,7 @@ const AdminLogs = () => {
             <RefreshCw className="w-4 h-4" /> Refresh
           </button>
           <button 
-            onClick={handleClearLogs} 
+            onClick={handleClearRequest} 
             disabled={clearing || logs.length === 0}
             className="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-xl font-bold border border-red-100 flex items-center gap-2 shadow-sm transition-all disabled:opacity-50"
           >
@@ -132,6 +142,16 @@ const AdminLogs = () => {
         </div>
       )}
     </div>
+
+    <PopupModal
+      isOpen={popup.isOpen}
+      type={popup.type}
+      title={popup.title}
+      message={popup.message}
+      onClose={() => { setPopup({ ...popup, isOpen: false }); setConfirmClear(false); }}
+      onConfirm={confirmClear ? handleClearConfirm : undefined}
+    />
+    </>
   );
 };
 

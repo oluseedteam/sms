@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import {
   Users,
@@ -15,9 +15,12 @@ import {
   PlusCircle,
   BarChart2,
   AlertCircle,
-  TrendingUp,
+  Loader2
 } from 'lucide-react';
 import TeacherDashboardRight from './TeacherDashboardRight';
+import apiFetch from '../../../services/api';
+import { getTeacherClasses } from '../../../services/teacherClassService';
+import { getAssignments } from '../../../services/assignmentService';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -30,25 +33,64 @@ const itemVariants = {
 };
 
 const TeacherDashboard = () => {
+  const [summary, setSummary] = useState(null);
+  const [teacherClasses, setTeacherClasses] = useState([]);
+  const [assignments, setAssignments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [sumRes, classesRes, assignRes] = await Promise.all([
+          apiFetch('/dashboard/summary'),
+          getTeacherClasses(),
+          getAssignments()
+        ]);
+        setSummary(sumRes?.summary || {});
+        setTeacherClasses(Array.isArray(classesRes) ? classesRes : (classesRes?.data || []));
+        setAssignments(Array.isArray(assignRes) ? assignRes : (assignRes?.data || []));
+      } catch (error) {
+        console.error('Failed to load dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
   const stats = [
-    { title: 'Students Present Today', value: '27/28', subtitle: '96% attendance rate', icon: CheckCircle2, bg: 'bg-green-100', iconColor: 'text-green-600' },
-    { title: 'Pending Assignments',    value: '15',    subtitle: 'To grade',             icon: FileText,       bg: 'bg-orange-100', iconColor: 'text-orange-600' },
-    { title: "Today's Classes",        value: '4',     subtitle: 'Periods scheduled',    icon: BookOpen,       bg: 'bg-blue-100',   iconColor: 'text-blue-600' },
-    { title: 'Upcoming Events',        value: '2',     subtitle: 'This week',            icon: Calendar,       bg: 'bg-purple-100', iconColor: 'text-purple-600' },
+    { title: 'My Students',            value: summary?.my_students || 0,        subtitle: 'Assigned to your classes', icon: Users,        bg: 'bg-green-100', iconColor: 'text-green-600' },
+    { title: 'Results Entered',        value: summary?.results_entered || 0,    subtitle: 'Total grading done',       icon: CheckCircle2, bg: 'bg-orange-100', iconColor: 'text-orange-600' },
+    { title: 'My Classes',             value: summary?.my_classes || 0,         subtitle: 'Groups managed',           icon: BookOpen,     bg: 'bg-blue-100',   iconColor: 'text-blue-600' },
+    { title: 'Attendance Today',       value: summary?.attendance_today || 0,   subtitle: 'Total records',            icon: Calendar,     bg: 'bg-purple-100', iconColor: 'text-purple-600' },
   ];
 
-  const schedule = [
-    { time: '8:30 AM – 10:00 AM',  subject: 'Mathematics',         topic: 'Addition & Subtraction', room: 'Room 4B',     students: 28, accent: 'border-l-blue-500',   badge: 'bg-blue-50 text-blue-600' },
-    { time: '10:00 AM – 11:30 AM', subject: 'English Language Arts',topic: 'Creative Writing',       room: 'Room 4B',     students: 28, accent: 'border-l-purple-500', badge: 'bg-purple-50 text-purple-600' },
-    { time: '12:30 PM – 2:00 PM',  subject: 'Science Lab',         topic: 'Plants & Animals',       room: 'Science Lab', students: 28, accent: 'border-l-green-500',  badge: 'bg-green-50 text-green-600' },
-    { time: '2:00 PM – 3:30 PM',   subject: 'Art & Craft',         topic: 'Watercolor Techniques',  room: 'Art Room',    students: 28, accent: 'border-l-orange-500', badge: 'bg-orange-50 text-orange-600' },
+  const scheduleColors = [
+    { accent: 'border-l-blue-500', badge: 'bg-blue-50 text-blue-600' },
+    { accent: 'border-l-purple-500', badge: 'bg-purple-50 text-purple-600' },
+    { accent: 'border-l-green-500', badge: 'bg-green-50 text-green-600' },
+    { accent: 'border-l-orange-500', badge: 'bg-orange-50 text-orange-600' },
   ];
 
-  const recentActivity = [
-    { name: 'Emma Johnson',  action: 'submitted Math Homework',  time: '5 minutes ago',  status: 'grade', type: 'success' },
-    { name: 'Michael Chen',  action: 'submitted Reading Log',    time: '15 minutes ago', status: 'grade', type: 'success' },
-    { name: 'Sarah Williams',action: 'marked absent today',      time: '2 hours ago',    status: 'review',type: 'danger' },
-  ];
+  const schedule = teacherClasses.slice(0, 4).map((tc, i) => {
+    const color = scheduleColors[i % scheduleColors.length];
+    return {
+      id: tc.id,
+      time: tc.time || 'Schedule TBA',
+      subject: tc.title,
+      topic: tc.grade || 'General',
+      room: tc.location || 'TBA',
+      students: 'Varies',
+      ...color
+    };
+  });
+
+  const recentActivity = assignments.slice(0, 3).map((assign) => ({
+    name: 'You',
+    action: `assigned "${assign.title}"`,
+    time: `Due: ${assign.due_date}`,
+    status: 'review',
+    type: 'success'
+  }));
 
   const upcomingEvents = [
     { day: '27', label: 'Field Trip to Zoo',          sub: 'Friday, October 27',  color: 'bg-blue-50 text-blue-600' },
@@ -65,6 +107,16 @@ const TeacherDashboard = () => {
     { label: 'View Reports',      icon: BarChart2 },
   ];
 
+  if (loading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
+  const teacherName = JSON.parse(localStorage.getItem('user'))?.full_name || 'Teacher';
+
   return (
     <div className="flex flex-col lg:flex-row gap-8 px-2 sm:px-4 lg:px-0">
       {/* ── Main column ─────────────────────────── */}
@@ -77,8 +129,8 @@ const TeacherDashboard = () => {
         {/* Hero Banner */}
         <div className="bg-blue-700 p-8 rounded-3xl text-white relative overflow-hidden shadow-xl">
           <div className="relative z-10">
-            <h1 className="text-2xl sm:text-3xl font-bold mb-1">Welcome back, Miss Roberts! ✨</h1>
-            <p className="text-sm opacity-70">Wednesday, October 25, 2023</p>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-1">Welcome back, {teacherName}! ✨</h1>
+            <p className="text-sm opacity-70">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
               {stats.map((s, i) => (
@@ -107,21 +159,23 @@ const TeacherDashboard = () => {
             <Clock className="w-5 h-5 text-blue-600" /> Today's Schedule
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {schedule.map((s, i) => (
+            {schedule.length > 0 ? schedule.map((s, i) => (
               <div key={i} className={`p-4 rounded-2xl bg-gray-50 border-l-4 ${s.accent} hover:bg-white hover:shadow-md transition-all`}>
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{s.time}</p>
                 <h3 className="font-bold text-gray-800 text-base mb-0.5">{s.subject}</h3>
                 <p className="text-xs text-gray-500 mb-3">{s.topic} • {s.room}</p>
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-gray-500 flex items-center gap-1">
-                    <Users className="w-3 h-3" /> {s.students} students
+                    <Users className="w-3 h-3" /> {s.students}
                   </span>
                   <button className={`text-[10px] font-bold px-3 py-1.5 rounded-xl ${s.badge}`}>
                     Start Class
                   </button>
                 </div>
               </div>
-            ))}
+            )) : (
+              <p className="text-sm text-gray-500 py-4 col-span-2">No scheduled classes found.</p>
+            )}
           </div>
         </motion.div>
 
@@ -131,7 +185,7 @@ const TeacherDashboard = () => {
             <Activity className="w-5 h-5 text-blue-600" /> Recent Student Activity
           </h2>
           <div className="space-y-3">
-            {recentActivity.map((a, i) => (
+            {recentActivity.length > 0 ? recentActivity.map((a, i) => (
               <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 hover:bg-white border border-transparent hover:border-gray-100 transition-all">
                 <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${a.type === 'danger' ? 'bg-red-50' : 'bg-blue-50'}`}>
                   <Users className={`w-4 h-4 ${a.type === 'danger' ? 'text-red-500' : 'text-blue-500'}`} />
@@ -142,11 +196,10 @@ const TeacherDashboard = () => {
                   </p>
                   <p className="text-xs text-gray-400 mt-0.5">{a.time}</p>
                 </div>
-                <button className={`text-xs font-bold px-3 py-1.5 rounded-xl ${a.type === 'danger' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'}`}>
-                  {a.status === 'grade' ? 'Grade Now' : 'Review'}
-                </button>
               </div>
-            ))}
+            )) : (
+              <p className="text-sm text-gray-500 py-4">No recent activity found.</p>
+            )}
           </div>
 
           {/* Needs Attention */}

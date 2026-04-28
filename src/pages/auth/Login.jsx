@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 import { useAuth } from "../../hooks/useAuth";
 import { loginUser } from "../../services/authService";
+import PopupModal from "../../components/PopupModal";
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 const EyeIcon = ({ open }) =>
@@ -46,6 +47,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError]               = useState("");
   const [loading, setLoading]           = useState(false);
+  const [socialPopup, setSocialPopup]   = useState(false);
 
   const handleRoleSwitch = (r) => {
     setRole(r);
@@ -142,6 +144,7 @@ export default function Login() {
               <p><span className="text-white font-semibold">Students —</span> email or Student ID</p>
               <p><span className="text-white font-semibold">Teachers —</span> email or Employee ID</p>
               <p><span className="text-white font-semibold">Workers —</span> email or Employee ID</p>
+              <p><span className="text-white font-semibold">Admins —</span> email only</p>
             </div>
           </motion.div>
         </div>
@@ -162,7 +165,7 @@ export default function Login() {
                 animate={{ 
                   left: role === "student" ? "4px" : 
                         role === "teacher" ? "calc(25% + 2px)" : 
-                        role === "worker" ? "calc(50%)" : 
+                        role === "worker" ? "calc(50%)" :
                         "calc(75% - 2px)" 
                 }}
                 transition={{ type: "spring", stiffness: 420, damping: 38 }}
@@ -277,7 +280,7 @@ export default function Login() {
                 { label: "Google",    letter: "G", color: "text-red-500"  },
                 { label: "Microsoft", letter: "M", color: "text-blue-500" },
               ].map(({ label, letter, color }) => (
-                <motion.button  onClick={() => alert('This is currently unavailable')} key={label} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                <motion.button  onClick={() => setSocialPopup(true)} key={label} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
                   className="flex-1 flex items-center justify-center gap-2 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
                   <span className={`font-black text-base ${color}`}>{letter}</span>
                   {label}
@@ -292,6 +295,14 @@ export default function Login() {
           </motion.div>
         </div>
       </motion.div>
+
+      <PopupModal
+        isOpen={socialPopup}
+        type="info"
+        title="Coming Soon"
+        message="Social login is currently unavailable. Please sign in with your email and password."
+        onClose={() => setSocialPopup(false)}
+      />
     </div>
   );
 }

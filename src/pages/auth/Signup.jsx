@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 import { registerUser, saveSession } from "../../services/authService";
+import PopupModal from "../../components/PopupModal";
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 const EyeIcon = ({ open }) =>
@@ -96,6 +97,7 @@ const Field = ({ label, name, type = "text", placeholder, value, onChange, error
 const INITIAL_FORM = {
   fullName: "", studentId: "", employeeId: "",
   email: "", password: "", password_confirmation: "",
+  department: "",
 };
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -108,6 +110,7 @@ export default function Signup() {
   const [globalError, setGlobalError] = useState("");
   const [loading, setLoading]         = useState(false);
   const [success, setSuccess]         = useState(false);
+  const [socialPopup, setSocialPopup] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -314,6 +317,54 @@ export default function Signup() {
                       </AnimatePresence>
                     </div>
 
+                    {/* Department (students only) */}
+                    <AnimatePresence>
+                      {role === "student" && (
+                        <motion.div
+                          key="department"
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.25 }}
+                        >
+                          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">
+                            Department / Stream
+                          </label>
+                          <div className="flex gap-3">
+                            {["science", "art", "commercial"].map((dept) => (
+                              <button
+                                key={dept}
+                                type="button"
+                                onClick={() => {
+                                  setForm((p) => ({ ...p, department: dept }));
+                                  if (fieldErrors.department) setFieldErrors((p) => ({ ...p, department: "" }));
+                                }}
+                                className={`flex-1 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest border-2 transition-all ${
+                                  form.department === dept
+                                    ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                                    : "bg-white text-slate-500 border-slate-200 hover:border-blue-300"
+                                }`}
+                              >
+                                {dept === "science" ? "🔬" : dept === "art" ? "🎨" : "💼"} {dept}
+                              </button>
+                            ))}
+                          </div>
+                          <AnimatePresence>
+                            {fieldErrors.department && (
+                              <motion.p
+                                initial={{ opacity: 0, y: -4, height: 0 }}
+                                animate={{ opacity: 1, y: 0, height: "auto" }}
+                                exit={{ opacity: 0, y: -4, height: 0 }}
+                                className="text-[10px] text-red-500 font-bold mt-1.5 px-1"
+                              >
+                                {fieldErrors.department}
+                              </motion.p>
+                            )}
+                          </AnimatePresence>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
                     {/* Email */}
                     <Field label="Email Address" name="email" type="email" placeholder="your@school.com"
                       value={form.email} onChange={handleChange} error={fieldErrors.email} />
@@ -367,7 +418,7 @@ export default function Signup() {
                       { label: "Microsoft", src: "https://www.svgrepo.com/show/512513/microsoft.svg"    },
                     ].map(({ label, src }) => (
                       <button key={label}
-                        onClick={() => alert('This is currently unavailable')}
+                        onClick={() => setSocialPopup(true)}
                         className="flex-1 flex items-center justify-center gap-3 py-3.5 bg-white border border-slate-200 rounded-2xl text-[10px] font-black tracking-widest uppercase text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all">
                         <img src={src} className="w-4 h-4" alt={label} />
                         {label}
@@ -387,6 +438,14 @@ export default function Signup() {
           </motion.div>
         </div>
       </motion.div>
+
+      <PopupModal
+        isOpen={socialPopup}
+        type="info"
+        title="Coming Soon"
+        message="Social login is currently unavailable. Please register with your email and password."
+        onClose={() => setSocialPopup(false)}
+      />
     </div>
   );
 }

@@ -1,20 +1,44 @@
 import React from 'react';
 import { Calendar, HelpCircle, Star, MessageSquare } from 'lucide-react';
 
-const HomeworkRight = () => {
-  const weekDays = [
-    { day: "Mon", date: 23, active: false },
-    { day: "Tue", date: 24, active: false },
-    { day: "Wed", date: 25, active: false },
-    { day: "Thu", date: 26, active: true },
-    { day: "Fri", date: 27, active: false },
-  ];
+const HomeworkRight = ({ assignments = [] }) => {
+  const weekDays = Array.from({ length: 5 }).map((_, i) => {
+    // Get current week's Monday through Friday
+    const curr = new Date();
+    const day = curr.getDay(); // 0 is Sunday
+    const diff = curr.getDate() - day + (day === 0 ? -6 : 1) + i; // adjust when day is sunday
+    const d = new Date(curr.setDate(diff));
+    const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+    const hasAssignmentDue = assignments.some(a => {
+      if (!a.due_date) return false;
+      const due = new Date(a.due_date);
+      return due.getDate() === d.getDate() && due.getMonth() === d.getMonth() && due.getFullYear() === d.getFullYear();
+    });
 
-  const summary = [
-    { subject: "Math", count: 1, color: "bg-orange-500" },
-    { subject: "English", count: 2, color: "bg-purple-500" },
-    { subject: "Science", count: 0, color: "bg-green-500" },
-  ];
+    return { day: dayName, date: d.getDate(), active: hasAssignmentDue };
+  });
+
+  const dueThisWeek = assignments.filter(a => {
+    if (!a.due_date) return false;
+    const due = new Date(a.due_date);
+    const now = new Date();
+    const msInDay = 24 * 60 * 60 * 1000;
+    // VERY rough "this week" estimate (within next 7 days or recently past this week)
+    return Math.abs(due - now) < 7 * msInDay;
+  });
+
+  const summaryData = {};
+  dueThisWeek.forEach(a => {
+    const s = a.subject?.name || 'General';
+    summaryData[s] = (summaryData[s] || 0) + 1;
+  });
+
+  const colors = ["bg-orange-500", "bg-purple-500", "bg-green-500", "bg-blue-500"];
+  const summary = Object.keys(summaryData).map((key, i) => ({
+    subject: key,
+    count: summaryData[key],
+    color: colors[i % colors.length]
+  }));
 
   return (
     <div className="space-y-6">
@@ -46,7 +70,7 @@ const HomeworkRight = () => {
       <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100 shadow-sm relative overflow-hidden group">
         <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-blue-100/50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
         <div className="relative">
-          <h2 className="text-4xl font-black text-blue-600 mb-1">3</h2>
+          <h2 className="text-4xl font-black text-blue-600 mb-1">{dueThisWeek.length}</h2>
           <p className="text-xs font-bold text-blue-500 uppercase tracking-wide mb-4">assignments due this week</p>
           
           <div className="space-y-3">

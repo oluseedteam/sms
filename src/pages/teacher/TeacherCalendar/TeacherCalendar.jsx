@@ -8,6 +8,7 @@ import {
 import TeacherCalendarRight from './TeacherCalendarRight';
 import { getCalendarEvents, createCalendarEvent, deleteCalendarEvent } from '../../../services/calendarService';
 import { getClasses } from '../../../services/classService';
+import PopupModal from '../../../components/PopupModal';
 
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
@@ -25,6 +26,8 @@ const TeacherCalendar = () => {
   const [formData, setFormData] = useState({
     title: '', start_time: '', end_time: '', type: 'class', school_class_id: ''
   });
+  const [popup, setPopup] = useState({ isOpen: false, type: 'info', title: '', message: '' });
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const fetchEvents = async () => {
     try {
@@ -53,17 +56,30 @@ const TeacherCalendar = () => {
       });
       setIsModalOpen(false);
       fetchEvents();
+      setPopup({ isOpen: true, type: 'success', title: 'Created!', message: 'Event scheduled successfully.' });
     } catch(err) {
-      alert(err.message || "Failed to create event");
+      setPopup({ isOpen: true, type: 'error', title: 'Error', message: err.message || 'Failed to create event' });
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Delete this event?")) {
-      try { await deleteCalendarEvent(id); fetchEvents(); }
-      catch(err) { alert(err.message || 'Error deleting'); }
+  const handleDeleteRequest = (id) => {
+    setDeleteTarget(id);
+    setPopup({ isOpen: true, type: 'confirm', title: 'Delete Event?', message: 'Are you sure you want to delete this event?' });
+  };
+
+  const handleDeleteConfirm = async () => {
+    setPopup({ ...popup, isOpen: false });
+    if (deleteTarget) {
+      try {
+        await deleteCalendarEvent(deleteTarget);
+        fetchEvents();
+        setPopup({ isOpen: true, type: 'success', title: 'Deleted!', message: 'Event deleted.' });
+      } catch(err) {
+        setPopup({ isOpen: true, type: 'error', title: 'Error', message: err.message || 'Error deleting' });
+      }
+      setDeleteTarget(null);
     }
   };
 
@@ -139,8 +155,8 @@ const TeacherCalendar = () => {
                 >
                   <p className={`text-[11px] font-bold mb-1 ${isToday ? 'text-blue-600' : 'text-gray-700'}`}>{day}</p>
                   <div className="space-y-0.5">
-                    {dayEvents.slice(0, 3).map((ev, ei) => (
-                      <div key={ei} onClick={(e) => { e.stopPropagation(); handleDelete(ev.id); }} className="text-[8px] font-bold px-1 py-0.5 rounded bg-blue-100 text-blue-700 truncate hover:bg-red-100 hover:text-red-600 transition-colors cursor-pointer group flex justify-between items-center" title="Click to delete">
+                      {dayEvents.slice(0, 3).map((ev, ei) => (
+                      <div key={ei} onClick={(e) => { e.stopPropagation(); handleDeleteRequest(ev.id); }} className="text-[8px] font-bold px-1 py-0.5 rounded bg-blue-100 text-blue-700 truncate hover:bg-red-100 hover:text-red-600 transition-colors cursor-pointer group flex justify-between items-center" title="Click to delete">
                         <span>{new Date(ev.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} {ev.title}</span>
                       </div>
                     ))}
@@ -202,6 +218,15 @@ const TeacherCalendar = () => {
           </div>
         )}
       </AnimatePresence>
+
+      <PopupModal
+        isOpen={popup.isOpen}
+        type={popup.type}
+        title={popup.title}
+        message={popup.message}
+        onClose={() => setPopup({ ...popup, isOpen: false })}
+        onConfirm={popup.type === 'confirm' ? handleDeleteConfirm : undefined}
+      />
     </div>
   );
 };

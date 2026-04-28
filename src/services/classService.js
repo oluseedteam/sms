@@ -4,6 +4,10 @@ export async function getClasses() {
   return apiFetch("/classes");
 }
 
+export async function getMyClasses() {
+  return apiFetch("/my/classes");
+}
+
 export async function createClass(data) {
   return apiFetch("/classes", {
     method: "POST",

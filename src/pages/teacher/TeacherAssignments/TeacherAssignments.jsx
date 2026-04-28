@@ -8,6 +8,7 @@ import TeacherAssignmentsRight from './TeacherAssignmentsRight';
 import { getAssignments, createAssignment, updateAssignment, deleteAssignment } from '../../../services/assignmentService';
 import { getClasses } from '../../../services/classService';
 import { getSubjects } from '../../../services/subjectService';
+import PopupModal from '../../../components/PopupModal';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -35,6 +36,8 @@ const TeacherAssignments = () => {
     assigned_date: '', due_date: '', max_score: '100', status: 'active'
   });
   const [submitting, setSubmitting] = useState(false);
+  const [popup, setPopup] = useState({ isOpen: false, type: 'info', title: '', message: '' });
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const fetchData = async () => {
     setLoading(true);
@@ -94,21 +97,30 @@ const TeacherAssignments = () => {
       }
       setIsModalOpen(false);
       fetchData();
+      setPopup({ isOpen: true, type: 'success', title: 'Saved!', message: editingId ? 'Assignment updated successfully.' : 'Assignment created successfully.' });
     } catch (err) {
-      alert(err.message || 'Failed to save assignment');
+      setPopup({ isOpen: true, type: 'error', title: 'Error', message: err.message || 'Failed to save assignment' });
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this assignment?")) {
+  const handleDeleteRequest = (id) => {
+    setDeleteTarget(id);
+    setPopup({ isOpen: true, type: 'confirm', title: 'Delete Assignment?', message: 'Are you sure you want to delete this assignment? This cannot be undone.' });
+  };
+
+  const handleDeleteConfirm = async () => {
+    setPopup({ ...popup, isOpen: false });
+    if (deleteTarget) {
       try {
-        await deleteAssignment(id);
+        await deleteAssignment(deleteTarget);
         fetchData();
+        setPopup({ isOpen: true, type: 'success', title: 'Deleted!', message: 'Assignment deleted successfully.' });
       } catch (err) {
-        alert(err.message || 'Failed to delete assignment');
+        setPopup({ isOpen: true, type: 'error', title: 'Error', message: err.message || 'Failed to delete assignment' });
       }
+      setDeleteTarget(null);
     }
   };
 
@@ -169,7 +181,7 @@ const TeacherAssignments = () => {
             >
               <div className="absolute top-6 right-6 flex items-center gap-2">
                  <button onClick={() => handleOpenModal(a)} className="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition-colors"><Pencil className="w-4 h-4" /></button>
-                 <button onClick={() => handleDelete(a.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
+                 <button onClick={() => handleDeleteRequest(a.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
               </div>
 
               <div className="flex items-center gap-3 mb-3">
@@ -274,6 +286,15 @@ const TeacherAssignments = () => {
           </div>
         )}
       </AnimatePresence>
+
+      <PopupModal
+        isOpen={popup.isOpen}
+        type={popup.type}
+        title={popup.title}
+        message={popup.message}
+        onClose={() => setPopup({ ...popup, isOpen: false })}
+        onConfirm={popup.type === 'confirm' ? handleDeleteConfirm : undefined}
+      />
     </div>
   );
 };

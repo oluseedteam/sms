@@ -35,7 +35,6 @@ const itemVariants = {
 const Attendance = () => {
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentMonth] = useState('Current Record');
 
   useEffect(() => {
     const fetchAttendance = async () => {
@@ -127,15 +126,15 @@ const Attendance = () => {
               >
                  <div className="flex items-center justify-between mb-2">
                     <h4 className="font-black text-gray-800 text-sm sm:text-base uppercase tracking-tight leading-tight">
-                       {new Date(item.date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                       {new Date(item.attendance_date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                     </h4>
                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${getStatusStyle(item.status)}`}>
                        {item.status}
                     </span>
                  </div>
-                 {item.remarks && (
+                 {item.note && (
                     <p className="text-[11px] font-bold text-gray-400 italic mt-2">
-                       💬 {item.remarks}
+                       💬 {item.note}
                     </p>
                  )}
               </motion.div>

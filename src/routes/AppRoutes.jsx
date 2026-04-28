@@ -45,6 +45,7 @@ import AdminLogsPage from '../pages/Admin/dashboard/AdminLogsPage';
 import AcademicManagementPage from '../pages/Admin/dashboard/AcademicManagementPage';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import NotFound from '../pages/public/NotFound';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 const AppRoutes = () => {
   return (
@@ -62,23 +63,26 @@ const AppRoutes = () => {
       <Route path='/forgot-password' element={<ForgotPassword/>} />
 
       {/* Student dashboard */}
-      <Route path='/student' element={<DashboardLayout />}>
-        <Route index element={<Dashboard />} />
-        <Route path='my-classes' element={<MyClassPage />} />
-        <Route path='students' element={<TeacherStudentsPage />} />
-        <Route path='grade' element={<GradesPage />} />
-        <Route path='homework' element={<HomeworkPage />}>
-          <Route index element={<Homework />} />
-          <Route path='detail' element={<HomeworkDetail />} />
+      <Route element={<ProtectedRoute allowedRoles={['student']} />}>
+        <Route path='/student' element={<DashboardLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path='my-classes' element={<MyClassPage />} />
+          <Route path='students' element={<TeacherStudentsPage />} />
+          <Route path='grade' element={<GradesPage />} />
+          <Route path='homework' element={<HomeworkPage />}>
+            <Route index element={<Homework />} />
+            <Route path='detail' element={<HomeworkDetail />} />
+          </Route>
+          <Route path='attendance' element={<AttendancePage />} />
+          <Route path='message' element={<MessagesPage />} />
+          <Route path='profile' element={<ProfilePage />} />
+          <Route path='library' element={<AdminDashboardPage />} />
         </Route>
-        <Route path='attendance' element={<AttendancePage />} />
-        <Route path='message' element={<MessagesPage />} />
-        <Route path='profile' element={<ProfilePage />} />
-        <Route path='library' element={<AdminDashboardPage />} />
       </Route>
 
       {/* Teacher dashboard */}
-      <Route path='/teacher' element={<TeacherLayout />}>
+      <Route element={<ProtectedRoute allowedRoles={['teacher']} />}>
+        <Route path='/teacher' element={<TeacherLayout />}>
         <Route index element={<TeacherDashboardPage />} />
         <Route path='my-classes'   element={<TeacherMyClassesPage />} />
         <Route path='students'     element={<TeacherStudentsPage />} />
@@ -89,12 +93,14 @@ const AppRoutes = () => {
         <Route path='messages'     element={<TeacherMessagesPage />} />
         <Route path='calendar'     element={<TeacherCalendarPage />} />
         <Route path='calendar-second' element={<TeacherCalendarsecondPage />} />
-        <Route path='resources'    element={<TeacherResourcesPage />} />
-        <Route path='profile'      element={<ProfilePage />} />
+          <Route path='resources'    element={<TeacherResourcesPage />} />
+          <Route path='profile'      element={<ProfilePage />} />
+        </Route>
       </Route>
       
       {/* Admin Dashboard */}
-      <Route path='/admin' element={<AdminLayout />}>
+      <Route element={<ProtectedRoute blockedRoles={['student', 'teacher']} />}>
+        <Route path='/admin' element={<AdminLayout />}>
         <Route index element={<AdminDashboardPage />} />
         <Route path='users' element={<UserManagementPage />} />
         <Route path='logs' element={<AdminLogsPage />} />
@@ -104,13 +110,9 @@ const AppRoutes = () => {
         {/* Placeholders for other admin pages */}
         <Route path='financial' element={<div className="p-10 text-xl font-bold text-gray-500">Financial Reports coming soon...</div>} />
         <Route path='notifications' element={<div className="p-10 text-xl font-bold text-gray-500">Notification Management coming soon...</div>} />
-        <Route path='settings' element={<div className="p-10 text-xl font-bold text-gray-500">System Settings coming soon...</div>} />
-        <Route path='dispute' element={<div className="p-10 text-xl font-bold text-gray-500">Disputes & Feedback coming soon...</div>} />
-      </Route>
-
-      {/* Support for /teacher-dashboard */}
-      <Route path='/teacher-dashboard' element={<TeacherLayout />}>
-        <Route index element={<TeacherDashboardPage />} />
+          <Route path='settings' element={<div className="p-10 text-xl font-bold text-gray-500">System Settings coming soon...</div>} />
+          <Route path='dispute' element={<div className="p-10 text-xl font-bold text-gray-500">Disputes & Feedback coming soon...</div>} />
+        </Route>
       </Route>
 
       {/* Catch all */}

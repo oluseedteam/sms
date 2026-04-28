@@ -3,14 +3,36 @@ import React, { useState, useEffect } from 'react';
 import apiFetch from '../../../services/api';
 
 const StarStudent = () => {
-    const [star, setStar] = useState({ full_name: 'Michael Chen', profile_picture: 'https://i.pravatar.cc/150?img=11' });
+    const [star, setStar] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        apiFetch('/users/student/1').then(res => {
-            if (res.user) setStar(res.user);
-            else if (res.full_name) setStar(res); // depends on payload
-        }).catch(err => console.log('Star student not found', err));
+        const fetchStarStudent = async () => {
+            try {
+                const res = await apiFetch('/dashboard/summary');
+                if (res.summary?.star_student) {
+                    setStar(res.summary.star_student);
+                }
+            } catch (err) {
+                console.log('Star student not found', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStarStudent();
     }, []);
+
+    if (loading) {
+        return (
+            <div className="bg-gradient-to-br from-[#ffc107] to-[#ff9800] p-6 rounded-3xl shadow-lg text-white text-center flex flex-col items-center justify-center min-h-[200px]">
+                <div className="w-8 h-8 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
+    const name = star?.full_name || 'No Star Yet';
+    const picture = star?.profile_picture || 'https://i.pravatar.cc/150?img=11';
+    const avgScore = star?.avg_score ? `${star.avg_score}% Avg` : 'Top Performer';
 
     return (
         <motion.div 
@@ -34,7 +56,7 @@ const StarStudent = () => {
                   className="bg-white/20 p-2 rounded-2xl backdrop-blur-sm shadow-xl border border-white/30"
                 >
                     <img
-                        src={star.profile_picture || "https://i.pravatar.cc/150?img=11"}
+                        src={picture}
                         alt="Star Student"
                         className="w-[84px] h-[84px] object-cover rounded-xl shadow-inner"
                     />
@@ -61,9 +83,9 @@ const StarStudent = () => {
               animate={{ y: 0, opacity: 1 }}
               className="font-black text-xl drop-shadow-lg uppercase tracking-tight"
             >
-              {star.full_name}
+              {name}
             </motion.h4>
-            <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest mt-1 italic">Week 8 Winner</p>
+            <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest mt-1 italic">{avgScore}</p>
         </motion.div>
     )
 }
