@@ -31,7 +31,10 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
     institutional_role: '',
     gender: '',
     class_id: '',
-    subjects_text: ''
+    subjects_text: '',
+    can_create_students: false,
+    class_teacher_of: '',
+    department: ''
   });
   const [formError, setFormError] = useState('');
   const [formLoading, setFormLoading] = useState(false);
@@ -75,10 +78,13 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
         institutional_role: user.institutional_role || '',
         gender: user.gender || '',
         class_id: user.school_classes?.[0]?.id || '',
-        subjects_text: user.subjects?.map(s => s.name).join(', ') || ''
+        subjects_text: user.subjects?.map(s => s.name).join(', ') || '',
+        can_create_students: user.can_create_students || false,
+        class_teacher_of: user.class_teacher_of || '',
+        department: user.department || ''
       });
     } else {
-      setFormData({ full_name: '', email: '', password: '', student_id: '', employee_id: '', is_prefect: false, prefect_title: '', institutional_role: '', gender: '', class_id: '', subjects_text: '' });
+      setFormData({ full_name: '', email: '', password: '', student_id: '', employee_id: '', is_prefect: false, prefect_title: '', institutional_role: '', gender: '', class_id: '', subjects_text: '', can_create_students: false, class_teacher_of: '', department: '' });
     }
     setFormError('');
     setIsModalOpen(true);
@@ -98,18 +104,26 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
       const payload = { ...formData, role };
       if (!payload.password) delete payload.password;
       if (!payload.gender) delete payload.gender;
+      
       if (role !== 'student') {
         delete payload.student_id;
         delete payload.is_prefect;
         delete payload.prefect_title;
         delete payload.class_id;
+        delete payload.department;
       } else {
         if (!payload.is_prefect) delete payload.prefect_title; // ignore title if not prefect
         if (!payload.class_id) delete payload.class_id;
       }
+      
       if (role !== 'teacher' && role !== 'worker') {
         delete payload.employee_id;
         delete payload.institutional_role;
+      }
+
+      if (role !== 'teacher') {
+        delete payload.can_create_students;
+        delete payload.class_teacher_of;
       }
       
       // Process custom subjects text for teachers
@@ -128,6 +142,7 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
               }
            }
         }
+        if (!payload.class_teacher_of) delete payload.class_teacher_of;
       }
       delete payload.subjects_text;
       
@@ -287,6 +302,15 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
                     </select>
                   </div>
                   <div className="col-span-2">
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Department (SS only)</label>
+                    <select value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500">
+                      <option value="">None (General)</option>
+                      <option value="Science">Science</option>
+                      <option value="Art">Art</option>
+                      <option value="Commercial">Commercial</option>
+                    </select>
+                  </div>
+                  <div className="col-span-2">
                     <label className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase mt-8 cursor-pointer w-max">
                       <input type="checkbox" checked={formData.is_prefect} onChange={e => setFormData({...formData, is_prefect: e.target.checked})} className="w-4 h-4 rounded" />
                       Is Prefect
@@ -312,16 +336,31 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
                     <input value={formData.institutional_role} onChange={e => setFormData({...formData, institutional_role: e.target.value})} placeholder={role === 'teacher' ? 'e.g. Principal' : 'e.g. Janitor'} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500" />
                   </div>
                   {role === 'teacher' && (
-                    <div className="col-span-2">
-                      <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Subjects (comma-separated)</label>
-                      <input 
-                         value={formData.subjects_text} 
-                         onChange={e => setFormData({...formData, subjects_text: e.target.value})} 
-                         placeholder="e.g. Mathematics, Physics, English" 
-                         className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500" 
-                      />
-                      <p className="text-[10px] text-gray-400 mt-1 italic">Type subjects separated by commas. New subjects will be created automatically.</p>
-                    </div>
+                    <>
+                      <div className="col-span-2">
+                        <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Subjects (comma-separated)</label>
+                        <input 
+                           value={formData.subjects_text} 
+                           onChange={e => setFormData({...formData, subjects_text: e.target.value})} 
+                           placeholder="e.g. Mathematics, Physics, English" 
+                           className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500" 
+                        />
+                        <p className="text-[10px] text-gray-400 mt-1 italic">Type subjects separated by commas. New subjects will be created automatically.</p>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Class Teacher Of</label>
+                        <select value={formData.class_teacher_of} onChange={e => setFormData({...formData, class_teacher_of: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500">
+                          <option value="">Not Assigned</option>
+                          {classesData.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                        </select>
+                      </div>
+                      <div className="flex items-center">
+                        <label className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase cursor-pointer mt-6">
+                          <input type="checkbox" checked={formData.can_create_students} onChange={e => setFormData({...formData, can_create_students: e.target.checked})} className="w-4 h-4 rounded" />
+                          Can Create Students
+                        </label>
+                      </div>
+                    </>
                   )}
                 </div>
               )}
@@ -344,15 +383,15 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
 
       {viewingUser && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in-95">
-            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+          <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-in zoom-in-95 max-h-[85vh] flex flex-col">
+            <div className="flex items-center justify-between p-6 border-b border-gray-100 shrink-0">
               <h2 className="text-xl font-bold flex items-center gap-2">
                 User Details
               </h2>
-              <button onClick={() => setViewingUser(null)} className="text-gray-400 hover:bg-gray-100 p-2 rounded-xl transition-colors"><X className="w-5 h-5" /></button>
+              <button onClick={() => { setViewingUser(null); }} className="text-gray-400 hover:bg-gray-100 p-2 rounded-xl transition-colors"><X className="w-5 h-5" /></button>
             </div>
             
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-4 overflow-y-auto flex-1">
               <div className="flex justify-center mb-6">
                 {viewingUser.profile_picture ? (
                   <img src={viewingUser.profile_picture} alt="Profile" className="w-24 h-24 rounded-full object-cover border-4 border-blue-50 shadow-md" />
@@ -372,6 +411,7 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
                   <>
                     <div className="font-bold text-gray-500 uppercase">Student ID:</div><div className="text-gray-900 font-semibold">{viewingUser.student_id || '-'}</div>
                     <div className="font-bold text-gray-500 uppercase">Class:</div><div className="text-gray-900 font-semibold">{viewingUser.school_classes?.map(c => c.name).join(', ') || '-'}</div>
+                    <div className="font-bold text-gray-500 uppercase">Department:</div><div className="text-gray-900 font-semibold">{viewingUser.department || '-'}</div>
                     <div className="font-bold text-gray-500 uppercase">Prefect:</div><div className="text-gray-900 font-semibold">{viewingUser.is_prefect ? viewingUser.prefect_title || 'Yes' : 'No'}</div>
                   </>
                 )}
@@ -387,12 +427,54 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
                   <>
                     <div className="font-bold text-gray-500 uppercase">Subjects:</div>
                     <div className="text-gray-900 font-semibold">{viewingUser.subjects?.map(s => s.name).join(', ') || '-'}</div>
+                    <div className="font-bold text-gray-500 uppercase">Class Teacher Of:</div>
+                    <div className="text-gray-900 font-semibold">{viewingUser.assigned_class?.name || '-'}</div>
+                    <div className="font-bold text-gray-500 uppercase">Can Create Students:</div>
+                    <div className="text-gray-900 font-semibold">{viewingUser.can_create_students ? <span className="text-green-600">✅ Yes</span> : <span className="text-red-500">❌ No</span>}</div>
                   </>
                 )}
               </div>
+
+              {/* Student Attendance Section */}
+              {role === 'student' && viewingUser.attendance && (
+                <div className="mt-6 pt-4 border-t border-gray-100">
+                  <h3 className="font-black text-blue-900 text-sm mb-3 uppercase tracking-wide">📊 Attendance Summary</h3>
+                  <div className="grid grid-cols-4 gap-2 mb-4">
+                    {[
+                      { label: 'Present', value: viewingUser.attendance.summary?.present, color: 'text-green-600 bg-green-50' },
+                      { label: 'Absent', value: viewingUser.attendance.summary?.absent, color: 'text-red-600 bg-red-50' },
+                      { label: 'Late', value: viewingUser.attendance.summary?.late, color: 'text-yellow-600 bg-yellow-50' },
+                      { label: 'Rate', value: `${viewingUser.attendance.summary?.rate}%`, color: 'text-blue-600 bg-blue-50' },
+                    ].map((s, i) => (
+                      <div key={i} className={`${s.color} rounded-xl p-3 text-center`}>
+                        <p className="text-lg font-black">{s.value}</p>
+                        <p className="text-[9px] font-bold uppercase opacity-70">{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {/* Per Term */}
+                  <div className="space-y-2">
+                    {['1st Term', '2nd Term', '3rd Term'].map(term => {
+                      const t = viewingUser.attendance.by_term?.[term];
+                      if (!t || t.total === 0) return null;
+                      return (
+                        <div key={term} className="bg-gray-50 rounded-xl p-3 flex items-center justify-between border border-gray-100">
+                          <span className="text-xs font-bold text-gray-600">{term}</span>
+                          <div className="flex items-center gap-3 text-xs font-bold">
+                            <span className="text-green-600">✅{t.present}</span>
+                            <span className="text-red-600">❌{t.absent}</span>
+                            <span className="text-yellow-600">⏰{t.late}</span>
+                            <span className="text-blue-600 font-black">{t.rate}%</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="p-6 border-t border-gray-50 bg-gray-50/50">
-              <button onClick={() => setViewingUser(null)} className="w-full bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-sm">
+            <div className="p-6 border-t border-gray-50 bg-gray-50/50 shrink-0">
+              <button onClick={() => { setViewingUser(null); }} className="w-full bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-sm">
                 Close
               </button>
             </div>

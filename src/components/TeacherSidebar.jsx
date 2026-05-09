@@ -12,7 +12,9 @@ import {
   Calendar,
   Library,
   User,
-  X
+  X,
+  UserPlus,
+  Laptop
 } from "lucide-react";
 
 const TeacherSidebar = ({ onClose }) => {
@@ -20,7 +22,9 @@ const TeacherSidebar = ({ onClose }) => {
     { title: "Dashboard",   icon: LayoutDashboard, path: "/teacher" },
     { title: "My Classes",  icon: BookOpen,        path: "/teacher/my-classes" },
     { title: "Students",    icon: Users,           path: "/teacher/students" },
+    { title: "Add Students", icon: UserPlus,       path: "/teacher/create-students" },
     { title: "Assignments", icon: ClipboardList,   path: "/teacher/assignments" },
+    { title: "CBT Exams",   icon: Laptop,          path: "/teacher/cbt" },
     { title: "Gradebook",   icon: BookMarked,      path: "/teacher/gradebook" },
     { title: "Attendance",  icon: CalendarCheck,   path: "/teacher/attendance" },
     { title: "Messages",    icon: Mail,            path: "/teacher/messages" },

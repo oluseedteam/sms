@@ -11,7 +11,9 @@ import {
   Library,
   Users,
   User,
-  X
+  X,
+  Laptop,
+  DollarSign
 } from "lucide-react";
 import apiFetch from '../services/api';
 
@@ -73,6 +75,16 @@ const Sidebar = ({ onClose }) => {
             title: "Library",
             icon: Library,
             path: "/student/library"
+        },
+        {
+            title: "CBT Exams",
+            icon: Laptop,
+            path: "/student/cbt"
+        },
+        {
+            title: "Finance",
+            icon: DollarSign,
+            path: "/student/finance"
         },
         {
             title: "My Profile",

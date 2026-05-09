@@ -1,8 +1,6 @@
 import React from 'react'
 import { FaLocationDot, FaEnvelope, FaPhone } from 'react-icons/fa6';
 import rectangular from "../../../assets/images/rectangular_school_collage.png";
-import welcome3 from '../../../assets/images/welcome_image_3.png';
-import img5 from '../../../assets/images/image_5.png';
 import { motion } from "motion/react";
 
 const Contact = () => {
@@ -50,26 +48,31 @@ const Contact = () => {
 
             <div className="space-y-8">
               <div>
-                <h3 className="font-bold text-lg text-[#0B1034] mb-3">Find us at</h3>
+                <h3 className="font-bold text-lg text-[#0B1034] mb-3">Headquarters</h3>
                 <div className="flex items-start gap-3">
                   <span className="text-xl text-[#3657C3] mt-1"><FaLocationDot /></span>
-                  <span className="text-gray-600">1234 Post Avenue Remington</span>
+                  <span className="text-gray-600 leading-relaxed">
+                    Bolorunduro Area, Beside Tipper<br />
+                    Association Office, Oba Road,<br />
+                    Okinni, Osogbo,<br />
+                    Osun State, Nigeria
+                  </span>
                 </div>
               </div>
 
               <div>
-                <h3 className="font-bold text-lg text-[#0B1034] mb-3">Reach out to us at</h3>
+                <h3 className="font-bold text-lg text-[#0B1034] mb-3">Direct Support</h3>
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <span className="text-xl text-[#3657C3]"><FaEnvelope /></span>
-                    <a href="mailto:contact@salespage.com" className="text-gray-600 hover:text-[#3657C3] transition-colors">
-                      contact@salespage.com
+                    <a href="mailto:hello@ghraschool.com" className="text-gray-600 hover:text-[#3657C3] transition-colors">
+                      hello@ghraschool.com
                     </a>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-xl text-[#3657C3]"><FaPhone /></span>
-                    <a href="tel:+1234567890" className="text-gray-600 hover:text-[#3657C3] transition-colors">
-                      +1234 567 890
+                    <a href="tel:+2348144353033" className="text-gray-600 hover:text-[#3657C3] transition-colors">
+                      +234 814 435 3033
                     </a>
                   </div>
                 </div>

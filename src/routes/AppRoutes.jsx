@@ -22,7 +22,8 @@ import Homework from '../pages/student/Homework/Homework';
 import AttendancePage from '../pages/student/Attendance/AttendancePage';
 import MessagesPage from '../pages/student/Messages/MessagesPage';
 import ProfilePage from '../pages/student/Profile/ProfilePage';
-
+import StudentFinancePage from '../pages/student/Finance/StudentFinancePage';
+import StudentCbtPage from '../pages/student/Cbt/StudentCbtPage';
 // ── Teacher Dashboard ────────────────────────────────────────
 import TeacherLayout from '../layouts/TeacherLayout';
 import TeacherDashboardPage    from '../pages/teacher/TeacherDashboard/TeacherDashboardPage';
@@ -36,6 +37,8 @@ import TeacherCalendarPage     from '../pages/teacher/TeacherCalendar/TeacherCal
 import TeacherResourcesPage    from '../pages/teacher/TeacherResources/TeacherResourcesPage';
 import TeacherAttendacesecondPage from '../pages/teacher/TeacherAttendacesecond/TeacherAttendacesecondPage';
 import TeacherCalendarsecondPage from '../pages/teacher/TeacherCalendarsecond/TeacherCalendarsecondPage';
+import TeacherCreateStudentsPage from '../pages/teacher/TeacherCreateStudents/TeacherCreateStudentsPage';
+import TeacherCbtPage from '../pages/teacher/TeacherCbt/TeacherCbtPage';
 
 // ── Admin Dashboard ────────────────────────────────────────
 import AdminLayout from '../layouts/AdminLayout';
@@ -44,6 +47,7 @@ import UserManagementPage from '../pages/Admin/dashboard/UserManagementPage';
 import AdminLogsPage from '../pages/Admin/dashboard/AdminLogsPage';
 import AcademicManagementPage from '../pages/Admin/dashboard/AcademicManagementPage';
 import AdminProfilePage from '../pages/Admin/dashboard/AdminProfilePage';
+import AdminFinancePage from '../pages/Admin/dashboard/AdminFinancePage';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import NotFound from '../pages/public/NotFound';
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -78,6 +82,8 @@ const AppRoutes = () => {
           <Route path='message' element={<MessagesPage />} />
           <Route path='profile' element={<ProfilePage />} />
           <Route path='library' element={<AdminDashboardPage />} />
+          <Route path='finance' element={<StudentFinancePage />} />
+          <Route path='cbt' element={<StudentCbtPage />} />
         </Route>
       </Route>
 
@@ -95,6 +101,8 @@ const AppRoutes = () => {
         <Route path='calendar'     element={<TeacherCalendarPage />} />
         <Route path='calendar-second' element={<TeacherCalendarsecondPage />} />
           <Route path='resources'    element={<TeacherResourcesPage />} />
+          <Route path='create-students' element={<TeacherCreateStudentsPage />} />
+          <Route path='cbt'          element={<TeacherCbtPage />} />
           <Route path='profile'      element={<ProfilePage />} />
         </Route>
       </Route>
@@ -109,8 +117,7 @@ const AppRoutes = () => {
         <Route path='student' element={<UserManagementPage defaultRole="student" />} />
         <Route path='worker' element={<UserManagementPage defaultRole="worker" />} />
         <Route path='academics' element={<AcademicManagementPage />} />
-        {/* Placeholders for other admin pages */}
-        <Route path='financial' element={<div className="p-10 text-xl font-bold text-gray-500">Financial Reports coming soon...</div>} />
+        <Route path='financial' element={<AdminFinancePage />} />
         <Route path='notifications' element={<div className="p-10 text-xl font-bold text-gray-500">Notification Management coming soon...</div>} />
           <Route path='settings' element={<div className="p-10 text-xl font-bold text-gray-500">System Settings coming soon...</div>} />
           <Route path='dispute' element={<div className="p-10 text-xl font-bold text-gray-500">Disputes & Feedback coming soon...</div>} />

@@ -25,7 +25,7 @@ const Footer = () => {
     >
 
       {/* Subtle top blue accent line */}
-      <div className="h-[3px] w-full bg-gradient-to-r from-transparent via-[#1875F0] to-transparent" />
+      <div className="h-[3px] w-full bg-linear-to-r from-transparent via-[#1875F0] to-transparent" />
 
       {/* Blue glow blob — decorative */}
       <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-[600px] h-[200px] rounded-full bg-[#1875F0]/10 blur-3xl" />
@@ -100,29 +100,39 @@ const Footer = () => {
           {/* Get in Touch */}
           <div className="flex flex-col gap-4">
             <h3 className="text-xs font-bold uppercase tracking-widest text-[#1875F0]">
-              Get in Touch
+              Headquarters
             </h3>
-            <ul className="flex flex-col gap-4">
-              <li className="flex items-start gap-3 text-sm text-[#8b8fa8]">
-                <FaLocationDot className="text-[#1875F0] mt-0.5 shrink-0" />
-                <span>123 School Drive, Lagos, Nigeria</span>
+            <ul className="flex flex-col gap-4 mb-2">
+              <li className="flex items-start gap-3 text-sm text-[#8b8fa8] leading-relaxed">
+                <FaLocationDot className="text-[#1875F0] mt-1 shrink-0" />
+                <span>
+                  Bolorunduro Area, Beside Tipper<br />
+                  Association Office, Oba Road,<br />
+                  Okinni, Osogbo,<br />
+                  Osun State, Nigeria
+                </span>
+              </li>
+            </ul>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-[#1875F0]">
+              Direct Support
+            </h3>
+            <ul className="flex flex-col gap-3">
+              <li className="flex items-center gap-3 text-sm">
+                <FaPhone className="text-[#1875F0] shrink-0" />
+                <a
+                  href="tel:+2348144353033"
+                  className="text-[#8b8fa8] hover:text-white transition-colors duration-200"
+                >
+                  +234 814 435 3033
+                </a>
               </li>
               <li className="flex items-center gap-3 text-sm">
                 <FaEnvelope className="text-[#1875F0] shrink-0" />
                 <a
-                  href="mailto:hello@GHRASchool.com"
+                  href="mailto:hello@ghraschool.com"
                   className="text-[#8b8fa8] hover:text-white transition-colors duration-200"
                 >
-                  hello@GHRASchool.com
-                </a>
-              </li>
-              <li className="flex items-center gap-3 text-sm">
-                <FaPhone className="text-[#1875F0] shrink-0" />
-                <a
-                  href="tel:+23481"
-                  className="text-[#8b8fa8] hover:text-white transition-colors duration-200"
-                >
-                  +234 (0) 81*******
+                  hello@ghraschool.com
                 </a>
               </li>
             </ul>
