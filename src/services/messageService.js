@@ -11,3 +11,11 @@ export async function sendMessage(data) {
     body: JSON.stringify(data),
   });
 }
+
+// Broadcast from admin to all teachers or a specific teacher
+export async function broadcastMessageToTeachers(data) {
+  return apiFetch("/admin/broadcast-message", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}

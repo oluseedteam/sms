@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import logo from '../assets/images/logo.png';
 import {
   LayoutDashboard,
@@ -13,13 +14,22 @@ import {
   User,
   X,
   Laptop,
-  DollarSign
+  DollarSign,
+  MessageSquare,
+  LogOut
 } from "lucide-react";
 import apiFetch from '../services/api';
 
 
 const Sidebar = ({ onClose }) => {
+    const navigate = useNavigate();
+    const { logout } = useAuth();
     const [achievementPoints, setAchievementPoints] = useState(0);
+
+    const handleLogout = () => {
+      logout();
+      navigate('/login');
+    };
 
     useEffect(() => {
       const fetchPoints = async () => {
@@ -87,6 +97,11 @@ const Sidebar = ({ onClose }) => {
             path: "/student/finance"
         },
         {
+            title: "Dispute & Feedback",
+            icon: MessageSquare,
+            path: "/student/dispute"
+        },
+        {
             title: "My Profile",
             icon: User,
             path: "/student/profile"
@@ -138,6 +153,10 @@ const Sidebar = ({ onClose }) => {
             <p className="text-sm">Achievement Points</p>
             <h2 className="text-2xl font-bold">{achievementPoints}</h2>
         </div>
+        <button onClick={handleLogout} className="mt-4 flex items-center justify-center gap-2 py-3 px-4 text-red-500 hover:text-red-600 hover:bg-red-50 font-bold rounded-2xl transition-all shadow-sm">
+            <LogOut className="w-5 h-5" />
+            Log Out
+        </button>
     </div>
   )
 }

@@ -47,7 +47,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError]               = useState("");
   const [loading, setLoading]           = useState(false);
-  const [socialPopup, setSocialPopup]   = useState(false);
 
   const handleRoleSwitch = (r) => {
     setRole(r);
@@ -248,45 +247,25 @@ export default function Login() {
                 </Link>
               </div>
 
-              {/* Submit */}
-              <motion.button
-                whileHover={{ scale: 1.01, boxShadow: "0 8px 30px rgba(37,99,235,0.35)" }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-2xl font-semibold text-sm transition-all shadow-lg shadow-blue-200 disabled:opacity-60 flex items-center justify-center gap-2 mt-1 capitalize"
-              >
-                {loading ? (
-                  <>
-                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                    </svg>
-                    Signing in…
-                  </>
-                ) : `Continue as ${role}`}
-              </motion.button>
-            </form>
-
-            {/* Social login */}
-            <div className="flex items-center gap-3 my-6">
-              <div className="flex-1 h-px bg-slate-200" />
-              <span className="text-[10px] font-semibold text-slate-400 tracking-widest uppercase">Or continue with</span>
-              <div className="flex-1 h-px bg-slate-200" />
-            </div>
-
-            <div className="flex gap-3">
-              {[
-                { label: "Google",    letter: "G", color: "text-red-500"  },
-                { label: "Microsoft", letter: "M", color: "text-blue-500" },
-              ].map(({ label, letter, color }) => (
-                <motion.button  onClick={() => setSocialPopup(true)} key={label} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
-                  <span className={`font-black text-base ${color}`}>{letter}</span>
-                  {label}
-                </motion.button>
-              ))}
-            </div>
+            {/* Submit */}
+            <motion.button
+              whileHover={{ scale: 1.01, boxShadow: "0 8px 30px rgba(37,99,235,0.35)" }}
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-2xl font-semibold text-sm transition-all shadow-lg shadow-blue-200 disabled:opacity-60 flex items-center justify-center gap-2 mt-1 capitalize"
+            >
+              {loading ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                  </svg>
+                  Signing in…
+                </>
+              ) : `Continue as ${role}`}
+            </motion.button>
+          </form>
 
             <p className="text-center text-sm text-slate-500 mt-7">
               Registration is restricted to administrators.<br/>
@@ -295,14 +274,6 @@ export default function Login() {
           </motion.div>
         </div>
       </motion.div>
-
-      <PopupModal
-        isOpen={socialPopup}
-        type="info"
-        title="Coming Soon"
-        message="Social login is currently unavailable. Please sign in with your email and password."
-        onClose={() => setSocialPopup(false)}
-      />
     </div>
   );
 }

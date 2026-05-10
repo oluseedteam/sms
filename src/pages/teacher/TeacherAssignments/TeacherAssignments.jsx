@@ -32,7 +32,7 @@ const TeacherAssignments = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
-    title: '', description: '', school_class_id: '', subject_id: '',
+    title: '', description: '', attachment: '', school_class_id: '', subject_id: '',
     assigned_date: '', due_date: '', max_score: '100', status: 'active'
   });
   const [submitting, setSubmitting] = useState(false);
@@ -67,6 +67,7 @@ const TeacherAssignments = () => {
       setFormData({
         title: assignment.title || '',
         description: assignment.description || '',
+        attachment: assignment.attachment || '',
         school_class_id: assignment.school_class_id || '',
         subject_id: assignment.subject_id || '',
         assigned_date: assignment.assigned_date ? new Date(assignment.assigned_date).toISOString().split('T')[0] : '',
@@ -77,13 +78,28 @@ const TeacherAssignments = () => {
     } else {
       setEditingId(null);
       setFormData({
-        title: '', description: '', school_class_id: '', subject_id: '',
+        title: '', description: '', attachment: '', school_class_id: '', subject_id: '',
         assigned_date: new Date().toISOString().split('T')[0], 
         due_date: new Date(Date.now() + 86400000).toISOString().split('T')[0], 
         max_score: '100', status: 'active'
       });
     }
     setIsModalOpen(true);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setPopup({ isOpen: true, type: 'error', title: 'File too large', message: 'Attachment must be under 5MB.' });
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, attachment: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSave = async (e) => {
@@ -205,6 +221,16 @@ const TeacherAssignments = () => {
               </p>
 
               <div className="flex flex-wrap gap-2">
+                {a.attachment && (
+                  <button onClick={() => {
+                     const aTag = document.createElement('a');
+                     aTag.href = a.attachment;
+                     aTag.download = `${a.title}_attachment`;
+                     aTag.click();
+                  }} className="px-4 py-2.5 rounded-2xl text-xs font-bold border border-blue-200 text-blue-600 hover:bg-blue-50 transition-all flex items-center gap-1">
+                    <Download className="w-3.5 h-3.5" /> Attachment
+                  </button>
+                )}
                 <button className="px-4 py-2.5 rounded-2xl text-xs font-bold border border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-600 transition-all">
                   View Submissions
                 </button>
@@ -223,7 +249,7 @@ const TeacherAssignments = () => {
       </div>
 
       <div className="lg:w-80 w-full">
-        <TeacherAssignmentsRight />
+        <TeacherAssignmentsRight assignments={assignments} />
       </div>
 
       {/* Modal */}
@@ -264,6 +290,15 @@ const TeacherAssignments = () => {
                       ))}
                     </select>
                   </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Description</label>
+                  <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 min-h-[80px]" placeholder="Assignment details..." />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Attachment (PDF/Image)</label>
+                  <input type="file" onChange={handleFileChange} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white" />
+                  {formData.attachment && <p className="text-xs text-green-600 mt-1 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> File attached</p>}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>

@@ -110,7 +110,8 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
         delete payload.is_prefect;
         delete payload.prefect_title;
         delete payload.class_id;
-        delete payload.department;
+        // Keep department for teachers only if explicitly set
+        if (role !== 'teacher') delete payload.department;
       } else {
         if (!payload.is_prefect) delete payload.prefect_title; // ignore title if not prefect
         if (!payload.class_id) delete payload.class_id;
@@ -354,10 +355,24 @@ export default function UserManagementPage({ defaultRole = 'student' }) {
                           {classesData.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
                       </div>
-                      <div className="flex items-center">
-                        <label className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase cursor-pointer mt-6">
-                          <input type="checkbox" checked={formData.can_create_students} onChange={e => setFormData({...formData, can_create_students: e.target.checked})} className="w-4 h-4 rounded" />
-                          Can Create Students
+                      <div className="flex items-center col-span-2">
+                        <label className="flex items-center gap-3 cursor-pointer mt-4">
+                          <span className="text-xs font-bold text-gray-500 uppercase">Can Create Students</span>
+                          {/* Toggle switch */}
+                          <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, can_create_students: !formData.can_create_students })}
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                              formData.can_create_students ? 'bg-blue-600' : 'bg-gray-200'
+                            }`}
+                          >
+                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
+                              formData.can_create_students ? 'translate-x-6' : 'translate-x-1'
+                            }`} />
+                          </button>
+                          <span className={`text-xs font-bold ${formData.can_create_students ? 'text-blue-600' : 'text-gray-400'}`}>
+                            {formData.can_create_students ? 'Enabled' : 'Disabled'}
+                          </span>
                         </label>
                       </div>
                     </>

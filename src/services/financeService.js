@@ -3,26 +3,26 @@ import apiFetch from './api';
 // ─── Fee Structures (Admin) ─────────────────────────────
 export const getFees = (params = {}) => {
   const query = new URLSearchParams(params).toString();
-  return apiFetch(`/admin/fees${query ? `?${query}` : ''}`);
+  return apiFetch(`/fees${query ? `?${query}` : ''}`);
 };
 
-export const createFee = (data) => apiFetch('/admin/fees', {
+export const createFee = (data) => apiFetch('/fees', {
   method: 'POST',
   body: JSON.stringify(data),
 });
 
-export const updateFee = (id, data) => apiFetch(`/admin/fees/${id}`, {
+export const updateFee = (id, data) => apiFetch(`/fees/${id}`, {
   method: 'PUT',
   body: JSON.stringify(data),
 });
 
-export const deleteFee = (id) => apiFetch(`/admin/fees/${id}`, {
+export const deleteFee = (id) => apiFetch(`/fees/${id}`, {
   method: 'DELETE',
 });
 
 export const getAllPayments = (params = {}) => {
   const query = new URLSearchParams(params).toString();
-  return apiFetch(`/admin/payments${query ? `?${query}` : ''}`);
+  return apiFetch(`/payments${query ? `?${query}` : ''}`);
 };
 
 // ─── Student Finance ────────────────────────────────────
@@ -39,6 +39,11 @@ export const verifyPayment = (data) => apiFetch('/student/payment/verify', {
 });
 
 export const payFromWallet = (data) => apiFetch('/student/payment/pay-from-wallet', {
+  method: 'POST',
+  body: JSON.stringify(data),
+});
+// ─── Admin Broadcast ────────────────────────────────────
+export const broadcastMessage = (data) => apiFetch('/admin/broadcast-message', {
   method: 'POST',
   body: JSON.stringify(data),
 });

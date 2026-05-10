@@ -24,6 +24,7 @@ import MessagesPage from '../pages/student/Messages/MessagesPage';
 import ProfilePage from '../pages/student/Profile/ProfilePage';
 import StudentFinancePage from '../pages/student/Finance/StudentFinancePage';
 import StudentCbtPage from '../pages/student/Cbt/StudentCbtPage';
+import StudentDisputePage from '../pages/student/Dispute/StudentDisputePage';
 // ── Teacher Dashboard ────────────────────────────────────────
 import TeacherLayout from '../layouts/TeacherLayout';
 import TeacherDashboardPage    from '../pages/teacher/TeacherDashboard/TeacherDashboardPage';
@@ -39,6 +40,7 @@ import TeacherAttendacesecondPage from '../pages/teacher/TeacherAttendacesecond/
 import TeacherCalendarsecondPage from '../pages/teacher/TeacherCalendarsecond/TeacherCalendarsecondPage';
 import TeacherCreateStudentsPage from '../pages/teacher/TeacherCreateStudents/TeacherCreateStudentsPage';
 import TeacherCbtPage from '../pages/teacher/TeacherCbt/TeacherCbtPage';
+import TeacherDisputePage from '../pages/teacher/TeacherDispute/TeacherDisputePage';
 
 // ── Admin Dashboard ────────────────────────────────────────
 import AdminLayout from '../layouts/AdminLayout';
@@ -48,6 +50,10 @@ import AdminLogsPage from '../pages/Admin/dashboard/AdminLogsPage';
 import AcademicManagementPage from '../pages/Admin/dashboard/AcademicManagementPage';
 import AdminProfilePage from '../pages/Admin/dashboard/AdminProfilePage';
 import AdminFinancePage from '../pages/Admin/dashboard/AdminFinancePage';
+import AdminMessagesPage from '../pages/Admin/dashboard/AdminMessagesPage';
+import AdminDisputePage from '../pages/Admin/dashboard/AdminDisputePage';
+import AdminSettingsPage from '../pages/Admin/dashboard/AdminSettingsPage';
+import AdminNotificationsPage from '../pages/Admin/dashboard/AdminNotificationsPage';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import NotFound from '../pages/public/NotFound';
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -84,6 +90,7 @@ const AppRoutes = () => {
           <Route path='library' element={<AdminDashboardPage />} />
           <Route path='finance' element={<StudentFinancePage />} />
           <Route path='cbt' element={<StudentCbtPage />} />
+          <Route path='dispute' element={<StudentDisputePage />} />
         </Route>
       </Route>
 
@@ -104,6 +111,7 @@ const AppRoutes = () => {
           <Route path='create-students' element={<TeacherCreateStudentsPage />} />
           <Route path='cbt'          element={<TeacherCbtPage />} />
           <Route path='profile'      element={<ProfilePage />} />
+          <Route path='dispute'      element={<TeacherDisputePage />} />
         </Route>
       </Route>
       
@@ -117,10 +125,11 @@ const AppRoutes = () => {
         <Route path='student' element={<UserManagementPage defaultRole="student" />} />
         <Route path='worker' element={<UserManagementPage defaultRole="worker" />} />
         <Route path='academics' element={<AcademicManagementPage />} />
-        <Route path='financial' element={<AdminFinancePage />} />
-        <Route path='notifications' element={<div className="p-10 text-xl font-bold text-gray-500">Notification Management coming soon...</div>} />
-          <Route path='settings' element={<div className="p-10 text-xl font-bold text-gray-500">System Settings coming soon...</div>} />
-          <Route path='dispute' element={<div className="p-10 text-xl font-bold text-gray-500">Disputes & Feedback coming soon...</div>} />
+        <Route path='finance' element={<AdminFinancePage />} />
+        <Route path='messages' element={<AdminMessagesPage />} />
+        <Route path='notifications' element={<AdminNotificationsPage />} />
+        <Route path='settings' element={<AdminSettingsPage />} />
+        <Route path='dispute' element={<AdminDisputePage />} />
         </Route>
       </Route>
 

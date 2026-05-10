@@ -1,5 +1,6 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import logo from '../assets/images/logo.png';
 import {
   LayoutDashboard,
@@ -14,24 +15,40 @@ import {
   User,
   X,
   UserPlus,
-  Laptop
+  Laptop,
+  MessageSquare,
+  LogOut
 } from "lucide-react";
 
 const TeacherSidebar = ({ onClose }) => {
-  const navItems = [
-    { title: "Dashboard",   icon: LayoutDashboard, path: "/teacher" },
-    { title: "My Classes",  icon: BookOpen,        path: "/teacher/my-classes" },
-    { title: "Students",    icon: Users,           path: "/teacher/students" },
-    { title: "Add Students", icon: UserPlus,       path: "/teacher/create-students" },
-    { title: "Assignments", icon: ClipboardList,   path: "/teacher/assignments" },
-    { title: "CBT Exams",   icon: Laptop,          path: "/teacher/cbt" },
-    { title: "Gradebook",   icon: BookMarked,      path: "/teacher/gradebook" },
-    { title: "Attendance",  icon: CalendarCheck,   path: "/teacher/attendance" },
-    { title: "Messages",    icon: Mail,            path: "/teacher/messages" },
-    { title: "Calendar",    icon: Calendar,        path: "/teacher/calendar" },
-    { title: "Resources",   icon: Library,         path: "/teacher/resources" },
-    { title: "Profile",     icon: User,            path: "/teacher/profile" },
+  const navigate = useNavigate();
+  const { logout, user } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  const allNavItems = [
+    { title: "Dashboard",    icon: LayoutDashboard, path: "/teacher",                 always: true },
+    { title: "My Classes",   icon: BookOpen,        path: "/teacher/my-classes",      always: true },
+    { title: "Students",     icon: Users,           path: "/teacher/students",         always: true },
+    { title: "Add Students", icon: UserPlus,        path: "/teacher/create-students",  perm: "can_create_students" },
+    { title: "Assignments",  icon: ClipboardList,   path: "/teacher/assignments",      always: true },
+    { title: "CBT Exams",    icon: Laptop,          path: "/teacher/cbt",              always: true },
+    { title: "Gradebook",    icon: BookMarked,      path: "/teacher/gradebook",        always: true },
+    { title: "Attendance",   icon: CalendarCheck,   path: "/teacher/attendance",       always: true },
+    { title: "Messages",     icon: Mail,            path: "/teacher/messages",         always: true },
+    { title: "Calendar",     icon: Calendar,        path: "/teacher/calendar",         always: true },
+    { title: "Resources",    icon: Library,         path: "/teacher/resources",        always: true },
+    { title: "Dispute & Feedback", icon: MessageSquare, path: "/teacher/dispute",        always: true },
+    { title: "Profile",      icon: User,            path: "/teacher/profile",          always: true },
   ];
+
+  // Filter based on permissions
+  const navItems = allNavItems.filter(item =>
+    item.always || (item.perm && user?.[item.perm])
+  );
 
   return (
     <div className='w-64 h-full bg-white shadow-md p-5 flex flex-col overflow-y-auto'>
@@ -92,6 +109,11 @@ const TeacherSidebar = ({ onClose }) => {
           </button>
         </div>
       </div>
+
+      <button onClick={handleLogout} className="mt-4 flex items-center justify-center gap-2 py-3 px-4 text-red-500 hover:text-red-600 hover:bg-red-50 font-bold rounded-2xl transition-all shadow-sm">
+        <LogOut className="w-5 h-5" />
+        Log Out
+      </button>
     </div>
   );
 };

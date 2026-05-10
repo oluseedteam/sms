@@ -58,7 +58,7 @@ const AdminHeader = ({ title = "Dashboard", onMenuClick }) => {
         </div>
 
         {/* Notifications */}
-        <button className="p-2.5 md:p-3 bg-gray-50 border border-gray-100 rounded-2xl hover:bg-white hover:shadow-xl hover:border-blue-100 transition-all text-gray-400 hover:text-blue-600 relative">
+        <button onClick={() => navigate('/admin/notifications')} className="p-2.5 md:p-3 bg-gray-50 border border-gray-100 rounded-2xl hover:bg-white hover:shadow-xl hover:border-blue-100 transition-all text-gray-400 hover:text-blue-600 relative">
           <Bell className="w-5 h-5" />
           <span className="absolute top-2 md:top-2.5 right-2 md:right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
         </button>

@@ -2,11 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { BookOpen, BarChart2, ChevronRight, PlayCircle, Wrench } from 'lucide-react';
 
-const queue = [
-  { label: 'Math Practice Sheet', count: 15, color: 'bg-blue-600' },
-  { label: 'Reading Log',         count: 8,  color: 'bg-purple-500' },
-  { label: 'Science Quiz',        count: 12, color: 'bg-green-500' },
-];
+
 
 const stats = [
   { label: 'Avg Submission Rate', value: '87%' },
@@ -19,8 +15,23 @@ const templates = ['Math Worksheet', 'Reading Comprehension', 'Lab Report', 'Pro
 
 const tools = ['Rubric Builder', 'Comment Bank', 'Grade Calculator', 'Standards Alignment'];
 
-const TeacherAssignmentsRight = () => (
-  <div className="space-y-6">
+const TeacherAssignmentsRight = ({ assignments = [] }) => {
+  const activeAssignments = assignments.filter(a => a.status === 'active' || !a.status);
+  const countPerAss = 25; // Mock submission count without full submission backend
+  const totalItemsToGrade = activeAssignments.length * countPerAss;
+
+  const bgColors = ['bg-blue-600', 'bg-purple-500', 'bg-green-500', 'bg-orange-500', 'bg-pink-500'];
+
+  const queue = activeAssignments.length > 0 ? activeAssignments.slice(0, 5).map((a, i) => ({
+    label: a.title,
+    count: countPerAss,
+    color: bgColors[i % bgColors.length]
+  })) : [
+    { label: 'No Active Assignments', count: 0, color: 'bg-gray-300' }
+  ];
+
+  return (
+    <div className="space-y-6">
     {/* Grading Queue */}
     <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
       <h3 className="font-bold text-gray-800 flex items-center gap-2 mb-4">
@@ -28,7 +39,7 @@ const TeacherAssignmentsRight = () => (
       </h3>
       <div className="bg-red-50 rounded-2xl p-4 text-center mb-4 border border-red-100">
         <p className="text-xs text-gray-500 font-medium">Total Items to Grade</p>
-        <p className="text-4xl font-black text-red-500 mt-1">35</p>
+        <p className="text-4xl font-black text-red-500 mt-1">{totalItemsToGrade}</p>
       </div>
       <div className="space-y-2 mb-4">
         {queue.map((q, i) => (
@@ -114,6 +125,7 @@ const TeacherAssignmentsRight = () => (
       </p>
     </div>
   </div>
-);
+  );
+};
 
 export default TeacherAssignmentsRight;
