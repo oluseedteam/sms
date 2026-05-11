@@ -2,19 +2,17 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { BarChart2, TrendingUp, Star } from 'lucide-react';
 
-const TeacherDashboardRight = ({ quickActions = [] }) => {
-  const performers = [
-    { name: 'Emma Johnson',  subject: 'Science', score: '95%', rank: 1 },
-    { name: 'Michael Chen',  subject: 'Math',    score: '94%', rank: 2 },
-    { name: 'Sarah Williams',subject: 'English', score: '96%', rank: 3 },
-  ];
+import { useNavigate } from 'react-router-dom';
 
-  const performance = [
-    { label: 'Average Grade',      value: 89, display: 'B+ (89%)', color: 'bg-blue-500',   shadow: 'shadow-blue-100' },
-    { label: 'Homework Completion',value: 94, display: '94%',       color: 'bg-green-500',  shadow: 'shadow-green-100' },
-    { label: 'Attendance Rate',    value: 96, display: '96%',       color: 'bg-purple-500', shadow: 'shadow-purple-100' },
-    { label: 'Parent Engagement',  value: 80, display: 'High ⭐',   color: 'bg-yellow-400', shadow: 'shadow-yellow-100' },
-  ];
+const TeacherDashboardRight = ({ 
+  quickActions = [], 
+  performers = [], 
+  performance = [] 
+}) => {
+  const navigate = useNavigate();
+
+  const displayPerformers = performers || [];
+  const displayPerformance = performance || [];
 
   return (
     <div className="space-y-6">
@@ -25,9 +23,8 @@ const TeacherDashboardRight = ({ quickActions = [] }) => {
           {quickActions.map((a, i) => (
             <motion.button
               key={i}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-100 transition-colors"
+                  onClick={() => a.path && navigate(a.path)}
+                  className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-100 transition-colors"
             >
               <a.icon className="w-6 h-6" />
               <span className="text-[9px] font-bold uppercase text-center leading-tight tracking-tight">
@@ -44,7 +41,7 @@ const TeacherDashboardRight = ({ quickActions = [] }) => {
           <BarChart2 className="w-5 h-5 text-blue-600" /> Class Performance
         </h2>
         <div className="space-y-5">
-          {performance.map((p, i) => (
+          {displayPerformance.length > 0 ? displayPerformance.map((p, i) => (
             <div key={i}>
               <div className="flex justify-between text-xs font-bold mb-1 text-gray-600">
                 <span>{p.label}</span>
@@ -59,7 +56,9 @@ const TeacherDashboardRight = ({ quickActions = [] }) => {
                 />
               </div>
             </div>
-          ))}
+          )) : (
+            <p className="text-xs text-gray-400 italic text-center py-4">No performance metrics available</p>
+          )}
         </div>
       </div>
 
@@ -69,7 +68,7 @@ const TeacherDashboardRight = ({ quickActions = [] }) => {
           <TrendingUp className="w-5 h-5 text-blue-600" /> Top Performers This Week
         </h2>
         <div className="space-y-3">
-          {performers.map((s, i) => (
+          {displayPerformers.length > 0 ? displayPerformers.map((s, i) => (
             <div key={i} className="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 hover:bg-white border border-transparent hover:border-gray-100 transition-all">
               <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center font-bold text-blue-600 text-sm">
                 {s.name.split(' ').map(n => n[0]).join('')}
@@ -80,7 +79,9 @@ const TeacherDashboardRight = ({ quickActions = [] }) => {
               </div>
               <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg">{s.score}</span>
             </div>
-          ))}
+          )) : (
+            <p className="text-xs text-gray-400 italic text-center py-4">No performers recorded this week</p>
+          )}
         </div>
       </div>
     </div>

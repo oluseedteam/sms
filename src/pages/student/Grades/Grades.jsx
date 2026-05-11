@@ -111,11 +111,20 @@ const Grades = () => {
                    {groupedResults[subject].map((r, i) => (
                      <div key={i} className="flex justify-between items-center py-2 border-b border-gray-50 last:border-0">
                         <div>
-                           <p className="text-xs font-bold text-gray-700">{r.assessment_name || 'Assignment'}</p>
-                           <p className="text-[9px] text-gray-400 uppercase">{new Date(r.created_at).toLocaleDateString()}</p>
+                           <div className="flex items-center gap-2">
+                             <p className="text-xs font-bold text-gray-700">{r.assessment_name || 'Assignment'}</p>
+                             <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${
+                                r.assessment_type === 'cbt' ? 'bg-purple-50 text-purple-600' : 
+                                r.assessment_type === 'assignment' ? 'bg-orange-50 text-orange-600' : 
+                                'bg-blue-50 text-blue-600'
+                             }`}>
+                                {r.assessment_type || 'Grade'}
+                             </span>
+                           </div>
+                           <p className="text-[9px] text-gray-400 uppercase mt-0.5">{new Date(r.created_at).toLocaleDateString()}</p>
                         </div>
                         <div className="text-right">
-                           <p className="text-sm font-black text-blue-600">{r.score}</p>
+                           <p className="text-sm font-black text-blue-600">{r.score}{r.max_score ? `/${r.max_score}` : ''}</p>
                            <p className="text-[8px] font-bold text-gray-400">SCORE</p>
                         </div>
                      </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DollarSign, Plus, Trash2, Pencil, X, Loader2, CheckCircle, AlertCircle, History, CreditCard } from 'lucide-react';
 import { getFees, createFee, updateFee, deleteFee, getAllPayments } from '../../../services/financeService';
+import { getClasses } from '../../../services/classService';
 
 const AdminFinancePage = () => {
   const [fees, setFees] = useState([]);
@@ -12,6 +13,7 @@ const AdminFinancePage = () => {
   const [editingFee, setEditingFee] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
   const [alert, setAlert] = useState(null);
+  const [classes, setClasses] = useState([]);
 
   const [formData, setFormData] = useState({
     class_name: '', department: '', term: '1st Term', academic_year: '', amount: '', description: ''
@@ -22,9 +24,14 @@ const AdminFinancePage = () => {
 
   const fetchData = async () => {
     try {
-      const [feesRes, paymentsRes] = await Promise.all([getFees(), getAllPayments()]);
+      const [feesRes, paymentsRes, classesRes] = await Promise.all([
+        getFees(), 
+        getAllPayments(),
+        getClasses()
+      ]);
       setFees(Array.isArray(feesRes) ? feesRes : []);
       setPayments(paymentsRes?.data || []);
+      setClasses(Array.isArray(classesRes) ? classesRes : classesRes?.data || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -129,7 +136,7 @@ const AdminFinancePage = () => {
                     <select required value={formData.class_name} onChange={e => setFormData({...formData, class_name: e.target.value})}
                       className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500 text-sm">
                       <option value="">Select Class</option>
-                      {classOptions.map(c => <option key={c} value={c}>{c}</option>)}
+                      {classes.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
                     </select>
                   </div>
                   <div>

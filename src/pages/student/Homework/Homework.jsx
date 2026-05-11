@@ -18,6 +18,8 @@ import {
 import { motion } from 'motion/react';
 import HomeworkRight from './HomeworkRight';
 import { getAssignments } from '../../../services/assignmentService';
+import AssignmentSubmissionModal from './AssignmentSubmissionModal';
+import PopupModal from '../../../components/PopupModal';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -39,22 +41,32 @@ const itemVariants = {
 const Homework = () => {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedAssignment, setSelectedAssignment] = useState(null);
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+  const [popup, setPopup] = useState({ isOpen: false, type: 'info', title: '', message: '' });
+
+  const fetchHomework = async () => {
+    try {
+      const res = await getAssignments();
+      setAssignments(res.data || res);
+    } catch (error) {
+      console.error("Failed to fetch homework:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchHomework = async () => {
-      try {
-        const res = await getAssignments();
-        setAssignments(res.data || res);
-      } catch (error) {
-        console.error("Failed to fetch homework:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchHomework();
   }, []);
 
-  const getStatusColor = (status) => {
+  const handleOpenAssignment = (item) => {
+    setSelectedAssignment(item);
+    setIsSubmitModalOpen(true);
+  };
+
+  const getStatusColor = (status, score) => {
+    if (score !== null && score !== undefined) return 'bg-green-100 text-green-700 border-green-200';
     switch (status) {
       case 'active': return 'bg-orange-50 text-orange-600 border-orange-100';
       case 'completed': return 'bg-green-50 text-green-600 border-green-100';
@@ -86,8 +98,8 @@ const Homework = () => {
               className={`bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 group relative overflow-hidden`}
             >
               <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
-                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border flex items-center gap-1.5 ${getStatusColor(item.status)}`}>
-                  {item.status}
+                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border flex items-center gap-1.5 ${getStatusColor(item.status, item.submission?.score)}`}>
+                  {item.submission?.score !== null && item.submission?.score !== undefined ? `Graded: ${item.submission.score}/${item.max_score || 100}` : item.status}
                 </span>
               </div>
 
@@ -125,9 +137,18 @@ const Homework = () => {
                 </p>
               )}
 
+              {item.submission?.feedback && (
+                  <div className="mb-6 p-4 bg-green-50 rounded-xl border border-green-100 italic text-xs text-green-800">
+                      <strong>Teacher Feedback:</strong> {item.submission.feedback}
+                  </div>
+              )}
+
               <div className="flex flex-col sm:flex-row items-center gap-3">
-                 <button className="w-full sm:w-auto px-10 py-3 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-tighter hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 flex items-center justify-center gap-2">
-                    Open Assignment
+                 <button 
+                  onClick={() => handleOpenAssignment(item)}
+                  className="w-full sm:w-auto px-10 py-3 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-tighter hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 flex items-center justify-center gap-2"
+                 >
+                    {item.submission ? 'Resubmit Assignment' : 'Open Assignment'}
                  </button>
               </div>
             </motion.div>
@@ -143,6 +164,26 @@ const Homework = () => {
       <div className="lg:w-80 w-full">
         <HomeworkRight assignments={assignments} />
       </div>
+
+      {selectedAssignment && (
+        <AssignmentSubmissionModal 
+            isOpen={isSubmitModalOpen}
+            onClose={() => setIsSubmitModalOpen(false)}
+            assignment={selectedAssignment}
+            onSubmitted={() => {
+                setPopup({ isOpen: true, type: 'success', title: 'Submitted!', message: 'Your assignment has been submitted successfully.' });
+                fetchHomework();
+            }}
+        />
+      )}
+
+      <PopupModal 
+        isOpen={popup.isOpen}
+        type={popup.type}
+        title={popup.title}
+        message={popup.message}
+        onClose={() => setPopup({...popup, isOpen: false})}
+      />
     </div>
   );
 };

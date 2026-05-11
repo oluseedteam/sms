@@ -25,6 +25,7 @@ import ProfilePage from '../pages/student/Profile/ProfilePage';
 import StudentFinancePage from '../pages/student/Finance/StudentFinancePage';
 import StudentCbtPage from '../pages/student/Cbt/StudentCbtPage';
 import StudentDisputePage from '../pages/student/Dispute/StudentDisputePage';
+import StudentLibraryPage from '../pages/student/Library/StudentLibraryPage';
 // ── Teacher Dashboard ────────────────────────────────────────
 import TeacherLayout from '../layouts/TeacherLayout';
 import TeacherDashboardPage    from '../pages/teacher/TeacherDashboard/TeacherDashboardPage';
@@ -54,6 +55,10 @@ import AdminMessagesPage from '../pages/Admin/dashboard/AdminMessagesPage';
 import AdminDisputePage from '../pages/Admin/dashboard/AdminDisputePage';
 import AdminSettingsPage from '../pages/Admin/dashboard/AdminSettingsPage';
 import AdminNotificationsPage from '../pages/Admin/dashboard/AdminNotificationsPage';
+import UserDetailPage from '../pages/Admin/dashboard/UserDetailPage';
+import CbtResultApprovalPage from '../pages/Admin/dashboard/CbtResultApprovalPage';
+import HealthInfoPage from '../pages/shared/HealthInfoPage';
+import ParentInfoPage from '../pages/student/Profile/ParentInfoPage';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import NotFound from '../pages/public/NotFound';
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -87,10 +92,12 @@ const AppRoutes = () => {
           <Route path='attendance' element={<AttendancePage />} />
           <Route path='message' element={<MessagesPage />} />
           <Route path='profile' element={<ProfilePage />} />
-          <Route path='library' element={<AdminDashboardPage />} />
+          <Route path='library' element={<StudentLibraryPage />} />
           <Route path='finance' element={<StudentFinancePage />} />
           <Route path='cbt' element={<StudentCbtPage />} />
           <Route path='dispute' element={<StudentDisputePage />} />
+          <Route path='health' element={<HealthInfoPage />} />
+          <Route path='parent-info' element={<ParentInfoPage />} />
         </Route>
       </Route>
 
@@ -112,6 +119,7 @@ const AppRoutes = () => {
           <Route path='cbt'          element={<TeacherCbtPage />} />
           <Route path='profile'      element={<ProfilePage />} />
           <Route path='dispute'      element={<TeacherDisputePage />} />
+          <Route path='health'       element={<HealthInfoPage />} />
         </Route>
       </Route>
       
@@ -127,9 +135,11 @@ const AppRoutes = () => {
         <Route path='academics' element={<AcademicManagementPage />} />
         <Route path='finance' element={<AdminFinancePage />} />
         <Route path='messages' element={<AdminMessagesPage />} />
+        <Route path='cbt-results' element={<CbtResultApprovalPage />} />
         <Route path='notifications' element={<AdminNotificationsPage />} />
         <Route path='settings' element={<AdminSettingsPage />} />
         <Route path='dispute' element={<AdminDisputePage />} />
+        <Route path='users/view/:role/:id' element={<UserDetailPage />} />
         </Route>
       </Route>
 

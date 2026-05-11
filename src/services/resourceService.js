@@ -17,3 +17,10 @@ export async function deleteResource(id) {
     method: "DELETE",
   });
 }
+
+export async function updateResource(id, data) {
+  return apiFetch(`/resources/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+}

@@ -1,135 +1,118 @@
-import React from 'react';
-import { Zap, Bell, Users, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Zap, Bell, Users, ShieldCheck, ChevronRight, MessageCircle } from 'lucide-react';
+import apiFetch from '../../../services/api';
+import { motion } from 'framer-motion';
 
-const MessagesRight = () => {
-  const quickActions = [
-    { label: '✉️ Message My Teacher', color: 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-100' },
-    { label: '❓ Ask a Question', color: 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' },
-    { label: '⚠️ Report a Problem', color: 'bg-white text-red-500 border border-red-100 hover:bg-red-50' },
-  ];
+const MessagesRight = ({ teachers = [], onMessage }) => {
+  const [announcements, setAnnouncements] = useState([]);
 
-  const announcements = [
-    {
-      id: 1,
-      title: 'Picture Day – Next Friday!',
-      sub: 'Remember to wear your uniform',
-      time: '3 days ago',
-      emoji: '📸',
-      color: 'bg-blue-50 border-blue-100',
-    },
-    {
-      id: 2,
-      title: 'Book Fair Coming Soon!',
-      sub: 'October 30 – November 3',
-      time: '1 week ago',
-      emoji: '📚',
-      color: 'bg-purple-50 border-purple-100',
-    },
-  ];
-
-  const teachers = [
-    { name: 'Mrs. Anderson', subject: 'Math', emoji: '👩‍🏫', online: true },
-    { name: 'Mr. Wilson', subject: 'English', emoji: '👨‍🏫', online: false },
-    { name: 'Ms. Parker', subject: 'Science', emoji: '👩‍🔬', online: true },
-  ];
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const res = await apiFetch('/messages?sender_type=admin');
+        setAnnouncements((res.data || res).slice(0, 3));
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchAnnouncements();
+  }, []);
 
   const safetyTips = [
-    'Never share personal information',
-    'Tell a teacher or parent if something makes you uncomfortable',
-    'Be kind in all your messages',
+    'Always be respectfull to teachers',
+    'Report any issues to the school admin',
+    'Stay helpful to fellow students',
   ];
 
   return (
     <div className="space-y-6">
-      {/* Quick Actions */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div className="flex items-center gap-2 mb-5">
-          <Zap className="w-5 h-5 text-blue-500" />
-          <h3 className="font-bold text-gray-800 uppercase tracking-tight text-sm">Quick Actions</h3>
-        </div>
-        <div className="space-y-3">
-          {quickActions.map((action, idx) => (
-            <button
-              key={idx}
-              className={`w-full py-3 px-4 rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-sm ${action.color}`}
-            >
-              {action.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Recent Announcements */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div className="flex items-center gap-2 mb-5">
-          <Bell className="w-5 h-5 text-orange-500" />
-          <h3 className="font-bold text-gray-800 uppercase tracking-tight text-sm">Recent Announcements</h3>
-        </div>
-        <div className="space-y-3">
-          {announcements.map((item) => (
-            <div
-              key={item.id}
-              className={`p-4 rounded-xl border ${item.color} group hover:shadow-md transition-all`}
-            >
-              <div className="flex items-start gap-3">
-                <span className="text-xl">{item.emoji}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-black text-gray-800 uppercase tracking-tight leading-tight">{item.title}</p>
-                  <p className="text-[10px] font-bold text-gray-500 mt-0.5">{item.sub}</p>
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="text-[9px] font-bold text-gray-400">{item.time}</span>
-                    <button className="text-[9px] font-black text-blue-600 hover:underline uppercase">View Details</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+      {/* Quick Status */}
+      <div className="bg-linear-to-br from-blue-600 to-indigo-700 rounded-4xl p-8 text-white shadow-xl shadow-blue-500/10">
+        <h3 className="text-sm font-black uppercase tracking-widest mb-2 opacity-80">Message Portal</h3>
+        <p className="text-xl font-black mb-6">Stay connected with your Academic Mentors</p>
+        <div className="grid grid-cols-2 gap-4">
+           <div className="bg-white/10 rounded-2xl p-4 border border-white/10">
+              <p className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-1">Response</p>
+              <p className="text-lg font-black tracking-tight">Fast</p>
+           </div>
+           <div className="bg-white/10 rounded-2xl p-4 border border-white/10">
+              <p className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-1">Encrypted</p>
+              <p className="text-lg font-black tracking-tight">AES-256</p>
+           </div>
         </div>
       </div>
 
       {/* My Teachers */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div className="flex items-center gap-2 mb-5">
-          <Users className="w-5 h-5 text-green-500" />
-          <h3 className="font-bold text-gray-800 uppercase tracking-tight text-sm">My Teachers</h3>
+      <div className="bg-white rounded-4xl p-6 shadow-sm border border-gray-100 transition-all hover:shadow-xl hover:shadow-gray-200/40">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2.5">
+            <Users className="w-5 h-5 text-indigo-500" />
+            <h3 className="font-black text-gray-800 uppercase tracking-widest text-[11px]">My Teachers</h3>
+          </div>
+          <span className="text-[9px] font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full uppercase">{teachers.length} Active</span>
         </div>
-        <div className="space-y-3">
-          {teachers.map((teacher, idx) => (
-            <div key={idx} className="flex items-center justify-between gap-3">
+        <div className="space-y-2.5">
+          {teachers.map((teacher) => (
+            <motion.div 
+              key={teacher.id}
+              whileHover={{ x: 4 }}
+              onClick={() => onMessage?.(teacher.id)}
+              className="flex items-center justify-between p-3.5 bg-gray-50/50 rounded-2xl border border-transparent hover:border-indigo-100 hover:bg-indigo-50/20 transition-all cursor-pointer group"
+            >
               <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-lg border border-blue-100">
-                    {teacher.emoji}
-                  </div>
-                  <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${teacher.online ? 'bg-green-400' : 'bg-gray-300'}`} />
+                <div className="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center font-black text-indigo-600 text-xs border border-gray-100 group-hover:bg-indigo-600 group-hover:text-white group-hover:border-indigo-600 transition-all duration-300">
+                  {teacher.full_name?.charAt(0)}
                 </div>
                 <div>
-                  <p className="text-[11px] font-black text-gray-800 uppercase tracking-tight">{teacher.name}</p>
-                  <p className="text-[9px] font-bold text-gray-400">{teacher.subject}</p>
+                  <p className="text-[11px] font-black text-gray-800 uppercase tracking-tight">{teacher.full_name}</p>
+                  <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Active Now</p>
                 </div>
               </div>
-              <button className="px-3 py-1.5 bg-blue-600 text-white rounded-lg font-black text-[9px] uppercase tracking-widest hover:bg-blue-700 transition-all shadow-sm shadow-blue-100">
-                Message
-              </button>
-            </div>
+              <MessageCircle className="w-4 h-4 text-gray-300 group-hover:text-indigo-500 transition-colors" />
+            </motion.div>
           ))}
+          {teachers.length === 0 && (
+             <div className="p-8 text-center text-gray-400">
+                <p className="text-[10px] font-black uppercase tracking-widest italic opacity-50">No teachers found</p>
+             </div>
+          )}
         </div>
-        <p className="text-[9px] font-bold text-yellow-600 bg-yellow-50 border border-yellow-100 rounded-lg p-2 mt-4 text-center">
-          🔒 Your parents can see these messages!
-        </p>
       </div>
 
-      {/* Online Safety Reminder */}
-      <div className="bg-green-50 rounded-2xl p-6 border border-green-100 shadow-sm">
-        <div className="flex items-center gap-2 mb-4">
-          <ShieldCheck className="w-5 h-5 text-green-600" />
-          <h3 className="font-bold text-gray-800 uppercase tracking-tight text-sm">Online Safety Reminder</h3>
+      {/* Announcements */}
+      <div className="bg-white rounded-4xl p-6 shadow-sm border border-gray-100 transition-all hover:shadow-xl hover:shadow-gray-200/40">
+        <div className="flex items-center gap-2.5 mb-6">
+          <Bell className="w-5 h-5 text-orange-500" />
+          <h3 className="font-black text-gray-800 uppercase tracking-widest text-[11px]">Broadcasts</h3>
         </div>
-        <div className="space-y-3">
+        <div className="space-y-4">
+          {announcements.map((item) => (
+            <div key={item.id} className="relative pl-6 before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-orange-100 before:rounded-full">
+              <p className="text-[11px] font-black text-gray-800 uppercase tracking-tight mb-1">From Admin</p>
+              <p className="text-[10px] font-medium text-gray-400 leading-normal mb-2 line-clamp-3">{item.content}</p>
+              <p className="text-[9px] font-black text-orange-500 uppercase tracking-widest">{new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+            </div>
+          ))}
+          {announcements.length === 0 && (
+             <p className="text-[10px] font-bold text-gray-400 italic text-center py-4">No recent broadcasts</p>
+          )}
+        </div>
+      </div>
+
+      {/* Safety Reminder */}
+      <div className="bg-emerald-50 rounded-4xl p-6 border border-emerald-100 group overflow-hidden relative">
+        <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-emerald-100 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700" />
+        <div className="flex items-center gap-3 mb-4 relative">
+          <div className="p-2 bg-emerald-500 rounded-xl">
+             <ShieldCheck className="w-4 h-4 text-white" />
+          </div>
+          <h3 className="font-black text-emerald-900 uppercase tracking-widest text-[11px]">Etiquette</h3>
+        </div>
+        <div className="space-y-3 relative">
           {safetyTips.map((tip, idx) => (
-            <div key={idx} className="flex items-start gap-2">
-              <span className="text-green-500 font-black text-sm mt-0.5">✓</span>
-              <p className="text-[11px] font-bold text-green-900 leading-snug">{tip}</p>
+            <div key={idx} className="flex items-start gap-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+              <p className="text-[10px] font-bold text-emerald-800 uppercase tracking-tight leading-normal">{tip}</p>
             </div>
           ))}
         </div>

@@ -28,3 +28,21 @@ export async function deleteAssignment(id) {
     method: "DELETE",
   });
 }
+
+export async function submitAssignment(id, data) {
+    return apiFetch(`/assignments/${id}/submit`, {
+        method: "POST",
+        body: JSON.stringify(data),
+    });
+}
+
+export async function getSubmissions(id) {
+    return apiFetch(`/assignments/${id}/submissions`);
+}
+
+export async function gradeSubmission(submissionId, data) {
+    return apiFetch(`/submissions/${submissionId}/grade`, {
+        method: "POST",
+        body: JSON.stringify(data),
+    });
+}

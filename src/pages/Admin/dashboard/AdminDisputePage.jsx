@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageSquare, Loader2, CheckCircle, AlertCircle, X, Send, Filter } from 'lucide-react';
-import { getDisputes, replyDispute } from '../../../services/disputeService';
+import { getDisputes, replyDispute, clearAllDisputes } from '../../../services/disputeService';
 
 const StatusBadge = ({ status }) => {
   const map = {
@@ -52,6 +52,17 @@ const AdminDisputePage = () => {
     } finally { setReplying(false); }
   };
 
+  const handleClearAll = async () => {
+    if (!window.confirm('Delete all feedback and dispute records permanently?')) return;
+    try {
+        await clearAllDisputes();
+        setAlert({ type: 'success', message: 'All records cleared.' });
+        fetchDisputes();
+    } catch (err) {
+        setAlert({ type: 'error', message: 'Failed to clear records.' });
+    }
+  };
+
   const filtered = filter === 'all' ? disputes : disputes.filter(d => d.status === filter);
 
   const senderName = (d) => d.sender?.full_name || 'Unknown';
@@ -73,9 +84,14 @@ const AdminDisputePage = () => {
       <div className="flex items-center gap-3">
         <MessageSquare className="w-7 h-7 text-blue-600" />
         <h1 className="text-2xl font-black text-gray-800">Disputes & Feedback</h1>
-        <span className="ml-auto bg-red-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">
-          {disputes.filter(d => d.status === 'open').length} Open
-        </span>
+        <div className="ml-auto flex items-center gap-3">
+            <button onClick={handleClearAll} className="text-[10px] font-black text-red-500 uppercase tracking-widest px-4 py-2 hover:bg-red-50 rounded-xl transition-all">
+                Clear All
+            </button>
+            <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">
+            {disputes.filter(d => d.status === 'open').length} Open
+            </span>
+        </div>
       </div>
 
       {/* Filters */}

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserPlus, Users, Loader2, X, CheckCircle, AlertCircle, Search } from 'lucide-react';
 import { getTeacherStudents, createStudentAsTeacher } from '../../../services/teacherStudentService';
+import { getClasses } from '../../../services/classService';
 import { useAuth } from '../../../hooks/useAuth';
 
 const TeacherCreateStudentsPage = () => {
@@ -12,16 +13,21 @@ const TeacherCreateStudentsPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [search, setSearch] = useState('');
+  const [classes, setClasses] = useState([]);
   const [alert, setAlert] = useState(null);
   const [formData, setFormData] = useState({
-    full_name: '', email: '', password: '', student_id: '', gender: '', department: ''
+    full_name: '', email: '', password: '', student_id: '', gender: '', department: '', class_id: ''
   });
 
   const fetchStudents = async () => {
     try {
-      const res = await getTeacherStudents();
+      const [res, classesRes] = await Promise.all([
+         getTeacherStudents(),
+         getClasses()
+      ]);
       setStudents(res.students || []);
       setClassInfo(res.class || null);
+      setClasses(Array.isArray(classesRes) ? classesRes : classesRes?.data || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -134,11 +140,19 @@ const TeacherCreateStudentsPage = () => {
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Gender</label>
-                  <select value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})}
+                  <select required value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})}
                     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500 text-sm">
                     <option value="">Select Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Class</label>
+                  <select required value={formData.class_id} onChange={e => setFormData({...formData, class_id: e.target.value})}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-blue-500 text-sm">
+                    <option value="">Select Class</option>
+                    {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
                 </div>
                 <div>

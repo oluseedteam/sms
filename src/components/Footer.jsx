@@ -77,6 +77,29 @@ const Footer = () => {
             </ul>
           </div>
 
+          {/* Contact */}
+          <div className="flex flex-col gap-4">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-[#1875F0]">
+              Contact Us
+            </h3>
+            <ul className="flex flex-col gap-4">
+              <li className="flex items-start gap-3">
+                <FaLocationDot className="text-[#1875F0] mt-1 shrink-0" />
+                <span className="text-sm text-[#8b8fa8] leading-tight">
+                  Bolorunduro Area, Beside Tipper Association Office, Oba Road, Okinni, Osogbo, Osun State, Nigeria
+                </span>
+              </li>
+              <li className="flex items-center gap-3">
+                <FaPhone className="text-[#1875F0] shrink-0" />
+                <span className="text-sm text-[#8b8fa8]">+234 8144353033</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <FaEnvelope className="text-[#1875F0] shrink-0" />
+                <span className="text-sm text-[#8b8fa8]">info@ghraschool.com</span>
+              </li>
+            </ul>
+          </div>
+
           {/* Legal */}
           <div className="flex flex-col gap-4">
             <h3 className="text-xs font-bold uppercase tracking-widest text-[#1875F0]">
@@ -94,47 +117,6 @@ const Footer = () => {
                   </a>
                 </li>
               ))}
-            </ul>
-          </div>
-
-          {/* Get in Touch */}
-          <div className="flex flex-col gap-4">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-[#1875F0]">
-              Headquarters
-            </h3>
-            <ul className="flex flex-col gap-4 mb-2">
-              <li className="flex items-start gap-3 text-sm text-[#8b8fa8] leading-relaxed">
-                <FaLocationDot className="text-[#1875F0] mt-1 shrink-0" />
-                <span>
-                  Bolorunduro Area, Beside Tipper<br />
-                  Association Office, Oba Road,<br />
-                  Okinni, Osogbo,<br />
-                  Osun State, Nigeria
-                </span>
-              </li>
-            </ul>
-            <h3 className="text-xs font-bold uppercase tracking-widest text-[#1875F0]">
-              Direct Support
-            </h3>
-            <ul className="flex flex-col gap-3">
-              <li className="flex items-center gap-3 text-sm">
-                <FaPhone className="text-[#1875F0] shrink-0" />
-                <a
-                  href="tel:+2348144353033"
-                  className="text-[#8b8fa8] hover:text-white transition-colors duration-200"
-                >
-                  +234 814 435 3033
-                </a>
-              </li>
-              <li className="flex items-center gap-3 text-sm">
-                <FaEnvelope className="text-[#1875F0] shrink-0" />
-                <a
-                  href="mailto:hello@ghraschool.com"
-                  className="text-[#8b8fa8] hover:text-white transition-colors duration-200"
-                >
-                  hello@ghraschool.com
-                </a>
-              </li>
             </ul>
           </div>
 

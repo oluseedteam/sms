@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import {
   BookOpen, MapPin, Calendar, Users, CheckCircle2,
@@ -9,6 +9,7 @@ import {
 import TeacherMyClassesRight from './TeacherMyClassesRight';
 import { getTeacherClasses, createTeacherClass, deleteTeacherClass } from '../../../services/teacherClassService';
 import PopupModal from '../../../components/PopupModal';
+import apiFetch from '../../../services/api';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -47,6 +48,8 @@ const TeacherMyClasses = () => {
   const [popup, setPopup] = useState({ isOpen: false, type: 'info', title: '', message: '' });
   const [deleteTarget, setDeleteTarget] = useState(null);
 
+  const [allClasses, setAllClasses] = useState([]);
+
   const fetchClasses = async () => {
     try {
       const res = await getTeacherClasses();
@@ -76,6 +79,10 @@ const TeacherMyClasses = () => {
         };
       });
       setClasses(mapped);
+      
+      // Fetch all academic classes for the modal
+      const academicClasses = await apiFetch('/classes');
+      setAllClasses(Array.isArray(academicClasses) ? academicClasses : (academicClasses?.data || []));
     } catch(err) {
       console.error(err);
     } finally {
@@ -89,6 +96,10 @@ const TeacherMyClasses = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
+    if(!formData.grade) {
+      setPopup({ isOpen: true, type: 'error', title: 'Pick a Class', message: 'Please select a target class.' });
+      return;
+    }
     setSubmitting(true);
     try {
       await createTeacherClass(formData);
@@ -269,8 +280,16 @@ const TeacherMyClasses = () => {
                   <input required placeholder="e.g. Mathematics" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Target Grade</label>
-                  <input required placeholder="e.g. Grade 4B" value={formData.grade} onChange={e => setFormData({...formData, grade: e.target.value})} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Target Class</label>
+                  <select 
+                    required 
+                    value={formData.grade} 
+                    onChange={e => setFormData({...formData, grade: e.target.value})} 
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-blue-500"
+                  >
+                    <option value="">Select Class</option>
+                    {allClasses.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Schedule Array (Time)</label>

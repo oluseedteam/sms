@@ -19,3 +19,23 @@ export async function broadcastMessageToTeachers(data) {
     body: JSON.stringify(data),
   });
 }
+
+export async function updateMessage(id, content) {
+    return apiFetch(`/messages/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ content }),
+    });
+}
+
+export async function deleteMessage(id) {
+    return apiFetch(`/messages/${id}`, {
+        method: "DELETE",
+    });
+}
+
+export async function clearChat(otherId, otherType) {
+    return apiFetch("/messages/clear-chat", {
+        method: "POST",
+        body: JSON.stringify({ other_id: otherId, other_type: otherType }),
+    });
+}

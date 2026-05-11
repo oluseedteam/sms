@@ -22,6 +22,7 @@ const TeacherAttendance = () => {
   const [students, setStudents] = useState([]);
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
+  const [selectedTerm, setSelectedTerm] = useState('First');
   const [view, setView] = useState('grid');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -82,6 +83,7 @@ const TeacherAttendance = () => {
       const payload = {
         attendance_date: new Date().toISOString().split('T')[0],
         school_class_id: selectedClass.id,
+        term: selectedTerm,
         records: students.map(s => ({
           student_id: s.id,
           status: s.status,
@@ -132,6 +134,15 @@ const TeacherAttendance = () => {
                 {classes.map(c => (
                   <option key={c.id} value={c.id}>{c.name} - {c.grade_level}</option>
                 ))}
+              </select>
+              <select 
+                className="text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full border-none outline-none cursor-pointer"
+                value={selectedTerm}
+                onChange={(e) => setSelectedTerm(e.target.value)}
+              >
+                <option value="First">First Term</option>
+                <option value="Second">Second Term</option>
+                <option value="Third">Third Term</option>
               </select>
               <span className="text-xs font-bold text-gray-400">📅 {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</span>
             </div>

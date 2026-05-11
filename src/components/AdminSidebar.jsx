@@ -29,6 +29,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
     { title: "Notification Management", icon: Bell, path: "/admin/notifications" },
     { title: "Settings", icon: Settings, path: "/admin/settings" },
     { title: "Dispute / Feedback", icon: MessageSquare, path: "/admin/dispute" },
+    { title: "CBT Results", icon: BookOpen, path: "/admin/cbt-results" },
   ];
 
   const handleLogout = () => {

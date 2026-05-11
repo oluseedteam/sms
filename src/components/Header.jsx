@@ -1,9 +1,10 @@
 import { Mail, Star, Menu } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 export default function Header({ onMenuClick }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user } = useAuth(); // ✅ GET USER FROM CONTEXT
 
   const getHeaderTitle = () => {
@@ -32,6 +33,16 @@ export default function Header({ onMenuClick }) {
       day: "numeric",
       year: "numeric",
     }).format(new Date());
+  };
+
+  const goToMessages = () => {
+    if (user?.role === 'teacher') navigate('/teacher/messages');
+    else if (user?.role === 'student') navigate('/student/messages');
+  };
+
+  const goToProfile = () => {
+    if (user?.role === 'teacher') navigate('/teacher/profile');
+    else if (user?.role === 'student') navigate('/student/profile');
   };
 
   return (
@@ -63,20 +74,20 @@ export default function Header({ onMenuClick }) {
         </span>
 
         {/* MAIL */}
-        <div className="shrink-0">
+        <div className="shrink-0" onClick={goToMessages}>
           <Mail className="text-blue-700 h-9 w-9 md:h-10 md:w-10 p-1.5 bg-white rounded-full shadow-sm cursor-pointer hover:bg-gray-50 transition" />
         </div>
 
         {/* USER */}
-        <div className="flex items-center gap-2 bg-white p-1 px-2 rounded-full shadow-sm shrink-0 cursor-pointer hover:shadow-md transition">
+        <div onClick={goToProfile} className="flex items-center gap-2 bg-white p-1 px-2 rounded-full shadow-sm shrink-0 cursor-pointer hover:shadow-md transition">
 
           <img
-            src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.full_name || "User"}&background=2563eb&color=fff`}
+            src={user?.profile_picture || `https://ui-avatars.com/api/?name=${user?.full_name || "User"}&background=2563eb&color=fff`}
             alt="user"
-            className="w-8 h-8 md:w-10 md:h-10 rounded-full"
+            className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
           />
 
-          <div className="hidden sm:block leading-tight">
+          <div className="hidden sm:block leading-tight pr-2">
             <p className="text-sm font-semibold">
               {user?.full_name || "Student"}
             </p>

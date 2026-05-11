@@ -101,10 +101,14 @@ const TeacherSidebar = ({ onClose }) => {
       <div className="mt-8 bg-linear-to-b from-blue-700 to-blue-900 text-white p-5 rounded-3xl shadow-lg shadow-blue-200">
         <p className="text-xs font-bold text-center mb-4 uppercase tracking-widest opacity-90">Quick Actions</p>
         <div className="space-y-2.5">
-          <button className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-white/15 hover:bg-white/20 transition-all rounded-2xl border border-white/10 text-xs font-bold ring-white/5 ring-1">
+          <button 
+            onClick={() => navigate('/teacher/attendance')}
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-white/15 hover:bg-white/20 transition-all rounded-2xl border border-white/10 text-xs font-bold ring-white/5 ring-1">
             <span className="text-blue-200">✓</span> Take Attendance
           </button>
-          <button className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-white/15 hover:bg-white/20 transition-all rounded-2xl border border-white/10 text-xs font-bold ring-white/5 ring-1">
+          <button 
+            onClick={() => navigate('/teacher/gradebook')}
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-white/15 hover:bg-white/20 transition-all rounded-2xl border border-white/10 text-xs font-bold ring-white/5 ring-1">
             <span>📝</span> Grade Work
           </button>
         </div>

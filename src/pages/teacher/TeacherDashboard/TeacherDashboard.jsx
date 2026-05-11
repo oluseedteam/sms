@@ -21,6 +21,7 @@ import TeacherDashboardRight from './TeacherDashboardRight';
 import apiFetch from '../../../services/api';
 import { getTeacherClasses } from '../../../services/teacherClassService';
 import { getAssignments } from '../../../services/assignmentService';
+import { getMessages } from '../../../services/messageService';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -36,19 +37,22 @@ const TeacherDashboard = () => {
   const [summary, setSummary] = useState(null);
   const [teacherClasses, setTeacherClasses] = useState([]);
   const [assignments, setAssignments] = useState([]);
+  const [broadcasts, setBroadcasts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const [sumRes, classesRes, assignRes] = await Promise.all([
+        const [sumRes, classesRes, assignRes, msgRes] = await Promise.all([
           apiFetch('/dashboard/summary'),
           getTeacherClasses(),
-          getAssignments()
+          getAssignments(),
+          getMessages({ sender_type: 'admin' })
         ]);
         setSummary(sumRes?.summary || {});
         setTeacherClasses(Array.isArray(classesRes) ? classesRes : (classesRes?.data || []));
         setAssignments(Array.isArray(assignRes) ? assignRes : (assignRes?.data || []));
+        setBroadcasts(msgRes?.data || []);
       } catch (error) {
         console.error('Failed to load dashboard data:', error);
       } finally {
@@ -92,19 +96,24 @@ const TeacherDashboard = () => {
     type: 'success'
   }));
 
-  const upcomingEvents = [
-    { day: '27', label: 'Field Trip to Zoo',          sub: 'Friday, October 27',  color: 'bg-blue-50 text-blue-600' },
-    { day: '📚', label: 'Book Fair',                  sub: 'Next Week',           color: 'bg-gray-50 text-gray-500' },
-    { day: '👥', label: 'Parent-Teacher Conferences', sub: 'Next Tuesday',        color: 'bg-yellow-50 text-yellow-600' },
+  const upcomingEvents = broadcasts.length > 0 ? broadcasts.slice(0, 3).map(b => ({
+    day: '📢',
+    label: b.content.substring(0, 30) + (b.content.length > 30 ? '...' : ''),
+    sub: `Broadcasted on ${new Date(b.created_at).toLocaleDateString()}`,
+    color: 'bg-blue-50 text-blue-600'
+  })) : [
+    { day: '✨', label: 'No new broadcasts', sub: 'Check back later', color: 'bg-gray-50 text-gray-400' }
   ];
 
+
+
   const quickActions = [
-    { label: 'Record Attendance', icon: ClipboardCheck },
-    { label: 'Enter Grades',      icon: GraduationCap },
-    { label: 'Send Message',      icon: MessageSquare },
-    { label: 'Create Assignment', icon: PlusCircle },
-    { label: 'Schedule Meeting',  icon: Calendar },
-    { label: 'View Reports',      icon: BarChart2 },
+    { label: 'Record Attendance', icon: ClipboardCheck, path: '/teacher/attendance' },
+    { label: 'Enter Grades',      icon: GraduationCap, path: '/teacher/gradebook' },
+    { label: 'Send Message',      icon: MessageSquare, path: '/teacher/messages' },
+    { label: 'Create Assignment', icon: PlusCircle, path: '/teacher/assignments' },
+    { label: 'Schedule Meeting',  icon: Calendar, path: '/teacher/calendar' },
+    { label: 'View Reports',      icon: BarChart2, path: '/teacher/results' },
   ];
 
   if (loading) {
@@ -241,7 +250,11 @@ const TeacherDashboard = () => {
 
       {/* ── Right sidebar ────────────────────────── */}
       <div className="lg:w-80 w-full">
-        <TeacherDashboardRight quickActions={quickActions} />
+        <TeacherDashboardRight 
+          quickActions={quickActions} 
+          performers={summary?.performers}
+          performance={summary?.performance}
+        />
       </div>
     </div>
   );

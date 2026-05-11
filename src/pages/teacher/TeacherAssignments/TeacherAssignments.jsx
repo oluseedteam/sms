@@ -9,6 +9,7 @@ import { getAssignments, createAssignment, updateAssignment, deleteAssignment } 
 import { getClasses } from '../../../services/classService';
 import { getSubjects } from '../../../services/subjectService';
 import PopupModal from '../../../components/PopupModal';
+import SubmissionsModal from './SubmissionsModal';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -38,6 +39,8 @@ const TeacherAssignments = () => {
   const [submitting, setSubmitting] = useState(false);
   const [popup, setPopup] = useState({ isOpen: false, type: 'info', title: '', message: '' });
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isSubmissionsOpen, setIsSubmissionsOpen] = useState(false);
+  const [selectedAssignment, setSelectedAssignment] = useState(null);
 
   const fetchData = async () => {
     setLoading(true);
@@ -231,10 +234,15 @@ const TeacherAssignments = () => {
                     <Download className="w-3.5 h-3.5" /> Attachment
                   </button>
                 )}
-                <button className="px-4 py-2.5 rounded-2xl text-xs font-bold border border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-600 transition-all">
+                <button 
+                  onClick={() => { setSelectedAssignment(a); setIsSubmissionsOpen(true); }}
+                  className="px-4 py-2.5 rounded-2xl text-xs font-bold border border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-600 transition-all"
+                >
                   View Submissions
                 </button>
-                <button className="px-4 py-2.5 rounded-2xl text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-100 transition-all">
+                <button 
+                  onClick={() => { setSelectedAssignment(a); setIsSubmissionsOpen(true); }}
+                  className="px-4 py-2.5 rounded-2xl text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-100 transition-all">
                   Grade Now
                 </button>
               </div>
@@ -248,9 +256,13 @@ const TeacherAssignments = () => {
         </motion.div>
       </div>
 
-      <div className="lg:w-80 w-full">
-        <TeacherAssignmentsRight assignments={assignments} />
-      </div>
+      {selectedAssignment && (
+        <SubmissionsModal 
+          isOpen={isSubmissionsOpen}
+          onClose={() => { setIsSubmissionsOpen(false); setSelectedAssignment(null); }}
+          assignment={selectedAssignment}
+        />
+      )}
 
       {/* Modal */}
       <AnimatePresence>
