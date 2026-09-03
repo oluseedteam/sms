@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, CheckCircle, FileText, Download, Loader2, Award, MessageSquare } from 'lucide-react';
 import { getSubmissions, gradeSubmission } from '../../../services/assignmentService';
@@ -10,7 +10,8 @@ const SubmissionsModal = ({ isOpen, onClose, assignment }) => {
     const [gradeData, setGradeData] = useState({ score: '', feedback: '' });
     const [submitting, setSubmitting] = useState(false);
 
-    const fetchSubmissions = async () => {
+    const fetchSubmissions = useCallback(async () => {
+        if (!isOpen || !assignment) return;
         setLoading(true);
         try {
             const res = await getSubmissions(assignment.id);
@@ -20,11 +21,13 @@ const SubmissionsModal = ({ isOpen, onClose, assignment }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [isOpen, assignment]);
 
     useEffect(() => {
-        if (isOpen && assignment) fetchSubmissions();
-    }, [isOpen, assignment]);
+        fetchSubmissions();
+    }, [fetchSubmissions]);
+
+
 
     const handleGradeSubmit = async (e) => {
         e.preventDefault();

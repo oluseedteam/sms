@@ -58,9 +58,10 @@ const AdminDisputePage = () => {
         await clearAllDisputes();
         setAlert({ type: 'success', message: 'All records cleared.' });
         fetchDisputes();
-    } catch (err) {
+    } catch {
         setAlert({ type: 'error', message: 'Failed to clear records.' });
     }
+
   };
 
   const filtered = filter === 'all' ? disputes : disputes.filter(d => d.status === filter);

@@ -1,32 +1,29 @@
 import React from 'react';
 import HeroSection from './HeroSection';
 import Welcome from './Welcome';
+import AcademicPathways from './AcademicPathways';
 import Advantage from './Advantage';
-import Faq from '../../../components/Faq';
-import Admission from './Admission';
 import Snapshot from './Snapshot';
+import Testimonials from './Testimonials';
+import Admission from './Admission';
 import News from './News';
-import { motion } from "motion/react";
-
+import Faq from '../../../components/Faq';
 
 const Home = () => {
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 100 }}
-      transition={{ duration: 1 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: false }}
-      className='overflow-hidden'
-    >
+    <div className="w-full overflow-x-hidden font-Dm-sans">
       <HeroSection />
       <Welcome />
+      <AcademicPathways />
       <Advantage />
-      <Faq />
-      <Admission />
       <Snapshot />
+      <Testimonials />
+      <Admission />
       <News />
-    </motion.div>
-  )
-}
+      <Faq />
+    </div>
+  );
+};
 
-export default Home
+export default Home;
+

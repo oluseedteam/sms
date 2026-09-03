@@ -19,8 +19,8 @@ const AdminFinancePage = () => {
     class_name: '', department: '', term: '1st Term', academic_year: '', amount: '', description: ''
   });
 
-  const classOptions = ['JSS1', 'JSS2', 'JSS3', 'SS1', 'SS2', 'SS3'];
   const departmentOptions = ['', 'Science', 'Art', 'Commercial'];
+
 
   const fetchData = async () => {
     try {

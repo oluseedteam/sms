@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { useNavigate } from 'react-router-dom';
 import {
   ChevronLeft, ChevronRight, PlusCircle, Printer,
   Download, RefreshCw, Calendar, Clock, CheckCircle2, Loader2, X, Trash2
@@ -13,10 +12,8 @@ import PopupModal from '../../../components/PopupModal';
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 const TeacherCalendar = () => {
-  const navigate = useNavigate();
-  const [activeView, setActiveView] = useState('Month');
-  const [activeFilter, setActiveFilter] = useState('All Events');
   const [events, setEvents] = useState([]);
+
   const [classList, setClassList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentDate, setCurrentDate] = useState(new Date());

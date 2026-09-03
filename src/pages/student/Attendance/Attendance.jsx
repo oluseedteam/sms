@@ -62,7 +62,7 @@ const Attendance = () => {
   const presentCount = attendance.filter(a => a.status === 'present').length;
   const absentCount = attendance.filter(a => a.status === 'absent').length;
   const lateCount = attendance.filter(a => a.status === 'late').length;
-  const rate = attendance.length > 0 ? Math.round((presentCount / attendance.length) * 100) : 100;
+  const rate = attendance.length > 0 ? Math.round((presentCount / attendance.length) * 100) : 0;
 
   if (loading) {
     return (
@@ -149,7 +149,7 @@ const Attendance = () => {
       </motion.div>
 
       <div className="lg:w-80 w-full">
-        <AttendaceRight />
+        <AttendaceRight attendance={attendance} />
       </div>
     </div>
   );

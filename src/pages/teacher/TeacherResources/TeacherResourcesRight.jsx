@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'motion/react';
 import { 
   Upload, FileText, Star, BarChart3, 
   FolderHeart, Tag, HelpCircle, ChevronRight, 

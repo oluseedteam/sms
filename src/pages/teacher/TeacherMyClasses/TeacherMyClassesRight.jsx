@@ -1,100 +1,46 @@
 import React from 'react';
-import { motion } from 'motion/react';
-import { BookOpen, TrendingUp, Library, ChevronRight } from 'lucide-react';
+import { BookOpen, CalendarDays, ClipboardCheck, Library, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-
-const schedule = [
-  ['Math', 'Math', 'English', 'Math', 'Math'],
-  ['English', 'English', 'Science', 'Science', 'English'],
-  ['Science', 'Art', 'Social', 'PE', 'Art'],
+const SHORTCUTS = [
+  { label: 'Gradebook', path: '/teacher/gradebook', icon: ClipboardCheck },
+  { label: 'Attendance', path: '/teacher/attendance', icon: CalendarDays },
+  { label: 'Students', path: '/teacher/students', icon: Users },
+  { label: 'Resources', path: '/teacher/resources', icon: Library },
 ];
 
-const colorMap = {
-  Math:    'bg-blue-200 text-blue-800',
-  English: 'bg-purple-200 text-purple-800',
-  Science: 'bg-green-200 text-green-800',
-  Social:  'bg-yellow-200 text-yellow-800',
-  Art:     'bg-orange-200 text-orange-800',
-  PE:      'bg-indigo-200 text-indigo-800',
-};
-
-const planning = ['Curriculum Standards', 'Lesson Templates', 'Resource Library'];
-const profDev   = [
-  { label: 'Differentiated Instruction', date: 'November 10, 2023', color: 'border-l-green-500' },
-  { label: 'Parent Communication Skills', date: 'November 15, 2023', color: 'border-l-blue-500' },
-];
-const resources = ['Textbooks', 'Worksheets', 'Videos', 'Activities'];
-
-const TeacherMyClassesRight = () => (
-  <div className="space-y-6">
-    {/* Weekly Schedule */}
-    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-      <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-        <BookOpen className="w-4 h-4 text-blue-600" /> Weekly Schedule
-      </h3>
-      <div className="grid grid-cols-5 gap-1.5">
-        {days.map(d => (
-          <div key={d} className="text-center text-[10px] font-bold text-gray-400 mb-1">{d}</div>
-        ))}
-        {schedule.map((row, ri) =>
-          row.map((subj, ci) => (
-            <div key={`${ri}-${ci}`} className={`text-center text-[9px] font-bold px-1 py-1.5 rounded-lg leading-tight ${colorMap[subj]}`}>
-              {subj.slice(0, 4)}
-            </div>
-          ))
+export default function TeacherMyClassesRight({ classes = [] }) {
+  return (
+    <div className="space-y-6">
+      <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+        <h3 className="mb-4 flex items-center gap-2 font-bold text-gray-800">
+          <BookOpen className="h-4 w-4 text-blue-600" /> Assigned Schedule
+        </h3>
+        {classes.length === 0 ? (
+          <p className="text-xs text-gray-500">No teaching groups are assigned.</p>
+        ) : (
+          <div className="space-y-3">
+            {classes.slice(0, 6).map(schoolClass => (
+              <div key={schoolClass.id} className="rounded-2xl bg-slate-50 p-3">
+                <p className="text-sm font-black text-slate-800">{schoolClass.name}</p>
+                <p className="mt-0.5 text-[11px] text-slate-500">{schoolClass.grade_level}{schoolClass.arm ? ` · ${schoolClass.arm}` : ''}</p>
+                <p className="mt-1 text-[10px] font-bold text-blue-700">{(schoolClass.subjects || []).map(subject => subject.name).join(', ') || 'No subjects assigned'}</p>
+              </div>
+            ))}
+          </div>
         )}
       </div>
-    </div>
 
-    {/* Lesson Planning */}
-    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-      <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-        <BookOpen className="w-4 h-4 text-blue-600" /> Lesson Planning
-      </h3>
-      <div className="space-y-1">
-        {planning.map((item, i) => (
-          <button key={i} className="w-full text-left p-3 rounded-xl hover:bg-gray-50 flex justify-between items-center group transition-all">
-            <span className="text-sm text-gray-700 group-hover:text-blue-600 font-medium">{item}</span>
-            <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
-          </button>
-        ))}
+      <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+        <h3 className="mb-4 font-bold text-gray-800">Teaching Tools</h3>
+        <div className="grid grid-cols-2 gap-2">
+          {SHORTCUTS.map(shortcut => (
+            <Link key={shortcut.path} to={shortcut.path} className="flex flex-col items-center gap-2 rounded-2xl bg-slate-50 p-3 text-center text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700">
+              <shortcut.icon className="h-4 w-4" /> {shortcut.label}
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
-
-    {/* Professional Development */}
-    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-      <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-        <TrendingUp className="w-4 h-4 text-blue-600" /> Professional Development
-      </h3>
-      <div className="space-y-3">
-        {profDev.map((item, i) => (
-          <motion.div
-            key={i}
-            whileHover={{ x: 3 }}
-            className={`p-3 rounded-2xl bg-gray-50 border-l-4 ${item.color} cursor-pointer`}
-          >
-            <p className="text-sm font-bold text-gray-800">{item.label}</p>
-            <p className="text-xs text-gray-500 mt-0.5">{item.date}</p>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-
-    {/* Class Resources */}
-    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-      <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-        <Library className="w-4 h-4 text-blue-600" /> Class Resources
-      </h3>
-      <div className="grid grid-cols-2 gap-2">
-        {resources.map((r, i) => (
-          <button key={i} className="flex items-center gap-2 p-3 bg-gray-50 rounded-2xl hover:bg-blue-50 hover:text-blue-600 text-sm font-medium text-gray-700 transition-all">
-            <span className="text-base">{['📚','📝','🎬','🎯'][i]}</span> {r}
-          </button>
-        ))}
-      </div>
-    </div>
-  </div>
-);
-
-export default TeacherMyClassesRight;
+  );
+}

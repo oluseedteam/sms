@@ -18,7 +18,8 @@ const SUBJECT_PILL_COLORS = [
   'bg-rose-100 text-rose-600',
 ];
 
-const MyClassRight = ({ classes = [], subjectScores = [], schoolClasses = [] }) => {
+const MyClassRight = ({ classes = [] }) => {
+
   // Find favorite subject (highest avg score)
   const bestSubject = classes.length > 0
     ? [...classes].sort((a, b) => (b.avg_score || 0) - (a.avg_score || 0))[0]

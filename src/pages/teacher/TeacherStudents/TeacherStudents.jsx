@@ -51,7 +51,8 @@ const TeacherStudents = () => {
       }
     };
     fetchClasses();
-  }, []);
+  }, [isStudent]);
+
 
   const handleClassChange = async (classId) => {
     setLoading(true);

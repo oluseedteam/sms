@@ -1,97 +1,101 @@
 import React from 'react';
-import { Award, CheckCircle, Download, Mail, Printer, Target, Star } from 'lucide-react';
+import { Award, CheckCircle, Printer, Star, BookOpen } from 'lucide-react';
 
-const GradesRight = () => {
-  const summary = [
-    { label: "Subjects Taking", value: "6" },
-    { label: "Average Grade", value: "B+ (89%)", highlight: true },
-    { label: "Perfect Attendance", value: "12 days" },
-  ];
+export default function GradesRight({ reportCard }) {
+  if (!reportCard) return null;
 
-  const badges = [
-    { name: "Math Master", date: "Oct 15", icon: "📐", color: "bg-orange-100" },
-    { name: "Reading Star", date: "Oct 10", icon: "📚", color: "bg-purple-100" },
-    { name: "Science Explorer", date: "Oct 20", icon: "🧪", color: "bg-green-100" },
-    { name: "Perfect Week", date: "Oct 5", icon: "⭐", color: "bg-yellow-100" },
-  ];
+  const { summary, academic, results = [] } = reportCard;
 
-  const goals = [
-    { text: "Continue improving math speed", icon: "🧮" },
-    { text: "Read 15 books this term", icon: "📖" },
-    { text: "Practice spelling words daily", icon: "✍️" },
-  ];
+  const topSubjects = [...results].sort((a, b) => (b.total_score || 0) - (a.total_score || 0)).slice(0, 3);
 
   return (
     <div className="space-y-6">
-      {/* Term Summary */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div className="flex items-center gap-2 mb-6">
-          <Award className="w-5 h-5 text-blue-500" />
-          <h3 className="font-bold text-gray-800 uppercase tracking-tight">Term Summary</h3>
+      {/* Term Performance Card */}
+      <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-4">
+        <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
+          <Award className="w-5 h-5 text-blue-600" />
+          <h3 className="font-black text-slate-800 text-xs uppercase tracking-wider">
+            {academic?.term} Summary
+          </h3>
         </div>
-        <div className="space-y-4">
-          {summary.map((item, idx) => (
-            <div key={idx} className="flex justify-between items-center text-xs">
-              <span className="text-gray-500 font-bold uppercase">{item.label}</span>
-              <span className={`font-black ${item.highlight ? 'text-blue-600' : 'text-gray-800'}`}>{item.value}</span>
+
+        <div className="space-y-3 text-xs">
+          <div className="flex justify-between items-center">
+            <span className="text-gray-500 font-bold uppercase">Registered Subjects</span>
+            <span className="font-black text-slate-800">{summary?.total_subjects || results.length}</span>
+          </div>
+
+          <div className="flex justify-between items-center">
+            <span className="text-gray-500 font-bold uppercase">Average Score</span>
+            <span className="font-black text-blue-600 text-sm">{summary?.average_score || 0}%</span>
+          </div>
+
+          <div className="flex justify-between items-center">
+            <span className="text-gray-500 font-bold uppercase">Overall Grade</span>
+            <span className="font-black text-amber-600 text-sm">{summary?.overall_grade || 'N/A'}</span>
+          </div>
+
+          {summary?.position && (
+            <div className="flex justify-between items-center">
+              <span className="text-gray-500 font-bold uppercase">Class Position</span>
+              <span className="font-black text-blue-700">
+                {summary.position}{['st','nd','rd'][(summary.position % 10)-1] || 'th'}
+                {summary?.total_students_in_class && ` of ${summary.total_students_in_class}`}
+              </span>
             </div>
-          ))}
-          <div className="pt-4 border-t border-dashed border-gray-100">
-             <div className="bg-yellow-50 p-3 rounded-xl border border-yellow-100 flex items-center justify-center gap-2">
-                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                <span className="text-[10px] font-black text-yellow-700 uppercase tracking-tighter">Honor Roll - Yes!</span>
-             </div>
+          )}
+
+          {summary?.attendance_total > 0 && (
+            <div className="flex justify-between items-center">
+              <span className="text-gray-500 font-bold uppercase">Attendance</span>
+              <span className="font-black text-slate-800">
+                {summary.attendance_present} / {summary.attendance_total} days
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Top Subjects */}
+      {topSubjects.length > 0 && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
+            <Star className="w-5 h-5 text-amber-500" />
+            <h3 className="font-black text-slate-800 text-xs uppercase tracking-wider">
+              Top Performing Subjects
+            </h3>
+          </div>
+
+          <div className="space-y-2">
+            {topSubjects.map((s, idx) => (
+              <div key={idx} className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                <div>
+                  <p className="font-bold text-xs text-slate-800">{s.subject_name}</p>
+                  <p className="text-[10px] text-gray-400 font-semibold">{s.remark}</p>
+                </div>
+                <div className="text-right">
+                  <span className="font-black text-xs text-blue-600">{s.total_score} pts</span>
+                  <span className="block text-[9px] font-black text-slate-500">Grade {s.grade}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
-
-      {/* Badges Earned */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-         <div className="flex items-center gap-2 mb-6">
-          <CheckCircle className="w-5 h-5 text-green-500" />
-          <h3 className="font-bold text-gray-800 uppercase tracking-tight">Badges Earned</h3>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-           {badges.map((badge, idx) => (
-             <div key={idx} className="p-3 rounded-xl border border-gray-50 flex flex-col items-center text-center group hover:shadow-md transition-all">
-                <span className={`text-2xl p-3 rounded-xl ${badge.color} mb-2 group-hover:scale-110 transition-transform`}>{badge.icon}</span>
-                <p className="text-[10px] font-black text-gray-800 leading-tight uppercase tracking-tighter mb-1">{badge.name}</p>
-                <p className="text-[9px] font-bold text-gray-400">{badge.date}</p>
-             </div>
-           ))}
-        </div>
-      </div>
+      )}
 
       {/* Actions */}
-      <div className="bg-blue-600 rounded-3xl p-6 shadow-lg shadow-blue-100 space-y-3">
-         <button className="w-full flex items-center justify-center gap-3 py-3 bg-white text-blue-600 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-black hover:text-white transition-all">
-            <Download className="w-4 h-4" /> Download PDF
-         </button>
-         <button className="w-full flex items-center justify-center gap-3 py-3 bg-blue-700 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all">
-            <Mail className="w-4 h-4" /> Email parents
-         </button>
-         <button className="w-full flex items-center justify-center gap-3 py-3 bg-blue-800 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all">
-            <Printer className="w-4 h-4" /> Print Report
-         </button>
-      </div>
-
-      {/* Next Term Goals */}
-      <div className="bg-orange-50 rounded-2xl p-6 border border-orange-100 shadow-sm">
-         <div className="flex items-center gap-2 mb-6">
-          <Target className="w-5 h-5 text-orange-500" />
-          <h3 className="font-bold text-gray-800 uppercase tracking-tight">Next Term Goals</h3>
-        </div>
-        <div className="space-y-4">
-           {goals.map((goal, idx) => (
-             <div key={idx} className="flex items-start gap-3">
-                <span className="bg-white p-2 rounded-lg shadow-sm border border-orange-100">{goal.icon}</span>
-                <p className="text-[11px] font-bold text-orange-900 leading-snug">{goal.text}</p>
-             </div>
-           ))}
-        </div>
+      <div className="bg-gradient-to-br from-blue-900 to-indigo-950 rounded-3xl p-6 text-white shadow-lg space-y-3">
+        <h4 className="font-black text-xs uppercase tracking-wider text-amber-300">Official Actions</h4>
+        <p className="text-[11px] text-blue-100">
+          Download or print a crisp copy of your certified report card.
+        </p>
+        <button
+          onClick={() => window.print()}
+          className="w-full flex items-center justify-center gap-2 py-3 bg-white text-blue-950 rounded-xl font-black text-xs uppercase tracking-wider hover:bg-amber-400 transition-all cursor-pointer"
+        >
+          <Printer className="w-4 h-4" /> Print / Save PDF
+        </button>
       </div>
     </div>
   );
-};
-
-export default GradesRight;
+}

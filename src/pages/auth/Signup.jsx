@@ -178,9 +178,9 @@ export default function Signup() {
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
             className="relative z-10 flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg overflow-hidden p-1.5">
-              <img src={logo} alt="GHRA School" className="w-full h-full object-contain" />
+              <img src={logo} alt="GHRA" className="w-full h-full object-contain" />
             </div>
-            <span className="font-bold text-white/95 text-sm tracking-widest">GHRA School</span>
+            <span className="font-bold text-white/95 text-sm tracking-widest">GHRA</span>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}

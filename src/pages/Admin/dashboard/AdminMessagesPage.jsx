@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Megaphone, User, Users, Loader2, X, CheckCircle, AlertCircle, Trash2, Smile } from 'lucide-react';
+import { Send, Megaphone, User, Users, Loader2, X, CheckCircle, AlertCircle, Trash2, Smile, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { broadcastMessageToTeachers, getMessages, deleteMessage } from '../../../services/messageService';
 import apiFetch from '../../../services/api';
 import toast from 'react-hot-toast';
@@ -41,8 +42,8 @@ const AdminMessagesPage = () => {
 
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run once on mount, fetchData is stable
+  }, []);
+
 
   const handleBroadcast = async (e) => {
     e.preventDefault();
@@ -120,14 +121,24 @@ const AdminMessagesPage = () => {
       </AnimatePresence>
 
       {/* Header Section */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="p-3 bg-blue-50 rounded-2xl">
-          <Megaphone className="w-7 h-7 text-blue-600" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-blue-50 rounded-2xl">
+            <Megaphone className="w-7 h-7 text-blue-600" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-black text-gray-800 tracking-tight uppercase">Admin Center</h1>
+            <p className="text-sm text-gray-500 font-black uppercase tracking-widest leading-none mt-1 opacity-60">Control all school communications</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl font-black text-gray-800 tracking-tight uppercase">Admin Center</h1>
-          <p className="text-sm text-gray-500 font-black uppercase tracking-widest leading-none mt-1 opacity-60">Control all school communications</p>
-        </div>
+
+        <Link
+          to="/admin/inquiries"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-black uppercase tracking-wider transition shadow-sm self-start sm:self-auto"
+        >
+          <Mail className="w-4 h-4" />
+          <span>Public Inquiries</span>
+        </Link>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8 items-start">

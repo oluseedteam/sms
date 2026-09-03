@@ -1,15 +1,17 @@
 import React from 'react';
 import { AuthProvider } from './context/AuthContext';
-import AppRoutes from './routes/AppRoutes'
+import AppRoutes from './routes/AppRoutes';
 import { Toaster } from 'react-hot-toast';
+import AiAssistantModal from './components/AiAssistantModal';
 
 const App = () => {
   return (
     <AuthProvider>
-        <AppRoutes/>
-        <Toaster position="top-right" reverseOrder={false} />
+      <AppRoutes />
+      <AiAssistantModal />
+      <Toaster position="top-right" reverseOrder={false} />
     </AuthProvider>
-  )
-}
+  );
+};
 
-export default App
+export default App;

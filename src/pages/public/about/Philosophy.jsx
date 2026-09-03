@@ -1,33 +1,54 @@
 import React from 'react';
 import rectangular from "../../../assets/images/rectangular_school_collage.png";
 import { motion } from "motion/react";
+import { Link } from 'react-router-dom';
+import { FiChevronRight, FiCompass } from 'react-icons/fi';
+import { FaGraduationCap } from 'react-icons/fa6';
 
 const Philosophy = () => {
   return (
-     <motion.section
-          className="relative min-h-screen  flex items-center justify-center bg-cover bg-center"
-          style={{ backgroundImage: `url(${rectangular})` }}
-          initial={{opacity: 0, y:100}}
-          transition={{duration: 1.5}}
-          whileInView={{opacity: 1, y:0}}
-          viewport={{once: false}}
-        >
-          {/* Overlay for readability */}
-          <div className="absolute blur-2xl inset-0 bg-[#0C236C4D] scale-110"></div>
-    
-          {/* Content */}
-          <div className="relative z-10 text-center text-white px-4 pt-15">
-            <h1 className="text-4xl md:text-6xl font-semibold">
-              Our Philosophy
-            </h1>
-            <p className="mt-4 max-w-4xl mx-auto md:text-lg text-[#DFE0E5] md:text-2xl text-lg">
-              Every child can learn, grow, and excel when given the right environment, the right guidance, and the right encouragement. We focus on understanding how each student learns and provide support that helps them reach their full potential.
-            </p>
-            
-            
-            </div>
-        </motion.section>
-  )
-}
+    <section
+      className="relative min-h-[60vh] lg:min-h-[70vh] flex items-center justify-center bg-cover bg-center pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      style={{ backgroundImage: `url(${rectangular})` }}
+    >
+      {/* Dark modern gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0A192F]/90 via-[#0C1B33]/85 to-[#070F20]/95 backdrop-blur-[2px]"></div>
 
-export default Philosophy
+      {/* Content */}
+      <div className="relative z-10 max-w-4xl mx-auto text-center text-white flex flex-col items-center">
+        
+        {/* Breadcrumb */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-semibold backdrop-blur-md mb-6">
+          <Link to="/" className="text-slate-300 hover:text-white transition">Home</Link>
+          <FiChevronRight className="text-amber-400 text-xs" />
+          <span className="text-amber-300">About Our School</span>
+        </div>
+
+        {/* Headline */}
+        <motion.h1
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-heading tracking-tight leading-tight"
+        >
+          Our Vision, Philosophy & <br className="hidden sm:block" />
+          <span className="text-amber-400">Heritage of Excellence</span>
+        </motion.h1>
+
+        {/* Subtext */}
+        <motion.p
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mt-6 max-w-2xl mx-auto text-slate-200 text-sm sm:text-base md:text-lg leading-relaxed"
+        >
+          Every child can learn, grow, and excel when given the right environment, inspirational mentorship, and boundless encouragement.
+        </motion.p>
+
+      </div>
+    </section>
+  );
+};
+
+export default Philosophy;
+

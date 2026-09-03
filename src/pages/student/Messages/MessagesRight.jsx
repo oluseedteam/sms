@@ -100,19 +100,19 @@ const MessagesRight = ({ teachers = [], onMessage }) => {
       </div>
 
       {/* Safety Reminder */}
-      <div className="bg-emerald-50 rounded-4xl p-6 border border-emerald-100 group overflow-hidden relative">
-        <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-emerald-100 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700" />
+      <div className="bg-blue-50 rounded-4xl p-6 border border-blue-100 group overflow-hidden relative">
+        <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-blue-100 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700" />
         <div className="flex items-center gap-3 mb-4 relative">
-          <div className="p-2 bg-emerald-500 rounded-xl">
+          <div className="p-2 bg-blue-600 rounded-xl">
              <ShieldCheck className="w-4 h-4 text-white" />
           </div>
-          <h3 className="font-black text-emerald-900 uppercase tracking-widest text-[11px]">Etiquette</h3>
+          <h3 className="font-black text-blue-900 uppercase tracking-widest text-[11px]">Etiquette</h3>
         </div>
         <div className="space-y-3 relative">
           {safetyTips.map((tip, idx) => (
             <div key={idx} className="flex items-start gap-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-              <p className="text-[10px] font-bold text-emerald-800 uppercase tracking-tight leading-normal">{tip}</p>
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0" />
+              <p className="text-[10px] font-bold text-blue-800 uppercase tracking-tight leading-normal">{tip}</p>
             </div>
           ))}
         </div>

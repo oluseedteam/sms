@@ -1,69 +1,111 @@
-import React from 'react'
+import React from 'react';
 import pathtoschool from "../../../assets/images/welcome_image_3.png";
 import { motion } from "motion/react";
+import { Link } from 'react-router-dom';
+import { FiCheckCircle, FiAward, FiShield, FiArrowRight } from 'react-icons/fi';
+import { FaGraduationCap } from 'react-icons/fa6';
+
+const facts = [
+  { label: 'Accreditation', val: 'Ministry of Education & WAEC/NECO Certified' },
+  { label: 'Curriculum', val: 'Blended Nigerian & Cambridge International' },
+  { label: 'Avg. Class Size', val: '15 - 20 Students for Maximum Attention' },
+  { label: 'Location', val: 'Secure, Serene Campus in Osogbo, Osun State' },
+];
 
 const OurSchool = () => {
   return (
-    <motion.section className="bg-slate-50 py-16 px-4 md:px-8 lg:px-16 font-Dm-sans"
-      initial={{ opacity: 0, x: 100 }}
-      transition={{ duration: 1 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: false }}
-    >
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <section className="bg-white py-20 lg:py-28 px-4 sm:px-6 lg:px-8 font-Dm-sans relative overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
-        {/* Left Side: Image Container */}
-        <div className="relative group">
-          <div className="overflow-hidden rounded-[2.5rem] shadow-2xl">
-            <img
-              src={pathtoschool}
-              alt="School Administrator working"
-              className="w-full h-auto object-cover transform transition duration-500 group-hover:scale-105"
-            />
-          </div>
+          {/* Left Side: Image with Floating Stats Card (5 cols) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-5 relative"
+          >
+            <div className="relative group rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-100">
+              <img
+                src={pathtoschool}
+                alt="GHRA campus and student learning"
+                className="w-full h-80 sm:h-96 lg:h-[460px] object-cover transform transition duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+              
+              <div className="absolute bottom-6 left-6 right-6 text-white">
+                <span className="px-3 py-1 rounded-full bg-blue-600 text-xs font-bold uppercase tracking-wider mb-2 inline-block shadow-md">
+                  Institutional Heritage
+                </span>
+                <p className="text-sm sm:text-base font-bold font-heading">
+                  Dedicated to Holistic Child Development
+                </p>
+              </div>
+            </div>
 
-          <div className="absolute bottom-6 left-6 bg-white/10 backdrop-blur-md p-2 rounded-lg border border-white/20">
-            <span className="text-white text-xs font-bold uppercase tracking-wider">Education Excellence</span>
-          </div>
+            {/* Accent badge */}
+            <div className="hidden sm:flex absolute -top-5 -right-5 bg-amber-400 text-slate-950 p-4 rounded-2xl shadow-xl items-center gap-3 font-bold text-xs">
+              <FiAward className="text-2xl" />
+              <div>
+                <p className="leading-tight">Premier Standard</p>
+                <p className="text-[10px] opacity-80 font-normal">Approved Learning Center</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right Side: Text Content & Key Institutional Facts (7 cols) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="lg:col-span-7 space-y-6"
+          >
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-xs font-semibold">
+              <FaGraduationCap className="text-blue-600 text-sm" />
+              <span>Who We Are</span>
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 font-heading tracking-tight leading-tight">
+              A Forward-Thinking Community of <span className="text-blue-600">Scholars & Achievers</span>
+            </h2>
+
+            <div className="space-y-4 text-slate-600 text-sm sm:text-base leading-relaxed">
+              <p>
+                GHRA was founded with a distinct educational mandate: to offer uncompromising academic quality, moral uprightness, and modern vocational exposure in a secure and inspiring environment.
+              </p>
+              <p>
+                We believe true education addresses the mind, the heart, and the hands. We challenge learners to develop independent curiosity, disciplined study habits, empathetic leadership skills, and global outlooks.
+              </p>
+            </div>
+
+            {/* Quick Facts Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              {facts.map((f, i) => (
+                <div key={i} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70 flex flex-col">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{f.label}</span>
+                  <span className="text-xs sm:text-sm font-bold text-slate-800 font-heading mt-0.5">{f.val}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-4 flex flex-wrap items-center gap-4">
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-7 py-3.5 rounded-full shadow-lg shadow-blue-600/30 transition-all"
+              >
+                <span>Schedule a Campus Tour</span>
+                <FiArrowRight />
+              </Link>
+            </div>
+          </motion.div>
+
         </div>
-
-        {/* Right Side: Text Content */}
-        <div className="flex flex-col space-y-6">
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
-            About Our School
-          </h2>
-
-          <div className="space-y-4 text-slate-600 text-lg leading-relaxed">
-            <p>
-              We are a forward-thinking educational institution providing quality
-              <span className="font-semibold text-slate-800"> Primary and Secondary education</span> in a safe, structured, and inspiring
-              learning environment. Our goal is to develop students who are
-              academically strong, morally grounded, and socially responsible.
-            </p>
-
-            <p>
-              We believe education should shape both the mind and character. That
-              is why our programs combine academic excellence, discipline,
-              creativity, leadership development, and life skills.
-            </p>
-
-            <p>
-              From early foundational learning to senior academic preparation,
-              we guide every learner through a clear path of growth and achievement.
-            </p>
-          </div>
-
-
-          <div className="pt-4">
-            <button className="bg-blue-900 text-white px-8 py-3 rounded-full font-medium hover:bg-blue-800 transition-colors shadow-lg">
-              Learn More
-            </button>
-          </div>
-        </div>
-
       </div>
-    </motion.section>
-  )
-}
+    </section>
+  );
+};
 
-export default OurSchool
+export default OurSchool;
+

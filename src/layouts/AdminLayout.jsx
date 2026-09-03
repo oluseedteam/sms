@@ -13,14 +13,17 @@ const AdminLayout = () => {
   // Helper to get title from path (can be expanded)
   const getPageTitle = () => {
     const path = location.pathname;
+    if (path.includes('/admin/inquiries')) return "Contact & Tour Inquiries 📬";
+    if (path.includes('/admin/admissions')) return "Admissions & Applications 📋";
     if (path.includes('/admin/student')) return "Students 🧑‍🎓";
     if (path.includes('/admin/worker')) return "Staff & Workers 👷";
-    if (path.includes('/admin/financial')) return "Financial Reports 📈";
+    if (path.includes('/admin/financial') || path.includes('/admin/finance')) return "Financial Reports 📈";
     if (path.includes('/admin/notifications')) return "Notifications 🔔";
     if (path.includes('/admin/settings')) return "Global Settings ⚙️";
     if (path.includes('/admin/dispute')) return "Feedback & Disputes 💬";
     if (path.includes('/admin/profile')) return "My Profile 👤";
     return "Dashboard OVERVIEW 📊";
+
   };
 
   if (!user || user.role !== 'admin') {

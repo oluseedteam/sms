@@ -1,4 +1,5 @@
 import apiFetch from "./api";
+export { apiFetch };
 
 export async function registerUser({ role, fullName, studentId, employeeId, email, password, password_confirmation, department }) {
   return apiFetch("/auth/register", {

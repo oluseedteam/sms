@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, Loader2, BookOpen, DollarSign, MessageSquare, ClipboardList, UserPlus, Trash2, AlertCircle, Smile } from 'lucide-react';
+import { Bell, Loader2, BookOpen, DollarSign, MessageSquare, ClipboardList, UserPlus, Trash2, AlertCircle, Smile, Mail } from 'lucide-react';
 import apiFetch from '../../../services/api';
 import { getMessages, deleteMessage } from '../../../services/messageService';
 import { getDisputes, deleteDispute } from '../../../services/disputeService';
+import { getInquiries, deleteInquiry } from '../../../services/inquiryService';
 import toast from 'react-hot-toast';
 
 const getIcon = (msg) => {
   const m = msg?.toLowerCase() || '';
+  if (m.includes('inquiry') || m.includes('tour') || m.includes('contact')) return Mail;
   if (m.includes('payment') || m.includes('fee')) return DollarSign;
   if (m.includes('user') || m.includes('created') || m.includes('register')) return UserPlus;
   if (m.includes('message')) return MessageSquare;
@@ -18,6 +20,7 @@ const getIcon = (msg) => {
 
 const getColor = (msg) => {
   const m = msg?.toLowerCase() || '';
+  if (m.includes('inquiry') || m.includes('tour')) return 'bg-blue-50 text-blue-700';
   if (m.includes('payment') || m.includes('fee')) return 'bg-green-50 text-green-600';
   if (m.includes('delete') || m.includes('error') || m.includes('fail')) return 'bg-red-50 text-red-500';
   if (m.includes('message') || m.includes('dispute')) return 'bg-purple-50 text-purple-600';
@@ -48,10 +51,11 @@ const AdminNotificationsPage = () => {
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      const [logsRes, msgsRes, disputesRes] = await Promise.all([
-        apiFetch('/logs'),
-        getMessages(),
-        getDisputes()
+      const [logsRes, msgsRes, disputesRes, inqRes] = await Promise.all([
+        apiFetch('/logs').catch(() => ({ logs: [] })),
+        getMessages().catch(() => ({ data: [] })),
+        getDisputes().catch(() => ({ data: [] })),
+        getInquiries().catch(() => ({ data: [] })),
       ]);
       
       const combined = [
@@ -59,7 +63,7 @@ const AdminNotificationsPage = () => {
         ...(msgsRes?.data || []).map(m => ({ 
            id: `msg-${m.id}`, 
            dbId: m.id,
-           message: `New message from ${m.sender?.full_name}: ${m.content.substring(0, 30)}...`, 
+           message: `New message from ${m.sender?.full_name || 'User'}: ${m.content ? m.content.substring(0, 30) : ''}...`, 
            created_at: m.created_at,
            type: 'message'
         })),
@@ -69,6 +73,13 @@ const AdminNotificationsPage = () => {
            message: `Feedback/Dispute: ${d.subject}`, 
            created_at: d.created_at,
            type: 'dispute'
+        })),
+        ...(inqRes?.data || []).map(inq => ({
+           id: `inq-${inq.id}`,
+           dbId: inq.id,
+           message: `Contact Inquiry [${inq.inquiry_type}] from ${inq.name} (${inq.email}): ${inq.message?.substring(0, 35)}...`,
+           created_at: inq.created_at,
+           type: 'inquiry'
         }))
       ].sort((a, b) => new Date(b.created_at || b.timestamp) - new Date(a.created_at || a.timestamp));
 
@@ -109,6 +120,8 @@ const AdminNotificationsPage = () => {
               await deleteMessage(deleteTarget.dbId);
           } else if (deleteTarget.type === 'dispute') {
               await deleteDispute(deleteTarget.dbId);
+          } else if (deleteTarget.type === 'inquiry') {
+              await deleteInquiry(deleteTarget.dbId);
           } else {
               toast.error('Log entry removal not supported via individual delete');
               return;

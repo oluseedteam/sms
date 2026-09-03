@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://api.ghra.org.ng/api";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 async function apiFetch(endpoint, options = {}) {
   const token = localStorage.getItem("token");
@@ -48,15 +48,39 @@ async function apiFetch(endpoint, options = {}) {
 
     return data;
   } catch (error) {
-    // If it's already an error object we threw, just rethrow it
     if (error.status) throw error;
 
-    // Otherwise it's a network error or something else
     if (options.showToast !== false) {
       toast.error(error.message || "Network error. Please check your connection.");
     }
     throw error;
   }
+}
+
+export async function downloadApiFile(endpoint) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
+    headers: {
+      Accept: 'application/pdf',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+
+  if (!response.ok) {
+    const errorPayload = await response.json().catch(() => ({}));
+    throw Object.assign(new Error(errorPayload.message || 'Unable to download this file.'), { status: response.status });
+  }
+
+  const disposition = response.headers.get('content-disposition') || '';
+  const filename = disposition.match(/filename="?([^";]+)"?/i)?.[1] || 'report-card.pdf';
+  const blobUrl = URL.createObjectURL(await response.blob());
+  const anchor = document.createElement('a');
+  anchor.href = blobUrl;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(blobUrl);
 }
 
 export default apiFetch;

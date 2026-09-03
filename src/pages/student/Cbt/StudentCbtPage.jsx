@@ -60,12 +60,14 @@ const StudentCbtPage = () => {
   const handleStartExam = async (test) => {
     try {
       const res = await startExam(test.id);
-      setActiveExam(test);
+      setActiveExam(res.test || test);
       setQuestions(res.questions || []);
-      setTimeLeft(test.duration_minutes * 60);
+      const startedAt = res.started_at ? new Date(res.started_at).getTime() : Date.now();
+      const elapsedSeconds = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
+      setTimeLeft(Math.max(0, (Number(res.duration_minutes || test.duration_minutes) * 60) - elapsedSeconds));
       setAnswers({});
       setCurrentQ(0);
-      startTimeRef.current = Date.now();
+      startTimeRef.current = startedAt;
     } catch (err) {
       setAlert({ type: 'error', message: err.message });
     }
@@ -152,16 +154,16 @@ const StudentCbtPage = () => {
             <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-6 leading-relaxed">{q.question}</h3>
 
             <div className="space-y-3">
-              {['A', 'B', 'C', 'D'].map(opt => {
-                const selected = answers[q.id] === opt;
+              {(q.options || ['A', 'B', 'C', 'D'].map(value => ({ value, label: q[`option_${value.toLowerCase()}`] }))).map(option => {
+                const selected = answers[q.id] === option.value;
                 return (
-                  <button key={opt} onClick={() => setAnswers({...answers, [q.id]: opt})}
+                  <button key={option.value} onClick={() => setAnswers({...answers, [q.id]: option.value})}
                     className={`w-full text-left p-4 rounded-2xl border-2 transition-all flex items-center gap-4 group ${selected ? 'border-blue-500 bg-blue-50 shadow-sm' : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50'}`}>
                     <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-black shrink-0 transition-colors ${selected ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-gray-200'}`}>
-                      {opt}
+                      {option.value}
                     </span>
                     <span className={`font-semibold text-sm ${selected ? 'text-blue-800' : 'text-gray-700'}`}>
-                      {q[`option_${opt.toLowerCase()}`]}
+                      {option.label}
                     </span>
                   </button>
                 );

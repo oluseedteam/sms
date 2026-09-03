@@ -19,14 +19,8 @@ const itemVariants = {
   }
 };
 
-const defaultAchievements = [
-    { title: "Math\nMaster", icon: "🧮", bg: "bg-orange-100" },
-    { title: "Perfect\nAttendance", icon: "✅", bg: "bg-green-100" },
-    { title: "Reading\nChampion", icon: "📖", bg: "bg-purple-100" }
-];
-
 const Achievements = () => {
-    const [achievements, setAchievements] = useState(defaultAchievements);
+    const [achievements, setAchievements] = useState([]);
     const [achievementPoints, setAchievementPoints] = useState(0);
 
     useEffect(() => {
@@ -51,22 +45,10 @@ const Achievements = () => {
                     earned.push({ title: "Subject\nExplorer", icon: "🔬", bg: "bg-blue-100" });
                 }
 
-                // Always include some default achievements
-                if (earned.length === 0) {
-                    earned.push(...defaultAchievements);
-                } else {
-                    // Fill up to 3
-                    while (earned.length < 3) {
-                        const remaining = defaultAchievements.filter(d => !earned.find(e => e.title === d.title));
-                        if (remaining.length > 0) earned.push(remaining[0]);
-                        else break;
-                    }
-                }
-
                 setAchievements(earned.slice(0, 3));
                 setAchievementPoints(summary?.achievement_points || 0);
             } catch {
-                // fallback to defaults
+                setAchievements([]);
             }
         };
         fetch();
@@ -92,7 +74,10 @@ const Achievements = () => {
                 )}
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
+            {achievements.length === 0 ? (
+              <p className="text-xs text-gray-500 text-center py-5">No achievements have been earned yet.</p>
+            ) : (
+              <div className="grid grid-cols-3 gap-3">
                 {achievements.map((ach, i) => (
                     <motion.div 
                         key={i} 
@@ -108,7 +93,8 @@ const Achievements = () => {
                         </p>
                     </motion.div>
                 ))}
-            </div>
+              </div>
+            )}
         </motion.div>
     )
 }

@@ -3,38 +3,56 @@ import { motion, AnimatePresence } from "motion/react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 import { resetPassword } from "../../services/authService";
+import { 
+  FiLock, 
+  FiEye, 
+  FiEyeOff, 
+  FiArrowRight, 
+  FiArrowLeft, 
+  FiCheckCircle, 
+  FiShield, 
+  FiAlertCircle,
+  FiKey,
+  FiCheck
+} from "react-icons/fi";
+import { FaGraduationCap } from "react-icons/fa";
 
-// ── Shared pieces ─────────────────────────────────────────────────────────────
-const Shapes = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-    <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-white/5" />
-    <div className="absolute top-1/3 -right-10 w-36 h-36 rounded-full bg-yellow-400/10" />
-    <div className="absolute -bottom-12 -left-12 w-52 h-52 rounded-full bg-white/5" />
-    <div className="absolute bottom-28 right-12 w-16 h-16 rounded-full bg-yellow-400/20" />
-    <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+// ── Background Particle Glow & Matrix Grid ──────────────────────────────────
+const AmbientBackground = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 select-none">
+    <div className="absolute -top-[20%] -left-[10%] w-[600px] h-[600px] rounded-full bg-blue-600/15 blur-[120px]" />
+    <div className="absolute top-[30%] -right-[15%] w-[500px] h-[500px] rounded-full bg-indigo-600/15 blur-[140px]" />
+    <div className="absolute -bottom-[20%] left-[25%] w-[600px] h-[600px] rounded-full bg-amber-400/10 blur-[130px]" />
+    
+    <svg className="absolute inset-0 w-full h-full opacity-[0.035]" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <pattern id="rp-grid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-          <circle cx="2" cy="2" r="1.5" fill="white" />
+        <pattern id="school-grid-rp" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.2" fill="#ffffff" />
         </pattern>
       </defs>
-      <rect width="100%" height="100%" fill="url(#rp-grid)" />
+      <rect width="100%" height="100%" fill="url(#school-grid-rp)" />
     </svg>
   </div>
 );
 
-const EyeIcon = ({ open }) =>
-  open ? (
-    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+const HeroBackground = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-white/10 blur-2xl" />
+    <div className="absolute top-1/2 -right-20 w-64 h-64 rounded-full bg-amber-400/15 blur-3xl" />
+    <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-indigo-500/20 blur-2xl" />
+    
+    <svg className="absolute inset-0 w-full h-full opacity-[0.06]" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="hero-grid-rp" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.5" fill="white" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#hero-grid-rp)" />
     </svg>
-  ) : (
-    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-    </svg>
-  );
+  </div>
+);
 
-// ── Password strength ─────────────────────────────────────────────────────────
+// ── Password strength evaluation ─────────────────────────────────────────────
 const getStrength = (pw) => {
   if (!pw) return null;
   let s = 0;
@@ -42,21 +60,20 @@ const getStrength = (pw) => {
   if (/[A-Z]/.test(pw)) s++;
   if (/[0-9]/.test(pw)) s++;
   if (/[^A-Za-z0-9]/.test(pw)) s++;
-  return [
-    { label: "Too weak",    color: "bg-red-400"    },
-    { label: "Weak",        color: "bg-orange-400"  },
-    { label: "Fair",        color: "bg-yellow-400"  },
-    { label: "Strong",      color: "bg-blue-500"    },
-    { label: "Very strong", color: "bg-green-500"   },
-  ][s] && { score: s, ...([{label:"Too weak",color:"bg-red-400"},{label:"Weak",color:"bg-orange-400"},{label:"Fair",color:"bg-yellow-400"},{label:"Strong",color:"bg-blue-500"},{label:"Very strong",color:"bg-green-500"}][s]) };
+  const levels = [
+    { label: "Too weak", color: "bg-rose-500", text: "text-rose-500" },
+    { label: "Weak", color: "bg-amber-500", text: "text-amber-500" },
+    { label: "Fair", color: "bg-yellow-500", text: "text-yellow-500" },
+    { label: "Strong", color: "bg-blue-500", text: "text-blue-500" },
+    { label: "Very strong", color: "bg-emerald-500", text: "text-emerald-500" },
+  ];
+  return { score: s, ...(levels[s] || levels[0]) };
 };
 
-// ── Component ─────────────────────────────────────────────────────────────────
 export default function ResetPassword() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // The reset link from the email will contain ?token=xxx&email=yyy
   const tokenFromUrl = searchParams.get("token") || "";
   const emailFromUrl = searchParams.get("email") || "";
 
@@ -69,13 +86,12 @@ export default function ResetPassword() {
   const [loading, setLoading]                 = useState(false);
   const [success, setSuccess]                 = useState(false);
 
-  // Guard: if no token in URL, the link is invalid
   const invalidLink = !tokenFromUrl || !emailFromUrl;
 
   const validate = () => {
     const e = {};
-    if (password.length < 8)          e.password = "Password must be at least 8 characters";
-    if (password !== password_confirmation) e.password_confirmation = "Passwords do not match";
+    if (password.length < 8) e.password = "Password must contain at least 8 characters.";
+    if (password !== password_confirmation) e.password_confirmation = "Password confirmations do not match.";
     return e;
   };
 
@@ -105,8 +121,7 @@ export default function ResetPassword() {
         });
         setFieldErrors(mapped);
       } else {
-        // 403 = token expired or invalid
-        setGlobalError(err.message || "Something went wrong. Please request a new reset link.");
+        setGlobalError(err.message || "Something went wrong. Please request a new recovery link.");
       }
     } finally {
       setLoading(false);
@@ -116,257 +131,338 @@ export default function ResetPassword() {
   const st = getStrength(password);
 
   const requirements = [
-    { label: "8+ characters",     met: password.length >= 8             },
-    { label: "Uppercase letter",  met: /[A-Z]/.test(password)           },
-    { label: "Number",            met: /[0-9]/.test(password)           },
-    { label: "Special character", met: /[^A-Za-z0-9]/.test(password)   },
+    { label: "8+ characters", met: password.length >= 8 },
+    { label: "Uppercase letter", met: /[A-Z]/.test(password) },
+    { label: "Number", met: /[0-9]/.test(password) },
+    { label: "Special symbol", met: /[^A-Za-z0-9]/.test(password) },
   ];
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-slate-100 p-4"
-      style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-[#090f1d] px-4 py-8 sm:p-6 lg:p-8 font-Dm-sans text-slate-100 selection:bg-blue-600 selection:text-white">
+      <AmbientBackground />
 
+      {/* Top Utility Header */}
+      <div className="relative z-10 w-full max-w-5xl flex items-center justify-between mb-4 sm:mb-6 px-2">
+        <Link 
+          to="/login"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 text-xs sm:text-sm font-medium text-slate-300 hover:text-white transition-all backdrop-blur-md group"
+        >
+          <FiArrowLeft className="text-blue-400 group-hover:-translate-x-1 transition-transform" />
+          <span>Back to Sign In</span>
+        </Link>
+
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/20 text-[11px] font-semibold text-blue-300 backdrop-blur-md">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>Encrypted Password Update</span>
+        </div>
+      </div>
+
+      {/* Main Unified Card */}
       <motion.div
-        initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl shadow-slate-300/60 flex flex-col md:flex-row overflow-hidden"
+        initial={{ opacity: 0, y: 24, scale: 0.99 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-10 w-full max-w-5xl bg-white rounded-[28px] sm:rounded-[32px] shadow-2xl shadow-black/60 flex flex-col md:flex-row overflow-hidden border border-slate-700/30"
       >
+        {/* ── LEFT HERO: INSTITUTIONAL BRAND ──────────────────────────────── */}
+        <div className="relative w-full md:w-[48%] bg-gradient-to-br from-[#0c234a] via-[#12306b] to-[#0a1835] text-white flex flex-col justify-between p-7 sm:p-9 md:p-11 overflow-hidden min-h-[360px] md:min-h-[660px]">
+          <HeroBackground />
 
-        {/* ── LEFT ─────────────────────────────────────────────────────────── */}
-        <div className="relative w-full md:w-5/12 bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700 text-white flex flex-col justify-between p-8 md:p-10 overflow-hidden min-h-[260px] md:min-h-[660px]">
-          <Shapes />
+          {/* School Brand */}
+          <div className="relative z-10">
+            <Link to="/" className="inline-flex items-center gap-3.5 group">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center p-1.5 shadow-xl shadow-black/20 border border-white/20 group-hover:scale-105 transition-transform">
+                <img src={logo} alt="GHRA Logo" className="w-full h-full object-contain" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-white text-lg tracking-tight font-heading">GHRA</span>
+                  <span className="px-2 py-0.5 rounded-md bg-amber-400/20 border border-amber-300/30 text-[10px] font-extrabold text-amber-300 uppercase tracking-wider">
+                    Security
+                  </span>
+                </div>
+                <p className="text-xs text-blue-200/80 font-medium">Shaping Young Minds</p>
+              </div>
+            </Link>
+          </div>
 
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
-            className="relative z-10 flex items-center gap-3">
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
-              <img src={logo} alt="GHRA Logo" className="w-full h-full object-cover" />
+          {/* Left Description & Requirements */}
+          <div className="relative z-10 my-8 md:my-0">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 backdrop-blur-md mb-4">
+              <FiKey className="text-amber-400 text-xs" />
+              <span className="text-[11px] font-bold tracking-widest text-blue-200 uppercase">
+                CREDENTIAL SETUP
+              </span>
             </div>
-            <span className="font-semibold text-white/90 text-sm tracking-wide">GHRA School</span>
-          </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
-            className="relative z-10 my-6 md:my-0">
-            <p className="text-blue-200 text-xs font-semibold tracking-[0.2em] uppercase mb-4">Final step</p>
-            <h1 className="text-3xl md:text-[2.6rem] font-black leading-[1.15] mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Create a
+            <h1 
+              className="text-3xl sm:text-4xl md:text-[2.65rem] font-bold leading-[1.12] text-white tracking-tight"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+            >
+              Create a <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-200 bg-clip-text text-transparent">New Password.</span>
             </h1>
-            <h1 className="text-3xl md:text-[2.6rem] font-black text-yellow-400 leading-[1.15]" style={{ fontFamily: "'Playfair Display', serif" }}>
-              New Password.
-            </h1>
-            <p className="mt-5 text-blue-200/80 text-sm leading-relaxed max-w-[260px]">
-              Choose a strong password you haven't used before. You'll use it next time you sign in.
+
+            <p className="mt-4 text-blue-100/80 text-sm leading-relaxed max-w-[340px]">
+              Set a strong, unique password to secure your personal dashboard and academic records.
             </p>
 
-            {/* Password tips */}
-            <div className="mt-8 space-y-2">
-              {requirements.map(({ label, met }) => (
-                <div key={label} className="flex items-center gap-2">
-                  <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 transition-all
-                    ${met ? "bg-green-400/30 border border-green-400" : "bg-white/10 border border-white/20"}`}>
-                    {met && (
-                      <svg className="w-2.5 h-2.5 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
+            {/* Live Security Checklist */}
+            <div className="mt-6 space-y-2">
+              <p className="text-xs font-bold text-blue-200/90 uppercase tracking-wider mb-2">Password Requirements</p>
+              <div className="grid grid-cols-2 gap-2">
+                {requirements.map(({ label, met }) => (
+                  <div 
+                    key={label}
+                    className={`flex items-center gap-2 p-2 rounded-xl text-xs font-semibold transition-all border ${
+                      met 
+                        ? "bg-emerald-500/15 border-emerald-400/30 text-emerald-300" 
+                        : "bg-white/5 border-white/10 text-blue-200/60"
+                    }`}
+                  >
+                    <div className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
+                      met ? "bg-emerald-400 text-slate-900" : "bg-white/10 text-white/40"
+                    }`}>
+                      {met ? <FiCheck /> : "•"}
+                    </div>
+                    <span>{label}</span>
                   </div>
-                  <span className={`text-xs transition-colors ${met ? "text-green-300" : "text-blue-200/60"}`}>{label}</span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
-            className="relative z-10 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4">
-            <p className="text-xs font-semibold text-yellow-300 mb-2">🔒 Security tips</p>
-            <ul className="space-y-1 text-xs text-blue-100/90">
-              <li>• Never share your password with anyone</li>
-              <li>• Use a unique password for each account</li>
-            </ul>
-          </motion.div>
+          {/* Bottom Security Card */}
+          <div className="relative z-10 mt-6 md:mt-0 bg-white/[0.08] backdrop-blur-md border border-white/15 rounded-2xl p-4 shadow-lg flex items-center justify-between">
+            <span className="text-amber-300 font-semibold text-xs flex items-center gap-1.5">
+              <FiShield className="text-sm" /> 256-Bit Cryptographic Salt
+            </span>
+            <span className="text-[10px] text-blue-200">GHRA Identity</span>
+          </div>
         </div>
 
-        {/* ── RIGHT ────────────────────────────────────────────────────────── */}
-        <div className="w-full md:w-7/12 bg-slate-50 flex items-center justify-center p-6 sm:p-10 md:p-12">
-          <motion.div
-            initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, duration: 0.6 }}
-            className="w-full max-w-[400px]"
-          >
+        {/* ── RIGHT: FORM PANEL ────────────────────────────────────────────── */}
+        <div className="w-full md:w-[52%] bg-slate-50 flex flex-col justify-between p-7 sm:p-10 md:p-12 text-slate-800">
+          <div>
             <AnimatePresence mode="wait">
-
-              {/* Invalid / expired link */}
               {invalidLink ? (
-                <motion.div key="invalid"
-                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                  <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mb-6">
-                    <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
+                /* Invalid Link State */
+                <motion.div 
+                  key="invalid"
+                  initial={{ opacity: 0, y: 16 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  exit={{ opacity: 0 }}
+                >
+                  <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mb-6 border border-rose-200">
+                    <FiAlertCircle className="text-3xl" />
                   </div>
-                  <h2 className="text-2xl font-extrabold text-slate-800 mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
-                    Invalid reset link
+
+                  <h2 
+                    className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight"
+                    style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+                  >
+                    Invalid or Expired Link
                   </h2>
-                  <p className="text-sm text-slate-400 mb-7 leading-relaxed">
-                    This link is missing required information or has expired. Please request a new one.
+                  <p className="text-xs sm:text-sm text-slate-600 mt-2 mb-6 leading-relaxed">
+                    This password reset token has expired or is invalid. Please generate a new request from the account recovery page.
                   </p>
-                  <Link to="/forgot-password"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-2xl font-semibold text-sm transition-all shadow-lg shadow-blue-200 flex items-center justify-center">
-                    Request a new link
+
+                  <Link 
+                    to="/forgot-password"
+                    className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-lg shadow-blue-600/25 transition-all flex items-center justify-center gap-2"
+                  >
+                    <span>Request New Recovery Link</span>
+                    <FiArrowRight />
                   </Link>
-                  <p className="text-center text-sm text-slate-500 mt-5">
-                    <Link to="/login" className="text-blue-600 font-bold hover:underline">Back to login</Link>
-                  </p>
                 </motion.div>
-
               ) : success ? (
-
-                /* Success state */
-                <motion.div key="success"
-                  initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
-                  className="text-center py-8">
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
-                    transition={{ type: "spring", stiffness: 220, delay: 0.1 }}
-                    className="w-20 h-20 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </motion.div>
-                  <h2 className="text-2xl font-extrabold text-slate-800 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
-                    Password reset!
-                  </h2>
-                  <p className="text-sm text-slate-400 mb-1">Your password has been updated successfully.</p>
-                  <p className="text-sm text-slate-400">Redirecting you to login…</p>
-                </motion.div>
-
-              ) : (
-
-                /* Form */
-                <motion.div key="form"
-                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                  transition={{ duration: 0.35 }}>
-
-                  <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6">
-                    <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                        d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                    </svg>
+                /* Success State */
+                <motion.div 
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.95 }} 
+                  animate={{ opacity: 1, scale: 1 }} 
+                  exit={{ opacity: 0 }}
+                  className="text-center py-6"
+                >
+                  <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-emerald-200 shadow-lg shadow-emerald-500/10">
+                    <FiCheckCircle className="text-4xl" />
                   </div>
 
-                  <h2 className="text-2xl font-extrabold text-slate-800 mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
-                    Set new password
+                  <h2 
+                    className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight"
+                    style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+                  >
+                    Password Successfully Updated!
                   </h2>
-                  <p className="text-sm text-slate-400 mb-1">
-                    Resetting for <span className="text-blue-600 font-semibold">{emailFromUrl}</span>
+                  <p className="text-xs sm:text-sm text-slate-500 mt-2">
+                    Your credentials have been securely stored. Redirecting to sign in portal…
                   </p>
-                  <p className="text-sm text-slate-400 mb-7">Must be different from your previous password</p>
+                </motion.div>
+              ) : (
+                /* Active Reset Form */
+                <motion.div 
+                  key="form"
+                  initial={{ opacity: 0, y: 16 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  exit={{ opacity: 0 }}
+                >
+                  <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-5 border border-blue-200">
+                    <FiKey className="text-2xl" />
+                  </div>
 
-                  {/* Global error */}
+                  <h2 
+                    className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-1"
+                    style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+                  >
+                    Set New Password
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-500 mb-6">
+                    Updating account for <span className="text-blue-600 font-bold">{emailFromUrl}</span>
+                  </p>
+
                   <AnimatePresence>
                     {globalError && (
-                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                        className="bg-red-50 border border-red-100 rounded-xl px-4 py-2.5 mb-4 overflow-hidden">
-                        <p className="text-xs text-red-500 font-medium">{globalError}</p>
+                      <motion.div
+                        initial={{ opacity: 0, y: -6, height: 0 }}
+                        animate={{ opacity: 1, y: 0, height: "auto" }}
+                        exit={{ opacity: 0, y: -6, height: 0 }}
+                        className="bg-rose-50 border border-rose-200/80 rounded-2xl p-3.5 mb-4 flex items-start gap-3 shadow-sm overflow-hidden"
+                      >
+                        <FiAlertCircle className="text-rose-600 text-lg flex-shrink-0 mt-0.5" />
+                        <p className="text-xs font-semibold text-rose-700 leading-relaxed">{globalError}</p>
                       </motion.div>
                     )}
                   </AnimatePresence>
 
                   <form onSubmit={handleSubmit} noValidate className="space-y-4">
-
-                    {/* New password */}
+                    {/* New Password */}
                     <div>
-                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-2">
+                      <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">
                         New Password
                       </label>
-                      <div className="relative">
+                      <div className="relative group">
+                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                          <FiLock className="text-base" />
+                        </div>
                         <input
                           type={showPw ? "text" : "password"}
                           value={password}
-                          onChange={(e) => { setPassword(e.target.value); setFieldErrors((p) => ({ ...p, password: "" })); }}
-                          placeholder="••••••••"
-                          className={`w-full pl-4 pr-11 py-3 bg-white border rounded-2xl text-sm text-slate-800 placeholder-slate-300 focus:outline-none focus:ring-2 transition-all
-                            ${fieldErrors.password ? "border-red-300 focus:ring-red-400/30 focus:border-red-400"
-                                                   : "border-slate-200 focus:ring-blue-500/30 focus:border-blue-400"}`}
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                            setFieldErrors((p) => ({ ...p, password: "" }));
+                          }}
+                          placeholder="••••••••••••"
+                          autoComplete="new-password"
+                          className="w-full pl-10 pr-11 py-3.5 bg-white border border-slate-300/80 rounded-2xl text-sm font-medium text-slate-900 placeholder-slate-400 shadow-sm focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/15 transition-all"
                         />
-                        <button type="button" onClick={() => setShowPw(!showPw)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
-                          <EyeIcon open={showPw} />
+                        <button
+                          type="button"
+                          onClick={() => setShowPw(!showPw)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
+                        >
+                          {showPw ? <FiEyeOff className="text-base" /> : <FiEye className="text-base" />}
                         </button>
                       </div>
-                      <AnimatePresence>
-                        {fieldErrors.password && (
-                          <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                            className="text-[10px] text-red-500 font-bold mt-1.5 px-1">{fieldErrors.password}</motion.p>
-                        )}
-                      </AnimatePresence>
+                      
+                      {/* Strength meter bar */}
+                      {password && st && (
+                        <div className="mt-2">
+                          <div className="flex gap-1.5 mb-1">
+                            {[0, 1, 2, 3].map((i) => (
+                              <div
+                                key={i}
+                                className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                                  i < st.score ? st.color : "bg-slate-200"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <p className={`text-[10px] font-bold ${st.text}`}>Strength: {st.label}</p>
+                        </div>
+                      )}
+
+                      {fieldErrors.password && (
+                        <p className="text-[11px] text-rose-600 font-bold mt-1 px-1">{fieldErrors.password}</p>
+                      )}
                     </div>
 
-                    {/* Strength bar */}
-                    {password && st && (
-                      <div className="-mt-1">
-                        <div className="flex gap-1 mb-1">
-                          {[0, 1, 2, 3].map((i) => (
-                            <div key={i} className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${i < st.score ? st.color : "bg-slate-200"}`} />
-                          ))}
-                        </div>
-                        <p className="text-[10px] text-slate-400 font-medium">{st.label}</p>
-                      </div>
-                    )}
-
-                    {/* Confirm password */}
+                    {/* Confirm Password */}
                     <div>
-                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-2">
-                        Confirm Password
+                      <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                        Confirm New Password
                       </label>
-                      <div className="relative">
+                      <div className="relative group">
+                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                          <FiLock className="text-base" />
+                        </div>
                         <input
                           type={showCpw ? "text" : "password"}
                           value={password_confirmation}
-                          onChange={(e) => { setConfirm(e.target.value); setFieldErrors((p) => ({ ...p, password_confirmation: "" })); }}
-                          placeholder="••••••••"
-                          className={`w-full pl-4 pr-11 py-3 bg-white border rounded-2xl text-sm text-slate-800 placeholder-slate-300 focus:outline-none focus:ring-2 transition-all
-                            ${fieldErrors.password_confirmation ? "border-red-300 focus:ring-red-400/30 focus:border-red-400"
-                                                                : "border-slate-200 focus:ring-blue-500/30 focus:border-blue-400"}`}
+                          onChange={(e) => {
+                            setConfirm(e.target.value);
+                            setFieldErrors((p) => ({ ...p, password_confirmation: "" }));
+                          }}
+                          placeholder="••••••••••••"
+                          autoComplete="new-password"
+                          className="w-full pl-10 pr-11 py-3.5 bg-white border border-slate-300/80 rounded-2xl text-sm font-medium text-slate-900 placeholder-slate-400 shadow-sm focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/15 transition-all"
                         />
-                        <button type="button" onClick={() => setShowCpw(!showCpw)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
-                          <EyeIcon open={showCpw} />
+                        <button
+                          type="button"
+                          onClick={() => setShowCpw(!showCpw)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
+                        >
+                          {showCpw ? <FiEyeOff className="text-base" /> : <FiEye className="text-base" />}
                         </button>
                       </div>
-                      <AnimatePresence>
-                        {fieldErrors.password_confirmation && (
-                          <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                            className="text-[10px] text-red-500 font-bold mt-1.5 px-1">{fieldErrors.password_confirmation}</motion.p>
-                        )}
-                      </AnimatePresence>
+
+                      {fieldErrors.password_confirmation && (
+                        <p className="text-[11px] text-rose-600 font-bold mt-1 px-1">{fieldErrors.password_confirmation}</p>
+                      )}
                     </div>
 
                     <motion.button
-                      whileHover={{ scale: 1.01, boxShadow: "0 8px 30px rgba(37,99,235,0.35)" }}
+                      whileHover={{ scale: 1.01, translateY: -1 }}
                       whileTap={{ scale: 0.98 }}
-                      type="submit" disabled={loading}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-2xl font-semibold text-sm transition-all shadow-lg shadow-blue-200 disabled:opacity-60 flex items-center justify-center gap-2 mt-1"
+                      type="submit"
+                      disabled={loading}
+                      className="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 text-white font-bold py-3.5 sm:py-4 px-6 rounded-2xl text-sm shadow-xl shadow-blue-600/25 hover:shadow-blue-600/35 transition-all duration-200 disabled:opacity-60 flex items-center justify-center gap-2 mt-2 cursor-pointer"
                     >
                       {loading ? (
                         <>
-                          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                           </svg>
-                          Resetting…
+                          <span>Updating Password…</span>
                         </>
-                      ) : "Reset Password"}
+                      ) : (
+                        <>
+                          <span>Save & Proceed to Login</span>
+                          <FiArrowRight className="text-base" />
+                        </>
+                      )}
                     </motion.button>
                   </form>
-
-                  <p className="text-center text-sm text-slate-500 mt-6">
-                    <Link to="/login" className="text-blue-600 font-bold hover:underline">Back to login</Link>
-                  </p>
                 </motion.div>
               )}
             </AnimatePresence>
-          </motion.div>
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-slate-200/80 text-center">
+            <Link 
+              to="/login"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline"
+            >
+              <FiArrowLeft className="text-sm" />
+              <span>Back to Portal Sign In</span>
+            </Link>
+          </div>
         </div>
       </motion.div>
+
+      <div className="relative z-10 mt-6 text-center text-xs text-slate-400/80">
+        <p>© {new Date().getFullYear()} GHRA • Secure Identity Portal</p>
+      </div>
     </div>
   );
 }
+

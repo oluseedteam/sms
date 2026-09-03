@@ -1,75 +1,114 @@
 import React from 'react';
 import { motion } from "motion/react";
+import { Link } from 'react-router-dom';
+import { FiArrowRight, FiFileText, FiCalendar, FiCheckSquare, FiAward, FiDownload } from 'react-icons/fi';
+import { FaGraduationCap } from 'react-icons/fa6';
+
+const steps = [
+  {
+    step: '01',
+    icon: <FiFileText className="text-xl text-amber-400" />,
+    title: 'Submit Application',
+    desc: 'Fill out our online inquiry form or collect the application package from the admissions office.',
+  },
+  {
+    step: '02',
+    icon: <FiCalendar className="text-xl text-blue-400" />,
+    title: 'Entrance Assessment',
+    desc: 'Candidate takes a diagnostic evaluation in Mathematics, English, and general aptitude.',
+  },
+  {
+    step: '03',
+    icon: <FiCheckSquare className="text-xl text-emerald-400" />,
+    title: 'Family Interview',
+    desc: 'A brief interactive discussion with the school leadership team to align on student growth goals.',
+  },
+  {
+    step: '04',
+    icon: <FiAward className="text-xl text-purple-400" />,
+    title: 'Welcome to GHRA',
+    desc: 'Receive formal admission offer, complete fee payment, and join our vibrant community!',
+  },
+];
 
 const Admission = () => {
   return (
-    <motion.section
-      className="relative overflow-hidden px-6 py-20 sm:py-28"
-      style={{ background: 'linear-gradient(135deg, #1D2E5C 0%, #3D61C2 60%, #1D2E5C 100%)' }}
-    initial={{ opacity: 0, x: 100 }}
-      transition={{ duration: 1 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: false }}
-    >
-      {/* Decorative background circles */}
-      <div className="pointer-events-none absolute -top-20 -left-20 h-72 w-72 rounded-full bg-white opacity-5" />
-      <div className="pointer-events-none absolute -bottom-24 -right-16 h-96 w-96 rounded-full bg-white opacity-5" />
-      <div className="pointer-events-none absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3D61C2] opacity-20 blur-3xl" />
+    <section className="py-20 lg:py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#0A192F] via-[#0D2247] to-[#08152B] text-white relative overflow-hidden">
+      {/* Decorative background glows */}
+      <div className="pointer-events-none absolute -top-20 -left-20 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 -right-16 h-96 w-96 rounded-full bg-amber-400/10 blur-3xl" />
 
-      {/* Subtle grid texture overlay */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-          backgroundSize: '40px 40px',
-        }}
-      />
+      <div className="max-w-7xl mx-auto relative z-10">
+        
+        {/* Banner Header */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-white backdrop-blur-md mb-4 shadow-sm">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs sm:text-sm font-semibold tracking-wide text-amber-300">
+              Enrollment Open 2025/2026 Academic Session
+            </span>
+          </div>
 
-      <div className="relative mx-auto max-w-3xl text-center">
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white font-heading tracking-tight leading-tight">
+            Admissions <span className="text-amber-400">Now Open</span>
+          </h2>
 
-        {/* Badge */}
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 backdrop-blur-sm">
-          <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-sm font-medium text-white/90 tracking-wide">Enrollment Open 2025/2026</span>
+          <p className="mt-4 text-slate-300 text-sm sm:text-base md:text-lg leading-relaxed">
+            Give your child the distinct advantage of a world-class academic foundation and exemplary moral character.
+          </p>
         </div>
 
-        {/* Heading */}
-        <h1 className="mb-5 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl">
-          Admissions{' '}
-          <span
-            className="relative inline-block"
-            style={{ WebkitTextStroke: '1.5px rgba(255,255,255,0.4)', color: 'transparent' }}
+        {/* 4-Step Process Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
+          {steps.map((item, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              className="bg-white/5 border border-white/10 hover:border-blue-400/40 rounded-3xl p-6 sm:p-7 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 group"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-2xl bg-white/10 border border-white/10 group-hover:bg-blue-600 transition-colors">
+                  {item.icon}
+                </div>
+                <span className="text-2xl font-black text-white/30 group-hover:text-amber-400 transition-colors font-heading">
+                  {item.step}
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-white font-heading mb-2">
+                {item.title}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                {item.desc}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Call to Actions */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-lg mx-auto">
+          <Link
+            to="/admissions"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm sm:text-base px-8 py-4 rounded-full shadow-xl shadow-blue-600/30 hover:scale-105 active:scale-95 transition-all"
           >
-            Now Open
-          </span>
-        </h1>
+            <span>Begin Online Application</span>
+            <FiArrowRight className="text-lg" />
+          </Link>
 
-        {/* Divider accent */}
-        <div className="mx-auto mb-6 flex items-center justify-center gap-2">
-          <div className="h-px w-12 bg-white/30" />
-          <div className="h-1.5 w-1.5 rounded-full bg-white/50" />
-          <div className="h-px w-12 bg-white/30" />
+          <Link
+            to="/admissions#checklist-section"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold text-sm sm:text-base px-8 py-4 rounded-full border border-white/20 backdrop-blur-md hover:scale-105 active:scale-95 transition-all"
+          >
+            <FiDownload className="text-amber-400" />
+            <span>Admission Requirements</span>
+          </Link>
         </div>
 
-        {/* Description */}
-        <p className="mx-auto mb-10 max-w-xl text-base leading-7 text-white/70 sm:text-lg">
-          Give your child the advantage of a strong academic and character foundation.
-          Start your admission process today.
-        </p>
-
-        {/* Buttons */}
-        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <button className="w-full sm:w-auto rounded-xl bg-white px-8 py-3.5 text-sm font-bold text-[#1D2E5C] shadow-lg shadow-black/20 transition-all duration-200 hover:bg-blue-50 hover:scale-105 active:scale-95">
-            Apply for Admission
-          </button>
-          <button className="w-full sm:w-auto rounded-xl border border-white/30 bg-white/10 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/20 hover:scale-105 active:scale-95">
-            Speak to Admissions
-          </button>
-        </div>
       </div>
-    </motion.section>
-  )
-}
+    </section>
+  );
+};
 
-export default Admission
+export default Admission;

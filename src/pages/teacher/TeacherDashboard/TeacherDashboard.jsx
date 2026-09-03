@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import TeacherDashboardRight from './TeacherDashboardRight';
 import apiFetch from '../../../services/api';
-import { getTeacherClasses } from '../../../services/teacherClassService';
+import { getClasses } from '../../../services/classService';
 import { getAssignments } from '../../../services/assignmentService';
 import { getMessages } from '../../../services/messageService';
 
@@ -45,7 +45,7 @@ const TeacherDashboard = () => {
       try {
         const [sumRes, classesRes, assignRes, msgRes] = await Promise.all([
           apiFetch('/dashboard/summary'),
-          getTeacherClasses(),
+          getClasses(),
           getAssignments(),
           getMessages({ sender_type: 'admin' })
         ]);
@@ -79,11 +79,10 @@ const TeacherDashboard = () => {
     const color = scheduleColors[i % scheduleColors.length];
     return {
       id: tc.id,
-      time: tc.time || 'Schedule TBA',
-      subject: tc.title,
-      topic: tc.grade || 'General',
-      room: tc.location || 'TBA',
-      students: 'Varies',
+      time: tc.academic_year || 'Academic assignment',
+      subject: tc.name,
+      topic: (tc.subjects || []).map(subject => subject.name).join(', ') || tc.grade_level,
+      room: tc.room || 'No room recorded',
       ...color
     };
   });
@@ -115,6 +114,12 @@ const TeacherDashboard = () => {
     { label: 'Schedule Meeting',  icon: Calendar, path: '/teacher/calendar' },
     { label: 'View Reports',      icon: BarChart2, path: '/teacher/results' },
   ];
+
+  const attentionItems = [
+    { label: 'Draft score sheets', value: summary?.pending_submissions || 0, path: '/teacher/gradebook' },
+    { label: 'Submitted results', value: summary?.submitted_results || 0, path: '/teacher/results' },
+    { label: 'Returned or rejected results', value: summary?.returned_results || 0, path: '/teacher/gradebook' },
+  ].filter(item => item.value > 0);
 
   if (loading) {
     return (
@@ -162,10 +167,10 @@ const TeacherDashboard = () => {
           <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-blue-400/20 rounded-full blur-2xl" />
         </div>
 
-        {/* Today's Schedule */}
+        {/* Assigned Classes */}
         <motion.div variants={itemVariants} className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
           <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2 mb-6">
-            <Clock className="w-5 h-5 text-blue-600" /> Today's Schedule
+            <Clock className="w-5 h-5 text-blue-600" /> Assigned Classes
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {schedule.length > 0 ? schedule.map((s, i) => (
@@ -173,17 +178,10 @@ const TeacherDashboard = () => {
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{s.time}</p>
                 <h3 className="font-bold text-gray-800 text-base mb-0.5">{s.subject}</h3>
                 <p className="text-xs text-gray-500 mb-3">{s.topic} • {s.room}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-gray-500 flex items-center gap-1">
-                    <Users className="w-3 h-3" /> {s.students}
-                  </span>
-                  <button className={`text-[10px] font-bold px-3 py-1.5 rounded-xl ${s.badge}`}>
-                    Start Class
-                  </button>
-                </div>
+                <span className={`inline-flex text-[10px] font-bold px-3 py-1.5 rounded-xl ${s.badge}`}>Assigned class</span>
               </div>
             )) : (
-              <p className="text-sm text-gray-500 py-4 col-span-2">No scheduled classes found.</p>
+              <p className="text-sm text-gray-500 py-4 col-span-2">No assigned classes found.</p>
             )}
           </div>
         </motion.div>
@@ -216,14 +214,14 @@ const TeacherDashboard = () => {
             <h3 className="text-sm font-bold text-orange-600 flex items-center gap-2 mb-3">
               <AlertCircle className="w-4 h-4" /> Needs Attention
             </h3>
-            {['Late submissions', 'Missing homework', 'Attendance follow-up', 'Parent meetings scheduled'].map((n, i) => (
-              <div key={i} className="flex justify-between items-center text-xs text-orange-700 py-1.5 border-b border-orange-100 last:border-0">
-                <span>{n}</span>
+            {attentionItems.length > 0 ? attentionItems.map((item) => (
+              <a key={item.label} href={item.path} className="flex justify-between items-center text-xs text-orange-700 py-1.5 border-b border-orange-100 last:border-0">
+                <span>{item.label}</span>
                 <span className="bg-orange-100 text-orange-600 w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px]">
-                  {i + 1}
+                  {item.value}
                 </span>
-              </div>
-            ))}
+              </a>
+            )) : <p className="text-xs text-orange-700">No grading follow-ups are pending.</p>}
           </div>
         </motion.div>
 

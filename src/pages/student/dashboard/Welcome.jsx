@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { useAuth } from "../../../hooks/useAuth";
 import apiFetch from "../../../services/api";
+import { Link } from 'react-router-dom';
 
 const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -34,9 +35,9 @@ const Welcome = () => {
 
   const info = [
       { label: 'Average Score', value: summary ? `${summary.average_score_percent}%` : '...', icon: '⭐' }, 
-      { label: 'Tracked Subjects', value: summary ? summary.subjects_tracked : '...', icon: '📚' },
-      { label: 'Attendance', value: summary ? `${summary.attendance_rate}%` : '...', icon: '✅' }, 
-      { label: 'Enrolled Classes', value: summary ? summary.my_classes : '...', icon: '🏫' }
+      { label: 'Registered Subjects', value: summary ? summary.registered_subjects : '...', icon: '📚' },
+      { label: 'Upcoming CBT', value: summary ? summary.upcoming_cbt_exams : '...', icon: '💻' },
+      { label: 'Report Cards', value: summary ? summary.report_card_count : '...', icon: '📄' }
   ];
 
   return (
@@ -52,9 +53,14 @@ const Welcome = () => {
             <h2 className='text-2xl sm:text-3xl font-black mb-2 uppercase tracking-tight'>
               Welcome back, {user?.full_name || "Student"}! 👋
             </h2>
-            <p className='text-xs sm:text-[15px] mb-8 opacity-90 flex items-center gap-2 font-bold'>
-                📚 You have new homework assignments due this week
-            </p>
+            <div className="flex flex-wrap items-center gap-3 mb-8">
+              <p className='text-xs sm:text-[15px] opacity-90 font-bold'>
+                {summary?.current_session ? `${summary.current_session} • ${summary.current_term || 'Current term'}` : 'Academic session information is not available yet.'}
+              </p>
+              <Link to="/student/report-card" className="inline-flex items-center rounded-xl bg-amber-400 px-4 py-2 text-xs font-black text-slate-950 hover:bg-amber-300">
+                View Report Cards
+              </Link>
+            </div>
         </motion.div>
 
         <div className='grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5 relative'>

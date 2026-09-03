@@ -17,14 +17,13 @@ const tools = ['Rubric Builder', 'Comment Bank', 'Grade Calculator', 'Standards 
 
 const TeacherAssignmentsRight = ({ assignments = [] }) => {
   const activeAssignments = assignments.filter(a => a.status === 'active' || !a.status);
-  const countPerAss = 25; // Mock submission count without full submission backend
-  const totalItemsToGrade = activeAssignments.length * countPerAss;
+  const totalItemsToGrade = activeAssignments.reduce((acc, a) => acc + (a.submissions_count || a.submissions?.length || 0), 0);
 
   const bgColors = ['bg-blue-600', 'bg-purple-500', 'bg-green-500', 'bg-orange-500', 'bg-pink-500'];
 
   const queue = activeAssignments.length > 0 ? activeAssignments.slice(0, 5).map((a, i) => ({
     label: a.title,
-    count: countPerAss,
+    count: a.submissions_count || a.submissions?.length || 0,
     color: bgColors[i % bgColors.length]
   })) : [
     { label: 'No Active Assignments', count: 0, color: 'bg-gray-300' }
